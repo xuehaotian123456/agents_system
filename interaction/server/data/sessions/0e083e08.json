@@ -1,0 +1,29 @@
+{
+  "session_id": "0e083e08",
+  "messages": [
+    {
+      "role": "user",
+      "content": "我叫李四",
+      "tool_name": null
+    },
+    {
+      "role": "assistant",
+      "content": "你好，李四！很高兴认识你。有什么技术问题或需要帮助的地方，随时告诉我！",
+      "tool_name": null
+    },
+    {
+      "role": "user",
+      "content": "我叫什么名字",
+      "tool_name": null
+    },
+    {
+      "role": "assistant",
+      "content": "你叫李四。",
+      "tool_name": null
+    }
+  ],
+  "total_turns": 2,
+  "tool_calls_count": 0,
+  "last_active": 1786066176.2717004,
+  "first_query": "你好，李四！很高兴认识你。有什么技术问题或需要帮助的地方，随时告诉我！"
+}

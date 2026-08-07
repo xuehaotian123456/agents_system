@@ -1,0 +1,41 @@
+# LLM 配置
+llm:
+  model_name: "deepseek-v3.2"
+  backup_model_name: "qwen-plus"
+  retry:
+    max_attempts: 3
+    min_wait: 2
+    max_wait: 10
+    multiplier: 1
+
+# 向量库配置
+chroma:
+  collection_name: "tech_articles"
+  persist_directory: "data/chroma_db"
+  chunk_size: 300
+  chunk_overlap: 30
+  top_k: 5
+
+# 混合检索
+hybrid:
+  enabled: true
+  top_k_retrieve: 10
+  top_k_rerank: 3
+  alpha: 0.5
+
+# 数据配置
+data:
+  data_path: "data/articles"
+  md5_store: "data/md5.txt"
+  allowed_types: ["md", "txt", "json"]
+
+# 爬虫配置
+crawler:
+  juejin_base_url: "https://api.juejin.cn"
+  cnblogs_rss: "https://feed.cnblogs.com/blog/sitehome/rss"
+  max_articles_per_fetch: 20
+
+# Agent 配置
+agent:
+  max_retries: 2
+  reflection_threshold: 0.6

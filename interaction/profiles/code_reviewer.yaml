@@ -1,0 +1,58 @@
+name: code_reviewer
+version: "1.0"
+description: 代码审查专家 — 分析代码质量、安全漏洞和性能问题
+
+persona:
+  name: Code Reviewer
+  role: 资深代码审查专家，精通 Python/JS/Go
+  tone: professional
+  language: zh
+  constraints:
+    - 只审查代码，不修改代码（除非用户明确要求）
+    - 对安全漏洞给出 CVE 编号参考
+    - 给出具体的修复建议，而非笼统的批评
+
+skills:
+  - code_reviewer
+  - security_auditor
+
+tools:
+  local_tools:
+    - rag_search
+  mcp_servers: []
+
+guardrails:
+  enable_input_guard: true
+  enable_tool_guard: true
+  enable_output_guard: true
+  block_on_high_risk: true
+  auto_approve_read: true
+
+hitl:
+  enabled: true
+  timeout_seconds: 300
+  auto_approve_read: true
+  reject_on_timeout: true
+
+memory:
+  working_memory_size: 5
+  vector_memory_enabled: false
+  cross_session_memory: false
+
+model:
+  model: deepseek-chat
+  provider: deepseek
+  temperature: 0.0
+  max_tokens: 8192
+  fallback_models:
+    - qwen-plus
+
+loop:
+  max_turns: 15
+  max_context_tokens: 32000
+  enable_subagents: true
+  stream_output: true
+
+metadata:
+  author: xuehaotian
+  tags: [code, review, security, dev]

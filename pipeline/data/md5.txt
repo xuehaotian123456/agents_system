@@ -1,0 +1,94 @@
+E:\agent-system\pipeline\data\articles\01_python_async.md	5b58e22060a9e6a6f7049249d34b0c74
+E:\agent-system\pipeline\data\articles\02_docker_k8s.md	f4ac70d3681e35a9cbe24d78fb56255f
+E:\agent-system\pipeline\data\articles\03_langgraph_intro.md	079d943e79e815889f71a7f408401728
+E:\agent-system\pipeline\data\articles\04_react_vs_vue.md	4797cf0e300d2222ce3e104f15706bc6
+E:\agent-system\pipeline\data\articles\05_frontend_trends_2024.md	774311ff18c07e050e3c48e2cb4db7c6
+E:\agent-system\pipeline\data\articles\auto_juejin_Cursor 转 Codex 大半个月聊聊我的真实感受Cursor 让我第一次.md	fc4e74eb58cd27aaae1a555fc521ac08
+E:\agent-system\pipeline\data\articles\auto_juejin_写给年轻程序员的几点建议-2现在互联网红利已经消失了深知年轻程序员的不易下面.md	59376c3af459ea2ef9d97b4615136727
+E:\agent-system\pipeline\data\articles\auto_juejin_有jy知道uniapp开发时候用微信开发工具真机模拟图片不显示是为什么的么.md	4d49110be75e19b56fff765c61d8aba0
+E:\agent-system\pipeline\data\articles\cnblogs_ABP DTO 与对象映射AutoMapper Profile 配置与 Map.md	f0bc32584baa1d693f25e11e916f15bb
+E:\agent-system\pipeline\data\articles\cnblogs_AI 测试提效  UI 自动化测不出样式 bug分享 ui-visual-a.md	0a6c403843ed7fa1e16685fa1522fd27
+E:\agent-system\pipeline\data\articles\cnblogs_Shell脚本全类型括号语法详解及对比手册零基础版 - Docker-沫老师.md	d385bf62cc64d8f0aa142a20dd846358
+E:\agent-system\pipeline\data\articles\cnblogs_VUE笔记 - ShoreKiten.md	499219c60c01b3e99ca0b962c9ab43ab
+E:\agent-system\pipeline\data\articles\cnblogs_修 Bug 的手艺与架构的艺术从熵增到熵减 - 张善友.md	aa5ed4163c1c9bed7f00652b4fc882b6
+E:\agent-system\pipeline\data\articles\cnblogs_如何保证Mysql和Redis双写一致性 - Rain的Java大神实战圈.md	662e4e1fd8e33aee0f979c2eba508ea3
+E:\agent-system\pipeline\data\articles\cnblogs_对标 npx 的 CPX PHP 的 Composer 包执行器 - Jagua.md	6bba05d84e010fc5e2c3a07a40056aeb
+E:\agent-system\pipeline\data\articles\cnblogs_工控生态之展示与交互怎么让工业软件不再丑 - Wackysoft.md	f84ec6ee6b0718b3c411ea542728b445
+E:\agent-system\pipeline\data\articles\cnblogs_应对 MongoDB 超大表冷热数据分离与空间释放的最佳实践 - Markk.md	1b29a04569bd5c4dd2ea979062001e99
+E:\agent-system\pipeline\data\articles\cnblogs_鑫福丰工业省电空调2026年工厂车间降温省电终极方案 - 鑫福丰工业省电空调.md	60fd61e27b904c9a504e8ac3b97dfe65
+E:\agent-system\pipeline\data\articles\digest_cnblogs_5 PyCharm鸿蒙Hypium从0到跑通少踩90坑 - 老陈说编程.md	3ed3ab5ab81f375dea9c7278bd769d60
+E:\agent-system\pipeline\data\articles\digest_cnblogs_AI 软件开发实战教程一从一个想法到可验证交付 - DevWiki.md	4a430dd14c1e9dd7bbde56372c1172c5
+E:\agent-system\pipeline\data\articles\digest_cnblogs_Apache SeaTunnel 提交一个任务都经过了什么 - ApacheS.md	f2d004ba42cbc5bcc54002ece388f63a
+E:\agent-system\pipeline\data\articles\digest_cnblogs_dbtSQLServer构建数据仓库3dbt_projectyml配置.md	5a580c937e922865dcc813416bdf87b4
+E:\agent-system\pipeline\data\articles\digest_cnblogs_GitZip Pro 源码解析一个 GitHub 文件文件夹下载扩展是如何工.md	e6dcf93eba6166ddb9c5ddf815ee8ac0
+E:\agent-system\pipeline\data\articles\digest_cnblogs_LinuxOllama Termux  一款运行在 Android 平台.md	45372982bb92ed57370bf4b341f2010c
+E:\agent-system\pipeline\data\articles\digest_cnblogs_OEL 8Vim 编辑中文乱码其实是 Locale 没设对 - Alfred.md	e43df1ee31c4e01417bf56886583ca51
+E:\agent-system\pipeline\data\articles\digest_cnblogs_VelesDB 深度解读  融合向量图与列存的端侧 AI 记忆引擎 - 罗.md	ede9bf8740d6107646acdd889f2901f5
+E:\agent-system\pipeline\data\articles\digest_cnblogs_从 PHP 到 AI  Golang程序员自救转型手记五十五增加 ar.md	0ee61af561d7c2682691f73b101234fc
+E:\agent-system\pipeline\data\articles\digest_cnblogs_同事说我是财迷公司买的 AI 账号有两个人没用我接过来了 - 编程一生.md	af6c2416b123f8c843c547b1ea28a876
+E:\agent-system\pipeline\data\articles\digest_cnblogs_当所有AI都在抄同一份作业前端模板的趋同困局与破局 - badhope338.md	a888ff5f42c28c2561c1040f886b3baa
+E:\agent-system\pipeline\data\articles\digest_cnblogs_彻底搞懂上拉电阻与下拉电阻从原理到实战的完整指南 - Tlink.md	fc0993db79d532d90efa4065582152e4
+E:\agent-system\pipeline\data\articles\digest_cnblogs_改变世界的17个方程如何重塑 GoodCrew 的架构哲学 - 张善友.md	963e4fd9c91f244783cd46b1c1640084
+E:\agent-system\pipeline\data\articles\digest_cnblogs_深入 Linux 内核的黑匣子dmesg 命令完全指南 - dashery.md	4f8504b482fb1519ebb1ec2701d69e74
+E:\agent-system\pipeline\data\articles\digest_cnblogs_面试题MySQL 默认的事务隔离级别是什么为什么选择这个级别 - 佛祖让.md	b509d30205d2982fa54114a5933aa6b3
+E:\agent-system\pipeline\data\articles\digest_github_cloudflare computer TypeScript.md	a2d19ac533c7f0a7c6dc9bfa8338ca04
+E:\agent-system\pipeline\data\articles\digest_github_donnemartin system-design-primer Pytho.md	ab465f70f06f9506dbde6be49afd7fed
+E:\agent-system\pipeline\data\articles\digest_github_firecrawl pdf-inspector Rust.md	89b0bf03dd8ebc2e8788de88e59b19ec
+E:\agent-system\pipeline\data\articles\digest_github_huangruiteng loopx Python.md	86783b45d6f2e069d3e74466d9dca203
+E:\agent-system\pipeline\data\articles\digest_github_TencentCloud TencentDB-Agent-Memory Ty.md	807d2556d3a4c4ca5b1fc832a34d0ab3
+E:\agent-system\pipeline\data\articles\digest_juejin_2026 上半年前端圈已经炸了五次2026 上半年前端圈已经炸了五次 一T.md	7a3147fefc16cfa88372e629bd4ef0a2
+E:\agent-system\pipeline\data\articles\digest_juejin_2026 年 7 月 GitHub 十大热门项目排行榜 2026年7月Gi.md	e880c85ed31efd1b22566b9c57f6277d
+E:\agent-system\pipeline\data\articles\digest_juejin_Cursor 转 Codex 大半个月聊聊我的真实感受Cursor 让我第一次.md	255b352600683e2cf578c2455803db34
+E:\agent-system\pipeline\data\articles\digest_juejin_Kimi K3太牛了但老板说API太贵让我本地化部署我算完成本他涨红脸沉.md	497f26879aa47083d6cfb4f128722968
+E:\agent-system\pipeline\data\articles\digest_juejin_写给年轻程序员的几点建议-2现在互联网红利已经消失了深知年轻程序员的不易下面.md	557862169e180822fc42695ddb5ee677
+E:\agent-system\pipeline\data\articles\digest_juejin_小程序上线半年我赚了多少钱1 开发历程 时间过得真快转眼间福猪记账小程序上.md	c5973bca1ead19cbfbc25a37c4590588
+E:\agent-system\pipeline\data\articles\digest_juejin_有jy知道uniapp开发时候用微信开发工具真机模拟图片不显示是为什么的么.md	6604741cf8ab34f3ef832734747de03b
+E:\agent-system\pipeline\data\articles\juejin_2026 年 7 月 GitHub 十大热门项目排行榜 2026年7月Gi.md	1d7e3ed10841cef36fec9e82e9920be0
+E:\agent-system\pipeline\data\articles\juejin_2026编程圈很火的10个Skills前言 最近编程圈最火的一个词非 Skil.md	006f59d44fddb5baa3036ebab39ecb04
+E:\agent-system\pipeline\data\articles\juejin_Cursor 转 Codex 大半个月聊聊我的真实感受Cursor 让我第一次.md	eef01a9808ea4f3418ac4c908e690e91
+E:\agent-system\pipeline\data\articles\juejin_Kimi K3太牛了但老板说API太贵让我本地化部署我算完成本他涨红脸沉.md	ab3d71857bec2506791ab079e2f63ad5
+E:\agent-system\pipeline\data\articles\juejin_再见 Superpowers很多 Skill 真的可以扔掉了前几天在知乎看到.md	b082c3f38cb0220a2eac3a6bbe0d8b9f
+E:\agent-system\pipeline\data\articles\juejin_写给年轻程序员的几点建议-2现在互联网红利已经消失了深知年轻程序员的不易下面.md	2b7011a8813231b6367a168b2a10588f
+E:\agent-system\pipeline\data\articles\juejin_小程序上线半年我赚了多少钱1 开发历程 时间过得真快转眼间福猪记账小程序上.md	c5973bca1ead19cbfbc25a37c4590588
+E:\agent-system\pipeline\data\articles\juejin_面试官问你AI 能写 80 的代码了公司为什么还需要你先说一个事实.md	e0f8ddf68fd641a40355b5900d50f9a1
+E:\agent-system\pipeline\data\articles\sched_cnblogs_AI 软件开发实战教程一从一个想法到可验证交付 - DevWiki.md	c0de3802865773395929d68a07c2ddfe
+E:\agent-system\pipeline\data\articles\sched_cnblogs_Apache SeaTunnel 提交一个任务都经过了什么 - ApacheS.md	9b0f56f1eae155c21d5f252ed6326faa
+E:\agent-system\pipeline\data\articles\sched_cnblogs_LinuxOllama Termux  一款运行在 Android 平台.md	15ebed7e652786a2226eebf34a4dedf1
+E:\agent-system\pipeline\data\articles\sched_cnblogs_Unity 在Pico中切换场景后人物出生在奇怪的位置原因及解决方案 - 嘉君.md	d44f9e139d86c323c7ded080bc749cf3
+E:\agent-system\pipeline\data\articles\sched_cnblogs_从 PHP 到 AI  Golang程序员自救转型手记五十五增加 ar.md	72e4898cb71c13511e4c4da0205a12ac
+E:\agent-system\pipeline\data\articles\sched_cnblogs_如何提升数学建模质量核心方法与三大工具推荐 - 哇哦玩玩.md	0ff8764a9eda39f835bfaa9d2ad317f0
+E:\agent-system\pipeline\data\articles\sched_cnblogs_微服务架构设计模式 第三章读书笔记微服务架构中的进程间通信 - LY双土.md	a3c7e003d2d4a36a833bddfa2e3685e4
+E:\agent-system\pipeline\data\articles\sched_cnblogs_我的吃药提醒 app 更新V20啦 - is81.md	2e5808bea289e2f40d414a49656b1fdb
+E:\agent-system\pipeline\data\articles\sched_cnblogs_深入 Linux 内核的黑匣子dmesg 命令完全指南 - dashery.md	90171640ae8b911c601bed8eecb91383
+E:\agent-system\pipeline\data\articles\sched_cnblogs_面试题MySQL 默认的事务隔离级别是什么为什么选择这个级别 - 佛祖让.md	a54aa6c7451fc3aac86f919d55d2edca
+E:\agent-system\pipeline\data\articles\sched_github_addyosmani agent-skills JavaScript.md	8dbcdeffd9fb78d45bd6e1ec3d7ec867
+E:\agent-system\pipeline\data\articles\sched_github_cloudflare computer TypeScript.md	1b6f1abe2f6c0c7d75b9a6f4cc5d91d3
+E:\agent-system\pipeline\data\articles\sched_github_donnemartin system-design-primer Pytho.md	86986e2221a0597eaccb249d02821188
+E:\agent-system\pipeline\data\articles\sched_github_esengine DeepSeek-Reasonix Go.md	22947a433d2d7a319782f1ec321f9d9e
+E:\agent-system\pipeline\data\articles\sched_github_firecrawl pdf-inspector Rust.md	2f94d621ce6a4bb2ea6cb80c0d78796d
+E:\agent-system\pipeline\data\articles\sched_github_google guava Java.md	c69e712d638a21c7fc87bd4abcb3d60a
+E:\agent-system\pipeline\data\articles\sched_github_huangruiteng loopx Python.md	8cb3daa20c20a4a020a503ce27c76e13
+E:\agent-system\pipeline\data\articles\sched_github_obra superpowers Shell.md	3f7f7cb4c8a41790fc6df89a824484f8
+E:\agent-system\pipeline\data\articles\sched_github_TapXWorld ChinaTextbook Roff.md	356cf79f7bc6eeca9d77329e691fc7f6
+E:\agent-system\pipeline\data\articles\sched_github_TencentCloud TencentDB-Agent-Memory Ty.md	1ff157eedd1119eb82a6b0ae2d15a9b8
+E:\agent-system\pipeline\data\articles\sched_juejin_2026 上半年前端圈已经炸了五次2026 上半年前端圈已经炸了五次 一T.md	0aa0b63203aed4d4cec4b4de0ef415d9
+E:\agent-system\pipeline\data\articles\sched_juejin_2026 年 6 月 GitHub 十大热门项目排行榜 欢迎来到 2026.md	0a79dabdfd08a977ea3d9a9cc882a46c
+E:\agent-system\pipeline\data\articles\sched_juejin_2026编程圈很火的10个Skills前言 最近编程圈最火的一个词非 Skil.md	ca8a727aba9ca3d311f5b53f81fd5671
+E:\agent-system\pipeline\data\articles\sched_juejin_Codex 穷鬼大救星穷则思变富则算了富哥就不用看这篇文章了 为了守.md	69e5e59dcfe7ab9acd2aef76a7ca19ac
+E:\agent-system\pipeline\data\articles\sched_juejin_Comate 已支持DeepSeek-V4-Flash 正式版7月31日Dee.md	d68777f055aabe1d02d9172b8a775d09
+E:\agent-system\pipeline\data\articles\sched_juejin_Cursor 转 Codex 大半个月聊聊我的真实感受Cursor 让我第一次.md	00c1c938c1d7a5659129756cd2fc2512
+E:\agent-system\pipeline\data\articles\sched_juejin_Kimi K3太牛了但老板说API太贵让我本地化部署我算完成本他涨红脸沉.md	40e10c85b0ad50a99aef1aa00bb26a56
+E:\agent-system\pipeline\data\articles\sched_juejin_Python 异常处理本文面向已有前端开发基础正在学习 Python 的开发者.md	673a10a2b9e5dbe6018f51f0555923d0
+E:\agent-system\pipeline\data\articles\sched_juejin_今日 GitHub 热门Agent 云端电脑登顶1891 项目却只排第三.md	7f5099a81bad2d1717358ea8076e3c0a
+E:\agent-system\pipeline\data\articles\sched_juejin_从多页面到SPA深入Hash 路由理解和前端路由原理传统多页每次跳转都整页重载.md	2cbeb8f8f0a0458d2eeb59d1d058db8f
+E:\agent-system\pipeline\data\articles\sched_juejin_公司不给你配 AI你会自己掏钱吗前几天逛技术社区时看到一条挺有意思的帖子.md	c47fe215df14e12c3e06737194c3bf72
+E:\agent-system\pipeline\data\articles\sched_juejin_写给年轻程序员的几点建议-2现在互联网红利已经消失了深知年轻程序员的不易下面.md	67fe10c62e902a2e95dbc55a4c3f7214
+E:\agent-system\pipeline\data\articles\sched_juejin_前端路由一二十行代码实现 Hash 路由本文剖析传统多页导航弊端与SPA路.md	3b3db9cb4e56f53cd18b8400f4fa5fd7
+E:\agent-system\pipeline\data\articles\sched_juejin_实用性 Max 新  Flutter    Dart Agent  Skil.md	0cbf13affd2d9a797377b788413a317a
+E:\agent-system\pipeline\data\articles\sched_juejin_小程序上线半年我赚了多少钱1 开发历程 时间过得真快转眼间福猪记账小程序上.md	a2a69a2e7622146e81a0abd41eb7a09e
+E:\agent-system\pipeline\data\articles\sched_juejin_小米MiMoCode官网颜值高Codex拿来吧您嘞11完美复刻看到小.md	5043ea83a5ac908ff9d1f684fda4f027
+E:\agent-system\pipeline\data\articles\sched_juejin_携程员工在携程4年月薪3万左右基本没涨薪了不过挺满足的毕竟稳定福利也.md	3fdd92ef75adcd6d00a902c6428c6c21
+E:\agent-system\pipeline\data\articles\sched_juejin_日志凭空消失Filter 顺序错了Dubbo 一个 order 值让 Ex.md	dd9685bbbb600cd755b10e3cf3e0722a
+E:\agent-system\pipeline\data\articles\sched_juejin_最近公司烧token比招员工还贵老板干懵了如题 这真的没在开玩笑 这.md	25a2073525f3cce16fbefc6b76fab74c
+E:\agent-system\pipeline\data\articles\sched_juejin_有jy知道uniapp开发时候用微信开发工具真机模拟图片不显示是为什么的么.md	c96382bed138cf61bdb321a1fe5b436d
+E:\agent-system\pipeline\data\articles\sched_juejin_面试官问你AI 能写 80 的代码了公司为什么还需要你先说一个事实.md	f1e3cbdb34e41f70acb81454d9b625ff

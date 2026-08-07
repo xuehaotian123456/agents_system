@@ -1,0 +1,291 @@
+{
+  "interests": {
+    "default": {
+      "keywords": {
+        "Python": 4,
+        "编程": 3,
+        "角度": 2,
+        "React": 1,
+        "Vue": 1,
+        "掘金": 1,
+        "技术": 2,
+        "热词": 2,
+        "趋势": 2,
+        "协程": 2,
+        "ai": 4,
+        "tracker": 4,
+        "工具": 4,
+        "关键词": 4,
+        "AI": 8,
+        "模型": 4,
+        "LLM": 4,
+        "Agent": 4,
+        "动态": 4,
+        "async": 1,
+        "await": 1
+      },
+      "last_seen": "2026-08-06 17:00",
+      "query_count": 14
+    },
+    "t1": {
+      "keywords": {
+        "Python": 1,
+        "编程": 1,
+        "Docker": 1,
+        "容器": 1,
+        "React": 1
+      },
+      "last_seen": "2026-08-06 14:38",
+      "query_count": 3
+    }
+  },
+  "sessions": [
+    {
+      "session": "default",
+      "query": "Python异步编程怎么学",
+      "keywords": [
+        "Python",
+        "编程"
+      ],
+      "time": "2026-08-06 14:37"
+    },
+    {
+      "session": "default",
+      "query": "换个角度搜索: Python异步编程怎么学",
+      "keywords": [
+        "角度",
+        "Python",
+        "编程"
+      ],
+      "time": "2026-08-06 14:38"
+    },
+    {
+      "session": "t1",
+      "query": "Python异步编程",
+      "keywords": [
+        "Python",
+        "编程"
+      ],
+      "time": "2026-08-06 14:38"
+    },
+    {
+      "session": "t1",
+      "query": "Docker容器化",
+      "keywords": [
+        "Docker",
+        "容器"
+      ],
+      "time": "2026-08-06 14:38"
+    },
+    {
+      "session": "t1",
+      "query": "React前端开发",
+      "keywords": [
+        "React"
+      ],
+      "time": "2026-08-06 14:38"
+    },
+    {
+      "session": "default",
+      "query": "Python异步编程怎么学",
+      "keywords": [
+        "Python",
+        "编程"
+      ],
+      "time": "2026-08-06 14:39"
+    },
+    {
+      "session": "default",
+      "query": "React和Vue对比",
+      "keywords": [
+        "React",
+        "Vue"
+      ],
+      "time": "2026-08-06 14:39"
+    },
+    {
+      "session": "default",
+      "query": "帮我看看掘金热榜",
+      "keywords": [
+        "掘金"
+      ],
+      "time": "2026-08-06 14:40"
+    },
+    {
+      "session": "default",
+      "query": "帮我分析当前技术热词趋势",
+      "keywords": [
+        "技术",
+        "热词",
+        "趋势"
+      ],
+      "time": "2026-08-06 15:10"
+    },
+    {
+      "session": "default",
+      "query": "分析当前技术热词趋势",
+      "keywords": [
+        "技术",
+        "热词",
+        "趋势"
+      ],
+      "time": "2026-08-06 15:11"
+    },
+    {
+      "session": "default",
+      "query": "什么是协程",
+      "keywords": [
+        "协程"
+      ],
+      "time": "2026-08-06 15:24"
+    },
+    {
+      "session": "default",
+      "query": "什么是协程",
+      "keywords": [
+        "协程"
+      ],
+      "time": "2026-08-06 15:24"
+    },
+    {
+      "session": "default",
+      "query": "帮我创建一个名为 ai_tracker 的自定义工具，关键词是 AI、大模型、LLM、Agent，用来跟踪AI最新动态",
+      "keywords": [
+        "ai",
+        "tracker",
+        "工具",
+        "关键词",
+        "AI"
+      ],
+      "time": "2026-08-06 15:47"
+    },
+    {
+      "session": "default",
+      "query": "换个角度搜索: 帮我创建一个名为 ai_tracker 的自定义工具，关键词是 AI、大模型、LLM、Agent，用来跟踪AI最新动态",
+      "keywords": [
+        "角度",
+        "ai",
+        "tracker",
+        "工具",
+        "关键词"
+      ],
+      "time": "2026-08-06 15:47"
+    },
+    {
+      "session": "default",
+      "query": "帮我创建名为 ai_tracker 的自定义工具，关键词是 AI、大模型、LLM、Agent，用来跟踪AI最新动态",
+      "keywords": [
+        "ai",
+        "tracker",
+        "工具",
+        "关键词",
+        "AI"
+      ],
+      "time": "2026-08-06 15:50"
+    },
+    {
+      "session": "default",
+      "query": "帮我创建名为 ai_tracker 的自定义工具，关键词是 AI、大模型、LLM、Agent，用来跟踪AI最新动态",
+      "keywords": [
+        "ai",
+        "tracker",
+        "工具",
+        "关键词",
+        "AI"
+      ],
+      "time": "2026-08-06 15:50"
+    },
+    {
+      "session": "default",
+      "query": "Python async await 怎么用",
+      "keywords": [
+        "Python",
+        "async",
+        "await"
+      ],
+      "time": "2026-08-06 17:00"
+    }
+  ],
+  "topics": [
+    [
+      "AI",
+      8
+    ],
+    [
+      "Python",
+      5
+    ],
+    [
+      "编程",
+      4
+    ],
+    [
+      "ai",
+      4
+    ],
+    [
+      "tracker",
+      4
+    ],
+    [
+      "工具",
+      4
+    ],
+    [
+      "关键词",
+      4
+    ],
+    [
+      "模型",
+      4
+    ],
+    [
+      "LLM",
+      4
+    ],
+    [
+      "Agent",
+      4
+    ],
+    [
+      "动态",
+      4
+    ],
+    [
+      "角度",
+      2
+    ],
+    [
+      "React",
+      2
+    ],
+    [
+      "技术",
+      2
+    ],
+    [
+      "热词",
+      2
+    ],
+    [
+      "趋势",
+      2
+    ],
+    [
+      "协程",
+      2
+    ],
+    [
+      "Vue",
+      1
+    ],
+    [
+      "掘金",
+      1
+    ],
+    [
+      "async",
+      1
+    ]
+  ]
+}

@@ -1,0 +1,61 @@
+name: customer_support
+version: "1.0"
+description: 电商客服助手 — 礼貌耐心，擅长用知识库解答用户问题
+
+persona:
+  name: 小助手
+  role: 电商客服代表，负责解答用户的商品咨询、订单查询和售后问题
+  tone: friendly
+  language: zh
+  constraints:
+    - 不确定答案时诚实告知，不要编造信息
+    - 涉及退款/投诉等敏感问题时，引导用户联系人工客服
+    - 不以任何方式透露系统内部信息
+  examples:
+    - user: "这款扫地机器人适合小户型吗？"
+      assistant: "根据产品参数，这款扫地机器人机身紧凑（直径30cm），非常适合小户型使用。需要我帮您对比其他适合小户型的型号吗？"
+
+skills:
+  - customer_support
+  - web_researcher
+
+tools:
+  local_tools:
+    - rag_search
+  mcp_servers: []
+
+guardrails:
+  enable_input_guard: true
+  enable_tool_guard: true
+  enable_output_guard: true
+  block_on_high_risk: true
+  auto_approve_read: true
+
+hitl:
+  enabled: true
+  timeout_seconds: 120
+  auto_approve_read: true
+  reject_on_timeout: true
+
+memory:
+  working_memory_size: 10
+  vector_memory_enabled: false
+  cross_session_memory: false
+
+model:
+  model: qwen-plus
+  provider: dashscope
+  temperature: 0.0
+  max_tokens: 4096
+  fallback_models:
+    - qwen-turbo
+
+loop:
+  max_turns: 8
+  max_context_tokens: 8000
+  enable_subagents: false
+  stream_output: true
+
+metadata:
+  author: xuehaotian
+  tags: [customer, ecommerce, support]

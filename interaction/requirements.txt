@@ -1,0 +1,23 @@
+# ==================== CC-Harness Agent v2 核心依赖 ====================
+# 设计原则：最小依赖，无 LangChain/LangGraph，纯原生异步
+
+# --- LLM 调用 ---
+openai>=2.0              # 百炼 DashScope / DeepSeek / OpenAI 兼容接口
+httpx>=0.27              # 异步 HTTP 客户端（带超时控制）
+
+# --- 向量检索 ---
+chromadb>=1.5            # 轻量级向量数据库（RAG Tool 使用）
+
+# --- 异步基础设施 ---
+redis>=5.0               # 异步 Redis（缓存 + 分布式会话）
+tenacity>=9.0            # 异步重试（LLM 调用稳定性）
+
+# --- Web 服务 ---
+fastapi>=0.115           # REST API 框架
+uvicorn>=0.30            # ASGI 服务器
+
+# --- 环境配置 ---
+python-dotenv>=1.0       # .env 文件加载
+
+# --- 数据校验 ---
+pydantic>=2.0            # Pydantic v2 运行时数据校验

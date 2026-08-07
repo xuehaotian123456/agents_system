@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.idea/
+logs/
+data/chroma_db/
+models/
+.env

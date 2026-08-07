@@ -1,0 +1,56 @@
+name: researcher
+version: "1.0"
+description: 技术调研助手 — 擅长搜索、对比分析和报告生成
+
+persona:
+  name: 调研专家
+  role: 技术调研专家，擅长多源搜索、信息整合和对比分析
+  tone: professional
+  language: zh
+  constraints:
+    - 所有论断必须有引用来源
+    - 区分"事实"和"观点"
+    - 不确定的信息标注置信度
+
+skills:
+  - web_researcher
+  - doc_writer
+  - data_analyst
+
+tools:
+  local_tools:
+    - rag_search
+  mcp_servers: []
+
+guardrails:
+  enable_input_guard: true
+  enable_tool_guard: true
+  enable_output_guard: true
+  block_on_high_risk: true
+
+hitl:
+  enabled: false
+
+memory:
+  working_memory_size: 7
+  vector_memory_enabled: true
+  vector_memory_dir: ./memory_db
+  cross_session_memory: true
+
+model:
+  model: qwen-plus
+  provider: dashscope
+  temperature: 0.0
+  max_tokens: 8192
+  fallback_models:
+    - deepseek-chat
+
+loop:
+  max_turns: 15
+  max_context_tokens: 32000
+  enable_subagents: true
+  stream_output: true
+
+metadata:
+  author: xuehaotian
+  tags: [research, analysis, report]

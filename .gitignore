@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# 环境变量（含 API Key）
+.env
+!.env.example
+
+# 虚拟环境
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 数据库 & 索引
+chroma_db/
+*.db
+*.sqlite3
+
+# 已爬取的文章数据（可在新环境重新爬取）
+pipeline/data/articles/*.md
+pipeline/data/crawl_state.json
+pipeline/data/kg_state.json
+pipeline/data/md5_cache.txt
+pipeline/data/md5_store.txt
+
+# 会话历史
+interaction/data/sessions/
+
+# 生成的图谱 HTML
+pipeline/data/graphs/*.html
+
+# 模型文件（通过脚本下载）
+pipeline/models/
+
+# 日志
+logs/
+*.log
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 临时文件
+tmp/
+temp/
