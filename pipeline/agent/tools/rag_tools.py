@@ -56,8 +56,9 @@ def rag_search(query: str) -> str:
 
 请用中文回答:
 1. 给出具体答案，每条关键信息标注来源编号如 [来源1]
-2. 如果资料信息不足，诚实说明
-3. 如果有代码示例，给出完整可运行的代码"""
+2. 如果资料信息不足，诚实说明"当前知识库中暂无相关信息"，绝对不要编造或猜测
+3. 如果有代码示例，给出完整可运行的代码
+4. 严格基于参考资料回答，不要引入外部知识"""
 
         resp = robust_llm_call(prompt)
         answer = resp.content if hasattr(resp, 'content') else str(resp)
@@ -93,13 +94,12 @@ def rag_search(query: str) -> str:
         logger.error(f"[rag_search] {e}")
         return f"搜索异常: {e}"
 
-@tool(description="查询知识图谱中的技术关键词实体信息。入参 entity_name（技术名词），返回该实体的频次、关联实体和知识图谱可视化。")
+@tool(description="查询知识图谱中的技术关键词实体信息，支持多跳关联扩散。入参 entity_name（技术名词），返回该实体的频次、关联实体、2-hop 推理链和知识图谱可视化。查询报错类/关联类问题时，返回多跳扩散链路。")
 def kg_lookup(entity_name: str) -> str:
     try:
         from rag.knowledge_graph import get_kg
         kg = get_kg()
         if not kg.is_built:
-            # 懒加载：尝试从向量库构建
             try:
                 vs = _get_rag()
                 if vs.all_chunks:
@@ -116,6 +116,19 @@ def kg_lookup(entity_name: str) -> str:
                 return f"未找到'{entity_name}'，相关实体: " + ", ".join(r['name'] for r in related)
             return f"知识图谱中未找到'{entity_name}'。"
 
+        # ── 多跳扩散推理链 ──
+        chain_text = ""
+        try:
+            mh = kg.multi_hop_expand(entity_name, max_hops=2, top_per_hop=3)
+            if mh and mh.get("hops"):
+                chain_text = (
+                    f"\n\n**推理链 (GraphRAG 多跳扩散)**:\n"
+                    f"```\n{mh['chain_text']}\n```\n"
+                    f"扩散实体总数: {mh['total_expanded']}"
+                )
+        except Exception:
+            pass
+
         # 生成交互式图谱
         graph_html = ""
         try:
@@ -127,11 +140,11 @@ def kg_lookup(entity_name: str) -> str:
             pass
 
         lines = [f"实体: {info['name']}", f"频次: {info['freq']}",
-                 f"覆盖文档块: {info['chunks']}", "关联实体:"]
+                 f"覆盖文档块: {info['chunks']}", "关联实体 (1-hop):"]
         for r in info['related']:
-            lines.append(f"  • {r['entity']} (共现 {r['co_occur']} 次)")
+            lines.append(f"  - {r['entity']} (共现 {r['co_occur']} 次)")
 
-        return "\n".join(lines) + graph_html
+        return "\n".join(lines) + chain_text + graph_html
     except Exception as e:
         return f"KG查询异常: {e}"
 

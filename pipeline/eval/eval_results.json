@@ -1,0 +1,71 @@
+{
+  "total_queries": 50,
+  "total_chunks": 4331,
+  "evaluation_note": "expected_entities关键词匹配是弱标注proxy，非人工相关性别定。建议引入LLM-as-judge补充。",
+  "overall": {
+    "vec_recall@5": 0.572,
+    "graph_recall@5": 0.727,
+    "vec_hit_rate": 0.92,
+    "graph_hit_rate": 0.98,
+    "vec_mrr": 0.92,
+    "graph_mrr": 0.943,
+    "improvement_recall": 0.155,
+    "improvement_hit_rate": 0.06,
+    "degradation_success_rate": 0.98
+  },
+  "by_category": {
+    "entity_association": {
+      "name": "多跳推理类（测多步关联能力）",
+      "count": 10,
+      "vec_recall@5": 0.6,
+      "graph_recall@5": 0.783
+    },
+    "fact_lookup": {
+      "name": "多跳推理类（测多步关联能力）",
+      "count": 10,
+      "vec_recall@5": 0.417,
+      "graph_recall@5": 0.517
+    },
+    "error_tracing": {
+      "name": "多跳推理类（测多步关联能力）",
+      "count": 10,
+      "vec_recall@5": 0.858,
+      "graph_recall@5": 0.942
+    },
+    "trending": {
+      "name": "多跳推理类（测多步关联能力）",
+      "count": 8,
+      "vec_recall@5": 0.635,
+      "graph_recall@5": 0.885
+    },
+    "compare": {
+      "name": "多跳推理类（测多步关联能力）",
+      "count": 6,
+      "vec_recall@5": 0.25,
+      "graph_recall@5": 0.472
+    },
+    "multi_hop": {
+      "name": "多跳推理类（测多步关联能力）",
+      "count": 6,
+      "vec_recall@5": 0.542,
+      "graph_recall@5": 0.667
+    }
+  },
+  "by_difficulty": {
+    "easy": {
+      "count": 6,
+      "vec_recall@5": 0.389,
+      "graph_recall@5": 0.695
+    },
+    "hard": {
+      "count": 24,
+      "vec_recall@5": 0.604,
+      "graph_recall@5": 0.722
+    },
+    "medium": {
+      "count": 20,
+      "vec_recall@5": 0.588,
+      "graph_recall@5": 0.742
+    }
+  }
+}

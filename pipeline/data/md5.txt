@@ -3,92 +3,225 @@ E:\agent-system\pipeline\data\articles\02_docker_k8s.md	f4ac70d3681e35a9cbe24d78
 E:\agent-system\pipeline\data\articles\03_langgraph_intro.md	079d943e79e815889f71a7f408401728
 E:\agent-system\pipeline\data\articles\04_react_vs_vue.md	4797cf0e300d2222ce3e104f15706bc6
 E:\agent-system\pipeline\data\articles\05_frontend_trends_2024.md	774311ff18c07e050e3c48e2cb4db7c6
-E:\agent-system\pipeline\data\articles\auto_juejin_Cursor è½¬ Codex å¤§åŠä¸ªæœˆèŠèŠæˆ‘çš„çœŸå®æ„Ÿå—Cursor è®©æˆ‘ç¬¬ä¸€æ¬¡.md	fc4e74eb58cd27aaae1a555fc521ac08
-E:\agent-system\pipeline\data\articles\auto_juejin_å†™ç»™å¹´è½»ç¨‹åºå‘˜çš„å‡ ç‚¹å»ºè®®-2ç°åœ¨äº’è”ç½‘çº¢åˆ©å·²ç»æ¶ˆå¤±äº†æ·±çŸ¥å¹´è½»ç¨‹åºå‘˜çš„ä¸æ˜“ä¸‹é¢.md	59376c3af459ea2ef9d97b4615136727
-E:\agent-system\pipeline\data\articles\auto_juejin_æœ‰jyçŸ¥é“uniappå¼€å‘æ—¶å€™ç”¨å¾®ä¿¡å¼€å‘å·¥å…·çœŸæœºæ¨¡æ‹Ÿå›¾ç‰‡ä¸æ˜¾ç¤ºæ˜¯ä¸ºä»€ä¹ˆçš„ä¹ˆ.md	4d49110be75e19b56fff765c61d8aba0
-E:\agent-system\pipeline\data\articles\cnblogs_ABP DTO ä¸å¯¹è±¡æ˜ å°„AutoMapper Profile é…ç½®ä¸ Map.md	f0bc32584baa1d693f25e11e916f15bb
-E:\agent-system\pipeline\data\articles\cnblogs_AI æµ‹è¯•ææ•ˆ  UI è‡ªåŠ¨åŒ–æµ‹ä¸å‡ºæ ·å¼ bugåˆ†äº« ui-visual-a.md	0a6c403843ed7fa1e16685fa1522fd27
-E:\agent-system\pipeline\data\articles\cnblogs_Shellè„šæœ¬å…¨ç±»å‹æ‹¬å·è¯­æ³•è¯¦è§£åŠå¯¹æ¯”æ‰‹å†Œé›¶åŸºç¡€ç‰ˆ - Docker-æ²«è€å¸ˆ.md	d385bf62cc64d8f0aa142a20dd846358
-E:\agent-system\pipeline\data\articles\cnblogs_VUEç¬”è®° - ShoreKiten.md	499219c60c01b3e99ca0b962c9ab43ab
-E:\agent-system\pipeline\data\articles\cnblogs_ä¿® Bug çš„æ‰‹è‰ºä¸æ¶æ„çš„è‰ºæœ¯ä»ç†µå¢åˆ°ç†µå‡ - å¼ å–„å‹.md	aa5ed4163c1c9bed7f00652b4fc882b6
-E:\agent-system\pipeline\data\articles\cnblogs_å¦‚ä½•ä¿è¯Mysqlå’ŒRedisåŒå†™ä¸€è‡´æ€§ - Rainçš„Javaå¤§ç¥å®æˆ˜åœˆ.md	662e4e1fd8e33aee0f979c2eba508ea3
-E:\agent-system\pipeline\data\articles\cnblogs_å¯¹æ ‡ npx çš„ CPX PHP çš„ Composer åŒ…æ‰§è¡Œå™¨ - Jagua.md	6bba05d84e010fc5e2c3a07a40056aeb
-E:\agent-system\pipeline\data\articles\cnblogs_å·¥æ§ç”Ÿæ€ä¹‹å±•ç¤ºä¸äº¤äº’æ€ä¹ˆè®©å·¥ä¸šè½¯ä»¶ä¸å†ä¸‘ - Wackysoft.md	f84ec6ee6b0718b3c411ea542728b445
-E:\agent-system\pipeline\data\articles\cnblogs_åº”å¯¹ MongoDB è¶…å¤§è¡¨å†·çƒ­æ•°æ®åˆ†ç¦»ä¸ç©ºé—´é‡Šæ”¾çš„æœ€ä½³å®è·µ - Markk.md	1b29a04569bd5c4dd2ea979062001e99
-E:\agent-system\pipeline\data\articles\cnblogs_é‘«ç¦ä¸°å·¥ä¸šçœç”µç©ºè°ƒ2026å¹´å·¥å‚è½¦é—´é™æ¸©çœç”µç»ˆææ–¹æ¡ˆ - é‘«ç¦ä¸°å·¥ä¸šçœç”µç©ºè°ƒ.md	60fd61e27b904c9a504e8ac3b97dfe65
-E:\agent-system\pipeline\data\articles\digest_cnblogs_5 PyCharmé¸¿è’™Hypiumä»0åˆ°è·‘é€šå°‘è¸©90å‘ - è€é™ˆè¯´ç¼–ç¨‹.md	3ed3ab5ab81f375dea9c7278bd769d60
-E:\agent-system\pipeline\data\articles\digest_cnblogs_AI è½¯ä»¶å¼€å‘å®æˆ˜æ•™ç¨‹ä¸€ä»ä¸€ä¸ªæƒ³æ³•åˆ°å¯éªŒè¯äº¤ä»˜ - DevWiki.md	4a430dd14c1e9dd7bbde56372c1172c5
-E:\agent-system\pipeline\data\articles\digest_cnblogs_Apache SeaTunnel æäº¤ä¸€ä¸ªä»»åŠ¡éƒ½ç»è¿‡äº†ä»€ä¹ˆ - ApacheS.md	f2d004ba42cbc5bcc54002ece388f63a
-E:\agent-system\pipeline\data\articles\digest_cnblogs_dbtSQLServeræ„å»ºæ•°æ®ä»“åº“3dbt_projectymlé…ç½®.md	5a580c937e922865dcc813416bdf87b4
-E:\agent-system\pipeline\data\articles\digest_cnblogs_GitZip Pro æºç è§£æä¸€ä¸ª GitHub æ–‡ä»¶æ–‡ä»¶å¤¹ä¸‹è½½æ‰©å±•æ˜¯å¦‚ä½•å·¥.md	e6dcf93eba6166ddb9c5ddf815ee8ac0
-E:\agent-system\pipeline\data\articles\digest_cnblogs_LinuxOllama Termux  ä¸€æ¬¾è¿è¡Œåœ¨ Android å¹³å°.md	45372982bb92ed57370bf4b341f2010c
-E:\agent-system\pipeline\data\articles\digest_cnblogs_OEL 8Vim ç¼–è¾‘ä¸­æ–‡ä¹±ç å…¶å®æ˜¯ Locale æ²¡è®¾å¯¹ - Alfred.md	e43df1ee31c4e01417bf56886583ca51
-E:\agent-system\pipeline\data\articles\digest_cnblogs_VelesDB æ·±åº¦è§£è¯»  èåˆå‘é‡å›¾ä¸åˆ—å­˜çš„ç«¯ä¾§ AI è®°å¿†å¼•æ“ - ç½—.md	ede9bf8740d6107646acdd889f2901f5
-E:\agent-system\pipeline\data\articles\digest_cnblogs_ä» PHP åˆ° AI  Golangç¨‹åºå‘˜è‡ªæ•‘è½¬å‹æ‰‹è®°äº”åäº”å¢åŠ  ar.md	0ee61af561d7c2682691f73b101234fc
-E:\agent-system\pipeline\data\articles\digest_cnblogs_åŒäº‹è¯´æˆ‘æ˜¯è´¢è¿·å…¬å¸ä¹°çš„ AI è´¦å·æœ‰ä¸¤ä¸ªäººæ²¡ç”¨æˆ‘æ¥è¿‡æ¥äº† - ç¼–ç¨‹ä¸€ç”Ÿ.md	af6c2416b123f8c843c547b1ea28a876
-E:\agent-system\pipeline\data\articles\digest_cnblogs_å½“æ‰€æœ‰AIéƒ½åœ¨æŠ„åŒä¸€ä»½ä½œä¸šå‰ç«¯æ¨¡æ¿çš„è¶‹åŒå›°å±€ä¸ç ´å±€ - badhope338.md	a888ff5f42c28c2561c1040f886b3baa
-E:\agent-system\pipeline\data\articles\digest_cnblogs_å½»åº•ææ‡‚ä¸Šæ‹‰ç”µé˜»ä¸ä¸‹æ‹‰ç”µé˜»ä»åŸç†åˆ°å®æˆ˜çš„å®Œæ•´æŒ‡å— - Tlink.md	fc0993db79d532d90efa4065582152e4
-E:\agent-system\pipeline\data\articles\digest_cnblogs_æ”¹å˜ä¸–ç•Œçš„17ä¸ªæ–¹ç¨‹å¦‚ä½•é‡å¡‘ GoodCrew çš„æ¶æ„å“²å­¦ - å¼ å–„å‹.md	963e4fd9c91f244783cd46b1c1640084
-E:\agent-system\pipeline\data\articles\digest_cnblogs_æ·±å…¥ Linux å†…æ ¸çš„é»‘åŒ£å­dmesg å‘½ä»¤å®Œå…¨æŒ‡å— - dashery.md	4f8504b482fb1519ebb1ec2701d69e74
-E:\agent-system\pipeline\data\articles\digest_cnblogs_é¢è¯•é¢˜MySQL é»˜è®¤çš„äº‹åŠ¡éš”ç¦»çº§åˆ«æ˜¯ä»€ä¹ˆä¸ºä»€ä¹ˆé€‰æ‹©è¿™ä¸ªçº§åˆ« - ä½›ç¥–è®©.md	b509d30205d2982fa54114a5933aa6b3
-E:\agent-system\pipeline\data\articles\digest_github_cloudflare computer TypeScript.md	a2d19ac533c7f0a7c6dc9bfa8338ca04
-E:\agent-system\pipeline\data\articles\digest_github_donnemartin system-design-primer Pytho.md	ab465f70f06f9506dbde6be49afd7fed
-E:\agent-system\pipeline\data\articles\digest_github_firecrawl pdf-inspector Rust.md	89b0bf03dd8ebc2e8788de88e59b19ec
-E:\agent-system\pipeline\data\articles\digest_github_huangruiteng loopx Python.md	86783b45d6f2e069d3e74466d9dca203
-E:\agent-system\pipeline\data\articles\digest_github_TencentCloud TencentDB-Agent-Memory Ty.md	807d2556d3a4c4ca5b1fc832a34d0ab3
-E:\agent-system\pipeline\data\articles\digest_juejin_2026 ä¸ŠåŠå¹´å‰ç«¯åœˆå·²ç»ç‚¸äº†äº”æ¬¡2026 ä¸ŠåŠå¹´å‰ç«¯åœˆå·²ç»ç‚¸äº†äº”æ¬¡ ä¸€T.md	7a3147fefc16cfa88372e629bd4ef0a2
-E:\agent-system\pipeline\data\articles\digest_juejin_2026 å¹´ 7 æœˆ GitHub åå¤§çƒ­é—¨é¡¹ç›®æ’è¡Œæ¦œ 2026å¹´7æœˆGi.md	e880c85ed31efd1b22566b9c57f6277d
-E:\agent-system\pipeline\data\articles\digest_juejin_Cursor è½¬ Codex å¤§åŠä¸ªæœˆèŠèŠæˆ‘çš„çœŸå®æ„Ÿå—Cursor è®©æˆ‘ç¬¬ä¸€æ¬¡.md	255b352600683e2cf578c2455803db34
-E:\agent-system\pipeline\data\articles\digest_juejin_Kimi K3å¤ªç‰›äº†ä½†è€æ¿è¯´APIå¤ªè´µè®©æˆ‘æœ¬åœ°åŒ–éƒ¨ç½²æˆ‘ç®—å®Œæˆæœ¬ä»–æ¶¨çº¢è„¸æ²‰.md	497f26879aa47083d6cfb4f128722968
-E:\agent-system\pipeline\data\articles\digest_juejin_å†™ç»™å¹´è½»ç¨‹åºå‘˜çš„å‡ ç‚¹å»ºè®®-2ç°åœ¨äº’è”ç½‘çº¢åˆ©å·²ç»æ¶ˆå¤±äº†æ·±çŸ¥å¹´è½»ç¨‹åºå‘˜çš„ä¸æ˜“ä¸‹é¢.md	557862169e180822fc42695ddb5ee677
-E:\agent-system\pipeline\data\articles\digest_juejin_å°ç¨‹åºä¸Šçº¿åŠå¹´æˆ‘èµšäº†å¤šå°‘é’±1 å¼€å‘å†ç¨‹ æ—¶é—´è¿‡å¾—çœŸå¿«è½¬çœ¼é—´ç¦çŒªè®°è´¦å°ç¨‹åºä¸Š.md	c5973bca1ead19cbfbc25a37c4590588
-E:\agent-system\pipeline\data\articles\digest_juejin_æœ‰jyçŸ¥é“uniappå¼€å‘æ—¶å€™ç”¨å¾®ä¿¡å¼€å‘å·¥å…·çœŸæœºæ¨¡æ‹Ÿå›¾ç‰‡ä¸æ˜¾ç¤ºæ˜¯ä¸ºä»€ä¹ˆçš„ä¹ˆ.md	6604741cf8ab34f3ef832734747de03b
-E:\agent-system\pipeline\data\articles\juejin_2026 å¹´ 7 æœˆ GitHub åå¤§çƒ­é—¨é¡¹ç›®æ’è¡Œæ¦œ 2026å¹´7æœˆGi.md	1d7e3ed10841cef36fec9e82e9920be0
-E:\agent-system\pipeline\data\articles\juejin_2026ç¼–ç¨‹åœˆå¾ˆç«çš„10ä¸ªSkillså‰è¨€ æœ€è¿‘ç¼–ç¨‹åœˆæœ€ç«çš„ä¸€ä¸ªè¯é Skil.md	006f59d44fddb5baa3036ebab39ecb04
-E:\agent-system\pipeline\data\articles\juejin_Cursor è½¬ Codex å¤§åŠä¸ªæœˆèŠèŠæˆ‘çš„çœŸå®æ„Ÿå—Cursor è®©æˆ‘ç¬¬ä¸€æ¬¡.md	eef01a9808ea4f3418ac4c908e690e91
-E:\agent-system\pipeline\data\articles\juejin_Kimi K3å¤ªç‰›äº†ä½†è€æ¿è¯´APIå¤ªè´µè®©æˆ‘æœ¬åœ°åŒ–éƒ¨ç½²æˆ‘ç®—å®Œæˆæœ¬ä»–æ¶¨çº¢è„¸æ²‰.md	ab3d71857bec2506791ab079e2f63ad5
-E:\agent-system\pipeline\data\articles\juejin_å†è§ Superpowerså¾ˆå¤š Skill çœŸçš„å¯ä»¥æ‰”æ‰äº†å‰å‡ å¤©åœ¨çŸ¥ä¹çœ‹åˆ°.md	b082c3f38cb0220a2eac3a6bbe0d8b9f
-E:\agent-system\pipeline\data\articles\juejin_å†™ç»™å¹´è½»ç¨‹åºå‘˜çš„å‡ ç‚¹å»ºè®®-2ç°åœ¨äº’è”ç½‘çº¢åˆ©å·²ç»æ¶ˆå¤±äº†æ·±çŸ¥å¹´è½»ç¨‹åºå‘˜çš„ä¸æ˜“ä¸‹é¢.md	2b7011a8813231b6367a168b2a10588f
-E:\agent-system\pipeline\data\articles\juejin_å°ç¨‹åºä¸Šçº¿åŠå¹´æˆ‘èµšäº†å¤šå°‘é’±1 å¼€å‘å†ç¨‹ æ—¶é—´è¿‡å¾—çœŸå¿«è½¬çœ¼é—´ç¦çŒªè®°è´¦å°ç¨‹åºä¸Š.md	c5973bca1ead19cbfbc25a37c4590588
-E:\agent-system\pipeline\data\articles\juejin_é¢è¯•å®˜é—®ä½ AI èƒ½å†™ 80 çš„ä»£ç äº†å…¬å¸ä¸ºä»€ä¹ˆè¿˜éœ€è¦ä½ å…ˆè¯´ä¸€ä¸ªäº‹å®.md	e0f8ddf68fd641a40355b5900d50f9a1
-E:\agent-system\pipeline\data\articles\sched_cnblogs_AI è½¯ä»¶å¼€å‘å®æˆ˜æ•™ç¨‹ä¸€ä»ä¸€ä¸ªæƒ³æ³•åˆ°å¯éªŒè¯äº¤ä»˜ - DevWiki.md	c0de3802865773395929d68a07c2ddfe
-E:\agent-system\pipeline\data\articles\sched_cnblogs_Apache SeaTunnel æäº¤ä¸€ä¸ªä»»åŠ¡éƒ½ç»è¿‡äº†ä»€ä¹ˆ - ApacheS.md	9b0f56f1eae155c21d5f252ed6326faa
-E:\agent-system\pipeline\data\articles\sched_cnblogs_LinuxOllama Termux  ä¸€æ¬¾è¿è¡Œåœ¨ Android å¹³å°.md	15ebed7e652786a2226eebf34a4dedf1
-E:\agent-system\pipeline\data\articles\sched_cnblogs_Unity åœ¨Picoä¸­åˆ‡æ¢åœºæ™¯åäººç‰©å‡ºç”Ÿåœ¨å¥‡æ€ªçš„ä½ç½®åŸå› åŠè§£å†³æ–¹æ¡ˆ - å˜‰å›.md	d44f9e139d86c323c7ded080bc749cf3
-E:\agent-system\pipeline\data\articles\sched_cnblogs_ä» PHP åˆ° AI  Golangç¨‹åºå‘˜è‡ªæ•‘è½¬å‹æ‰‹è®°äº”åäº”å¢åŠ  ar.md	72e4898cb71c13511e4c4da0205a12ac
-E:\agent-system\pipeline\data\articles\sched_cnblogs_å¦‚ä½•æå‡æ•°å­¦å»ºæ¨¡è´¨é‡æ ¸å¿ƒæ–¹æ³•ä¸ä¸‰å¤§å·¥å…·æ¨è - å“‡å“¦ç©ç©.md	0ff8764a9eda39f835bfaa9d2ad317f0
-E:\agent-system\pipeline\data\articles\sched_cnblogs_å¾®æœåŠ¡æ¶æ„è®¾è®¡æ¨¡å¼ ç¬¬ä¸‰ç« è¯»ä¹¦ç¬”è®°å¾®æœåŠ¡æ¶æ„ä¸­çš„è¿›ç¨‹é—´é€šä¿¡ - LYåŒåœŸ.md	a3c7e003d2d4a36a833bddfa2e3685e4
-E:\agent-system\pipeline\data\articles\sched_cnblogs_æˆ‘çš„åƒè¯æé†’ app æ›´æ–°V20å•¦ - is81.md	2e5808bea289e2f40d414a49656b1fdb
-E:\agent-system\pipeline\data\articles\sched_cnblogs_æ·±å…¥ Linux å†…æ ¸çš„é»‘åŒ£å­dmesg å‘½ä»¤å®Œå…¨æŒ‡å— - dashery.md	90171640ae8b911c601bed8eecb91383
-E:\agent-system\pipeline\data\articles\sched_cnblogs_é¢è¯•é¢˜MySQL é»˜è®¤çš„äº‹åŠ¡éš”ç¦»çº§åˆ«æ˜¯ä»€ä¹ˆä¸ºä»€ä¹ˆé€‰æ‹©è¿™ä¸ªçº§åˆ« - ä½›ç¥–è®©.md	a54aa6c7451fc3aac86f919d55d2edca
-E:\agent-system\pipeline\data\articles\sched_github_addyosmani agent-skills JavaScript.md	8dbcdeffd9fb78d45bd6e1ec3d7ec867
-E:\agent-system\pipeline\data\articles\sched_github_cloudflare computer TypeScript.md	1b6f1abe2f6c0c7d75b9a6f4cc5d91d3
-E:\agent-system\pipeline\data\articles\sched_github_donnemartin system-design-primer Pytho.md	86986e2221a0597eaccb249d02821188
-E:\agent-system\pipeline\data\articles\sched_github_esengine DeepSeek-Reasonix Go.md	22947a433d2d7a319782f1ec321f9d9e
-E:\agent-system\pipeline\data\articles\sched_github_firecrawl pdf-inspector Rust.md	2f94d621ce6a4bb2ea6cb80c0d78796d
-E:\agent-system\pipeline\data\articles\sched_github_google guava Java.md	c69e712d638a21c7fc87bd4abcb3d60a
-E:\agent-system\pipeline\data\articles\sched_github_huangruiteng loopx Python.md	8cb3daa20c20a4a020a503ce27c76e13
-E:\agent-system\pipeline\data\articles\sched_github_obra superpowers Shell.md	3f7f7cb4c8a41790fc6df89a824484f8
-E:\agent-system\pipeline\data\articles\sched_github_TapXWorld ChinaTextbook Roff.md	356cf79f7bc6eeca9d77329e691fc7f6
-E:\agent-system\pipeline\data\articles\sched_github_TencentCloud TencentDB-Agent-Memory Ty.md	1ff157eedd1119eb82a6b0ae2d15a9b8
-E:\agent-system\pipeline\data\articles\sched_juejin_2026 ä¸ŠåŠå¹´å‰ç«¯åœˆå·²ç»ç‚¸äº†äº”æ¬¡2026 ä¸ŠåŠå¹´å‰ç«¯åœˆå·²ç»ç‚¸äº†äº”æ¬¡ ä¸€T.md	0aa0b63203aed4d4cec4b4de0ef415d9
-E:\agent-system\pipeline\data\articles\sched_juejin_2026 å¹´ 6 æœˆ GitHub åå¤§çƒ­é—¨é¡¹ç›®æ’è¡Œæ¦œ æ¬¢è¿æ¥åˆ° 2026.md	0a79dabdfd08a977ea3d9a9cc882a46c
-E:\agent-system\pipeline\data\articles\sched_juejin_2026ç¼–ç¨‹åœˆå¾ˆç«çš„10ä¸ªSkillså‰è¨€ æœ€è¿‘ç¼–ç¨‹åœˆæœ€ç«çš„ä¸€ä¸ªè¯é Skil.md	ca8a727aba9ca3d311f5b53f81fd5671
-E:\agent-system\pipeline\data\articles\sched_juejin_Codex ç©·é¬¼å¤§æ•‘æ˜Ÿç©·åˆ™æ€å˜å¯Œåˆ™ç®—äº†å¯Œå“¥å°±ä¸ç”¨çœ‹è¿™ç¯‡æ–‡ç« äº† ä¸ºäº†å®ˆ.md	69e5e59dcfe7ab9acd2aef76a7ca19ac
-E:\agent-system\pipeline\data\articles\sched_juejin_Comate å·²æ”¯æŒDeepSeek-V4-Flash æ­£å¼ç‰ˆ7æœˆ31æ—¥Dee.md	d68777f055aabe1d02d9172b8a775d09
-E:\agent-system\pipeline\data\articles\sched_juejin_Cursor è½¬ Codex å¤§åŠä¸ªæœˆèŠèŠæˆ‘çš„çœŸå®æ„Ÿå—Cursor è®©æˆ‘ç¬¬ä¸€æ¬¡.md	00c1c938c1d7a5659129756cd2fc2512
-E:\agent-system\pipeline\data\articles\sched_juejin_Kimi K3å¤ªç‰›äº†ä½†è€æ¿è¯´APIå¤ªè´µè®©æˆ‘æœ¬åœ°åŒ–éƒ¨ç½²æˆ‘ç®—å®Œæˆæœ¬ä»–æ¶¨çº¢è„¸æ²‰.md	40e10c85b0ad50a99aef1aa00bb26a56
-E:\agent-system\pipeline\data\articles\sched_juejin_Python å¼‚å¸¸å¤„ç†æœ¬æ–‡é¢å‘å·²æœ‰å‰ç«¯å¼€å‘åŸºç¡€æ­£åœ¨å­¦ä¹  Python çš„å¼€å‘è€….md	673a10a2b9e5dbe6018f51f0555923d0
-E:\agent-system\pipeline\data\articles\sched_juejin_ä»Šæ—¥ GitHub çƒ­é—¨Agent äº‘ç«¯ç”µè„‘ç™»é¡¶1891 é¡¹ç›®å´åªæ’ç¬¬ä¸‰.md	7f5099a81bad2d1717358ea8076e3c0a
-E:\agent-system\pipeline\data\articles\sched_juejin_ä»å¤šé¡µé¢åˆ°SPAæ·±å…¥Hash è·¯ç”±ç†è§£å’Œå‰ç«¯è·¯ç”±åŸç†ä¼ ç»Ÿå¤šé¡µæ¯æ¬¡è·³è½¬éƒ½æ•´é¡µé‡è½½.md	2cbeb8f8f0a0458d2eeb59d1d058db8f
-E:\agent-system\pipeline\data\articles\sched_juejin_å…¬å¸ä¸ç»™ä½ é… AIä½ ä¼šè‡ªå·±æé’±å—å‰å‡ å¤©é€›æŠ€æœ¯ç¤¾åŒºæ—¶çœ‹åˆ°ä¸€æ¡æŒºæœ‰æ„æ€çš„å¸–å­.md	c47fe215df14e12c3e06737194c3bf72
-E:\agent-system\pipeline\data\articles\sched_juejin_å†™ç»™å¹´è½»ç¨‹åºå‘˜çš„å‡ ç‚¹å»ºè®®-2ç°åœ¨äº’è”ç½‘çº¢åˆ©å·²ç»æ¶ˆå¤±äº†æ·±çŸ¥å¹´è½»ç¨‹åºå‘˜çš„ä¸æ˜“ä¸‹é¢.md	67fe10c62e902a2e95dbc55a4c3f7214
-E:\agent-system\pipeline\data\articles\sched_juejin_å‰ç«¯è·¯ç”±ä¸€äºŒåè¡Œä»£ç å®ç° Hash è·¯ç”±æœ¬æ–‡å‰–æä¼ ç»Ÿå¤šé¡µå¯¼èˆªå¼Šç«¯ä¸SPAè·¯.md	3b3db9cb4e56f53cd18b8400f4fa5fd7
-E:\agent-system\pipeline\data\articles\sched_juejin_å®ç”¨æ€§ Max æ–°  Flutter    Dart Agent  Skil.md	0cbf13affd2d9a797377b788413a317a
-E:\agent-system\pipeline\data\articles\sched_juejin_å°ç¨‹åºä¸Šçº¿åŠå¹´æˆ‘èµšäº†å¤šå°‘é’±1 å¼€å‘å†ç¨‹ æ—¶é—´è¿‡å¾—çœŸå¿«è½¬çœ¼é—´ç¦çŒªè®°è´¦å°ç¨‹åºä¸Š.md	a2a69a2e7622146e81a0abd41eb7a09e
-E:\agent-system\pipeline\data\articles\sched_juejin_å°ç±³MiMoCodeå®˜ç½‘é¢œå€¼é«˜Codexæ‹¿æ¥å§æ‚¨å˜11å®Œç¾å¤åˆ»çœ‹åˆ°å°.md	5043ea83a5ac908ff9d1f684fda4f027
-E:\agent-system\pipeline\data\articles\sched_juejin_æºç¨‹å‘˜å·¥åœ¨æºç¨‹4å¹´æœˆè–ª3ä¸‡å·¦å³åŸºæœ¬æ²¡æ¶¨è–ªäº†ä¸è¿‡æŒºæ»¡è¶³çš„æ¯•ç«Ÿç¨³å®šç¦åˆ©ä¹Ÿ.md	3fdd92ef75adcd6d00a902c6428c6c21
-E:\agent-system\pipeline\data\articles\sched_juejin_æ—¥å¿—å‡­ç©ºæ¶ˆå¤±Filter é¡ºåºé”™äº†Dubbo ä¸€ä¸ª order å€¼è®© Ex.md	dd9685bbbb600cd755b10e3cf3e0722a
-E:\agent-system\pipeline\data\articles\sched_juejin_æœ€è¿‘å…¬å¸çƒ§tokenæ¯”æ‹›å‘˜å·¥è¿˜è´µè€æ¿å¹²æ‡µäº†å¦‚é¢˜ è¿™çœŸçš„æ²¡åœ¨å¼€ç©ç¬‘ è¿™.md	25a2073525f3cce16fbefc6b76fab74c
-E:\agent-system\pipeline\data\articles\sched_juejin_æœ‰jyçŸ¥é“uniappå¼€å‘æ—¶å€™ç”¨å¾®ä¿¡å¼€å‘å·¥å…·çœŸæœºæ¨¡æ‹Ÿå›¾ç‰‡ä¸æ˜¾ç¤ºæ˜¯ä¸ºä»€ä¹ˆçš„ä¹ˆ.md	c96382bed138cf61bdb321a1fe5b436d
-E:\agent-system\pipeline\data\articles\sched_juejin_é¢è¯•å®˜é—®ä½ AI èƒ½å†™ 80 çš„ä»£ç äº†å…¬å¸ä¸ºä»€ä¹ˆè¿˜éœ€è¦ä½ å…ˆè¯´ä¸€ä¸ªäº‹å®.md	f1e3cbdb34e41f70acb81454d9b625ff
+E:\agent-system\pipeline\data\articles\ai_ref_01_mcp_protocol.md	52e02e88c3aea7c556c64c1ece15381d
+E:\agent-system\pipeline\data\articles\ai_ref_02_agentic_rag.md	38a0cad7187ccc4ddb328482b74f4855
+E:\agent-system\pipeline\data\articles\ai_ref_03_agent_evaluation.md	06f065ba74d359f6aeddb0e8f2fc08d2
+E:\agent-system\pipeline\data\articles\ai_ref_04_multi_agent.md	7d879904ff0627df41ac17479fefc5f3
+E:\agent-system\pipeline\data\articles\ai_ref_05_graph_rag.md	20e4f40eb85fbaac9b9ff106a392d86c
+E:\agent-system\pipeline\data\articles\auto_juejin_Cursor ×ª Codex ´ó°ë¸öÔÂÁÄÁÄÎÒµÄÕæÊµ¸ĞÊÜCursor ÈÃÎÒµÚÒ»´Î.md	fc4e74eb58cd27aaae1a555fc521ac08
+E:\agent-system\pipeline\data\articles\auto_juejin_Ğ´¸øÄêÇá³ÌĞòÔ±µÄ¼¸µã½¨Òé-2ÏÖÔÚ»¥ÁªÍøºìÀûÒÑ¾­ÏûÊ§ÁËÉîÖªÄêÇá³ÌĞòÔ±µÄ²»Ò×ÏÂÃæ.md	59376c3af459ea2ef9d97b4615136727
+E:\agent-system\pipeline\data\articles\auto_juejin_ÓĞjyÖªµÀuniapp¿ª·¢Ê±ºòÓÃÎ¢ĞÅ¿ª·¢¹¤¾ßÕæ»úÄ£ÄâÍ¼Æ¬²»ÏÔÊ¾ÊÇÎªÊ²Ã´µÄÃ´.md	4d49110be75e19b56fff765c61d8aba0
+E:\agent-system\pipeline\data\articles\batch_cnblogs_6 AgentÒ»¾ä»°½ØÕæ»úÆÁ½ØÍ¼ToolÕâÑùĞ´ - ÀÏ³Â.md	891440aae0e403db6f6b869ca951029d
+E:\agent-system\pipeline\data\articles\batch_cnblogs_Agent Runtime ÈçºÎÓÃ SessionMemo.md	74f1e09a6c00e6a4db17acf4b53d2b22
+E:\agent-system\pipeline\data\articles\batch_cnblogs_AI Èí¼ş¿ª·¢ÊµÕ½½Ì³ÌÈı°ÑÌÖÂÛ½á¹û±ä³É¿ÉÖ´ĞĞµÄ²úÆ·¹æ»®.md	f5d45d8591c7579ad56b9861fb4e09a0
+E:\agent-system\pipeline\data\articles\batch_cnblogs_dbtSQLServer¹¹½¨Êı¾İ²Ö¿â4·Ö²ã½¨Ä£ÊµÕ½.md	0ef57af4e13a0a46f0c071c20185f4b6
+E:\agent-system\pipeline\data\articles\batch_cnblogs_OctaFuse Gateway 220ÈÃÃ¿Ò»²ãÂ·ÓÉ¶¼.md	331956d3889d8236abe669cdfa6d7977
+E:\agent-system\pipeline\data\articles\batch_cnblogs_Pikachu°Ğ³¡Í¨¹Ø¼ÇÂ¼¶şÍê½á - ·´¶ÔµÄÖ»Ê£ÏÂÔÂ.md	76a597e580967a361a4a6b741b29d206
+E:\agent-system\pipeline\data\articles\batch_cnblogs_Solon I18nÈıÖÖ½âÎöÆ÷ÁãÑù°å´úÂë - ´ø´ÌµÄ×øÒÎ.md	6b55935c0a3eac98b3426643ca7c1042
+E:\agent-system\pipeline\data\articles\batch_cnblogs_½éÉÜÒ»ÏÂRedisµÄ¸ß¿ÉÓÃ·½°¸ - RainµÄJava´óÉñÊµ.md	efe723fcfa29382e5cce8465c1bcb956
+E:\agent-system\pipeline\data\articles\batch_cnblogs_ÄãÒÔÎªAIÔÚË¼¿¼ĞÑĞÑËüÖ»ÊÇ¸ö¶¥¼¶µÄÊäÈë·¨°ÕÁË - ·ğ.md	92c51cf4cb6a5ce9bff06f66dff24b31
+E:\agent-system\pipeline\data\articles\batch_cnblogs_Æ¦×ÓºâÇ¶ÈëÊ½Èç¹ûÄãÏÓMCU°å¿¨¹¤³§ÑéÊÕ²âÊÔÂé·³²»·ÁÊÔÊÔF.md	4da4f1595672301f013180b1ff05045b
+E:\agent-system\pipeline\data\articles\batch_juejin_FFmpeg 90ÕıÊ½·¢²¼´úºÅLeiÒÔ¼ÍÄîÖĞ¹ú¿ª·¢.md	34e3ae62dffaa89ae7da70262fc8b95b
+E:\agent-system\pipeline\data\articles\batch_juejin_SpringÖ®¸¸ÔÙ´Î³öÉ½¿ª·¢ÁËĞÂµÄAI¿ò¼ÜÇ°ÑÔ ×î½üÕâÕó.md	9d310b91ace3a86727653c32ecd1f5ec
+E:\agent-system\pipeline\data\articles\batch_juejin_ÈıÄêÁËÎªÊ²Ã´ AI Ó¦ÓÃ»¹Ã»±¬·¢×î½ümeta½²ÁË¸öËãÁ¦¹ı.md	8958737c74dfc4e6009da08ab4a3353f
+E:\agent-system\pipeline\data\articles\batch_juejin_Ôø¾­ÈËÊÖÒ»¸öµÄSuperpowersÎªÊ²Ã´ÏÖÔÚ¶¼ÔÚĞ¶Ò»¸öG.md	89381020d135fda5f77394192d4d9c2b
+E:\agent-system\pipeline\data\articles\cnblogs_ABP DTO Óë¶ÔÏóÓ³ÉäAutoMapper Profile ÅäÖÃÓë Map.md	f0bc32584baa1d693f25e11e916f15bb
+E:\agent-system\pipeline\data\articles\cnblogs_AI ²âÊÔÌáĞ§  UI ×Ô¶¯»¯²â²»³öÑùÊ½ bug·ÖÏí ui-visual-a.md	0a6c403843ed7fa1e16685fa1522fd27
+E:\agent-system\pipeline\data\articles\cnblogs_Shell½Å±¾È«ÀàĞÍÀ¨ºÅÓï·¨Ïê½â¼°¶Ô±ÈÊÖ²áÁã»ù´¡°æ - Docker-Ä­ÀÏÊ¦.md	d385bf62cc64d8f0aa142a20dd846358
+E:\agent-system\pipeline\data\articles\cnblogs_VUE±Ê¼Ç - ShoreKiten.md	499219c60c01b3e99ca0b962c9ab43ab
+E:\agent-system\pipeline\data\articles\cnblogs_ĞŞ Bug µÄÊÖÒÕÓë¼Ü¹¹µÄÒÕÊõ´ÓìØÔöµ½ìØ¼õ - ÕÅÉÆÓÑ.md	aa5ed4163c1c9bed7f00652b4fc882b6
+E:\agent-system\pipeline\data\articles\cnblogs_ÈçºÎ±£Ö¤MysqlºÍRedisË«Ğ´Ò»ÖÂĞÔ - RainµÄJava´óÉñÊµÕ½È¦.md	662e4e1fd8e33aee0f979c2eba508ea3
+E:\agent-system\pipeline\data\articles\cnblogs_¶Ô±ê npx µÄ CPX PHP µÄ Composer °üÖ´ĞĞÆ÷ - Jagua.md	6bba05d84e010fc5e2c3a07a40056aeb
+E:\agent-system\pipeline\data\articles\cnblogs_¹¤¿ØÉúÌ¬Ö®Õ¹Ê¾Óë½»»¥ÔõÃ´ÈÃ¹¤ÒµÈí¼ş²»ÔÙ³ó - Wackysoft.md	f84ec6ee6b0718b3c411ea542728b445
+E:\agent-system\pipeline\data\articles\cnblogs_Ó¦¶Ô MongoDB ³¬´ó±íÀäÈÈÊı¾İ·ÖÀëÓë¿Õ¼äÊÍ·ÅµÄ×î¼ÑÊµ¼ù - Markk.md	1b29a04569bd5c4dd2ea979062001e99
+E:\agent-system\pipeline\data\articles\cnblogs_öÎ¸£·á¹¤ÒµÊ¡µç¿Õµ÷2026Äê¹¤³§³µ¼ä½µÎÂÊ¡µçÖÕ¼«·½°¸ - öÎ¸£·á¹¤ÒµÊ¡µç¿Õµ÷.md	60fd61e27b904c9a504e8ac3b97dfe65
+E:\agent-system\pipeline\data\articles\digest_cnblogs_5 PyCharmºèÃÉHypium´Ó0µ½ÅÜÍ¨ÉÙ²È90¿Ó - ÀÏ³ÂËµ±à³Ì.md	3ed3ab5ab81f375dea9c7278bd769d60
+E:\agent-system\pipeline\data\articles\digest_cnblogs_AI Èí¼ş¿ª·¢ÊµÕ½½Ì³ÌÒ»´ÓÒ»¸öÏë·¨µ½¿ÉÑéÖ¤½»¸¶ - DevWiki.md	4a430dd14c1e9dd7bbde56372c1172c5
+E:\agent-system\pipeline\data\articles\digest_cnblogs_Apache SeaTunnel Ìá½»Ò»¸öÈÎÎñ¶¼¾­¹ıÁËÊ²Ã´ - ApacheS.md	f2d004ba42cbc5bcc54002ece388f63a
+E:\agent-system\pipeline\data\articles\digest_cnblogs_dbtSQLServer¹¹½¨Êı¾İ²Ö¿â3dbt_projectymlÅäÖÃ.md	5a580c937e922865dcc813416bdf87b4
+E:\agent-system\pipeline\data\articles\digest_cnblogs_LinuxOllama Termux  Ò»¿îÔËĞĞÔÚ Android Æ½Ì¨.md	45372982bb92ed57370bf4b341f2010c
+E:\agent-system\pipeline\data\articles\digest_cnblogs_OEL 8Vim ±à¼­ÖĞÎÄÂÒÂëÆäÊµÊÇ Locale Ã»Éè¶Ô - Alfred.md	e43df1ee31c4e01417bf56886583ca51
+E:\agent-system\pipeline\data\articles\digest_cnblogs_VelesDB Éî¶È½â¶Á  ÈÚºÏÏòÁ¿Í¼ÓëÁĞ´æµÄ¶Ë²à AI ¼ÇÒäÒıÇæ - ÂŞ.md	ede9bf8740d6107646acdd889f2901f5
+E:\agent-system\pipeline\data\articles\digest_cnblogs_´Ó PHP µ½ AI  Golang³ÌĞòÔ±×Ô¾È×ªĞÍÊÖ¼ÇÎåÊ®ÎåÔö¼Ó ar.md	0ee61af561d7c2682691f73b101234fc
+E:\agent-system\pipeline\data\articles\digest_cnblogs_Í¬ÊÂËµÎÒÊÇ²ÆÃÔ¹«Ë¾ÂòµÄ AI ÕËºÅÓĞÁ½¸öÈËÃ»ÓÃÎÒ½Ó¹ıÀ´ÁË - ±à³ÌÒ»Éú.md	af6c2416b123f8c843c547b1ea28a876
+E:\agent-system\pipeline\data\articles\digest_cnblogs_µ±ËùÓĞAI¶¼ÔÚ³­Í¬Ò»·İ×÷ÒµÇ°¶ËÄ£°åµÄÇ÷Í¬À§¾ÖÓëÆÆ¾Ö - badhope338.md	a888ff5f42c28c2561c1040f886b3baa
+E:\agent-system\pipeline\data\articles\digest_cnblogs_³¹µ×¸ã¶®ÉÏÀ­µç×èÓëÏÂÀ­µç×è´ÓÔ­Àíµ½ÊµÕ½µÄÍêÕûÖ¸ÄÏ - Tlink.md	fc0993db79d532d90efa4065582152e4
+E:\agent-system\pipeline\data\articles\digest_cnblogs_¸Ä±äÊÀ½çµÄ17¸ö·½³ÌÈçºÎÖØËÜ GoodCrew µÄ¼Ü¹¹ÕÜÑ§ - ÕÅÉÆÓÑ.md	963e4fd9c91f244783cd46b1c1640084
+E:\agent-system\pipeline\data\articles\digest_cnblogs_ÉîÈë Linux ÄÚºËµÄºÚÏ»×Ódmesg ÃüÁîÍêÈ«Ö¸ÄÏ - dashery.md	4f8504b482fb1519ebb1ec2701d69e74
+E:\agent-system\pipeline\data\articles\digest_cnblogs_ÃæÊÔÌâMySQL Ä¬ÈÏµÄÊÂÎñ¸ôÀë¼¶±ğÊÇÊ²Ã´ÎªÊ²Ã´Ñ¡ÔñÕâ¸ö¼¶±ğ - ·ğ×æÈÃ.md	b509d30205d2982fa54114a5933aa6b3
+E:\agent-system\pipeline\data\articles\digest_juejin_2026 ÉÏ°ëÄêÇ°¶ËÈ¦ÒÑ¾­Õ¨ÁËÎå´Î2026 ÉÏ°ëÄêÇ°¶ËÈ¦ÒÑ¾­Õ¨ÁËÎå´Î Ò»T.md	7a3147fefc16cfa88372e629bd4ef0a2
+E:\agent-system\pipeline\data\articles\digest_juejin_Cursor ×ª Codex ´ó°ë¸öÔÂÁÄÁÄÎÒµÄÕæÊµ¸ĞÊÜCursor ÈÃÎÒµÚÒ»´Î.md	255b352600683e2cf578c2455803db34
+E:\agent-system\pipeline\data\articles\digest_juejin_Kimi K3Ì«Å£ÁËµ«ÀÏ°åËµAPIÌ«¹óÈÃÎÒ±¾µØ»¯²¿ÊğÎÒËãÍê³É±¾ËûÕÇºìÁ³³Á.md	497f26879aa47083d6cfb4f128722968
+E:\agent-system\pipeline\data\articles\digest_juejin_Ğ´¸øÄêÇá³ÌĞòÔ±µÄ¼¸µã½¨Òé-2ÏÖÔÚ»¥ÁªÍøºìÀûÒÑ¾­ÏûÊ§ÁËÉîÖªÄêÇá³ÌĞòÔ±µÄ²»Ò×ÏÂÃæ.md	557862169e180822fc42695ddb5ee677
+E:\agent-system\pipeline\data\articles\digest_juejin_Ğ¡³ÌĞòÉÏÏß°ëÄêÎÒ×¬ÁË¶àÉÙÇ®1 ¿ª·¢Àú³Ì Ê±¼ä¹ıµÃÕæ¿ì×ªÑÛ¼ä¸£Öí¼ÇÕËĞ¡³ÌĞòÉÏ.md	c5973bca1ead19cbfbc25a37c4590588
+E:\agent-system\pipeline\data\articles\digest_juejin_ÓĞjyÖªµÀuniapp¿ª·¢Ê±ºòÓÃÎ¢ĞÅ¿ª·¢¹¤¾ßÕæ»úÄ£ÄâÍ¼Æ¬²»ÏÔÊ¾ÊÇÎªÊ²Ã´µÄÃ´.md	6604741cf8ab34f3ef832734747de03b
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_ci_guide.md	8ef5aabaf8e4235ea1423d6cf8bfde0e
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_code_review_checklist_mechanism.md	e5be0c03656c68509bcb679f9e98c5b5
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_c_plus_plus_programming_specification_zh_cn.md	f7ce25a4f08e250aac9ab0e7437d196e
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_docs_api_checklist.md	e5f0a773c704f31f5abee6c685c46da7
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_docs_comments_guidelines_en.md	e5f7fbaa3c987cb93604b911ce8cec85
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_docs_comments_guidelines_zh_cn.md	9faa73a1e61477a211e4168a785112bd
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_docs_guidelines.md	e28b344296105e5e0656aec04609609c
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_docs_import.md	43f8bc4985a71c3c853bca8b7f49403c
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_docs_markdown_guidelines.md	bb5e68e84f84bee3d8eb2d2bd003c412
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_irc-guidelines_en.md	b5c9599e3b0bb2300494245b502fc5a8
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_irc-guidelines_zh_cn.md	ceaf422e062be16cc9d94f1f251dfbee
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_mailing-list-guidelines_en.md	f7e2008506e7bbe6d53c5ae8493b77d2
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_mailing-list-guidelines_zh_cn.md	6bbb601362fc50327ab7b665b79d92a7
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_MindSpore ÉçÇø°æ±¾³ö¿Ú±ê×¼.md	b79e06d81c1cbca5ba26d68177f79b20
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_MindSpore_pull_request_specification_zh_cn.md	feadb5b65ffd2451cc0422b9c407a5aa
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_MindSpore_version_lifecycle_management_zh_cn.md	68ca6245d90c0bb9f6762f719809b609
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_MindSpore¿ªÔ´ÉçÇø¿ª·¢×ÔÑéÖ¸µ¼Êé.md	04aaab9d06cc543f22629e1f263ec10a
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_MindSpore¿ªÔ´Èí¼şÑ¡ĞÍ¼°Ê¹ÓÃÒªÇó.md	36018400f40fca17b08b924c0b5be66d
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_README.md	47b490f7cf80b52875e6b7d7b96db97b
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_community_slack-guidelines.md	a4e17ef5f4d3a62d83d86914163c95af
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_mindspore_mindspore_README.md	3de22ea21742712e460f5f0afeffa5fb
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_chat_template.md	cc293095d731a9762738424af904e629
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_compression.md	4ed0d400f057f66d06bf811484458a5c
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_data.md	0ebb8f93b023889cdca02282ac9325cf
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_dataaug.md	2203980a0247593491f2df4a149acd0b
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_dataset.md	8ad9266844cbda99f41d2ce00023c476
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_datasets.md	ff7520c577276d9fc376ff525258d467
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_dataset_list.md	23b6e4ae748af733e7eba1f497c57b85
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_embeddings.md	abeaf6ce297cd51f427802b7ed4ffa69
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_FAQ.md	410fba7cbe3c1edde18d3d28289f064b
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_metrics.md	6ec0cfb0ea07ab73e865ab50b3526d14
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_model_list_multy_device.md	2a6d6dfff85fb84cd80be0eed410453b
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_prompt.md	22bfdfd9ce3333643bd2229b94bc7dd5
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_server.md	c8d7b55e500f83936d7d2558ecf491bc
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_taskflow.md	13773c8a2c5ed8682e00e4f0671fbbaf
+E:\agent-system\pipeline\data\articles\gitee_gitee_doc_PaddlePaddle_PaddleNLP_trainer.md	1f161c8f2c6694083d8d39a3f8db26b2
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_MindNLPÌ×¼ş.md	7a88212e6d69b6f15f05dec8bbc32ed8
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°APIÎÄµµÄÚÈİÓÅ»¯-Part1.md	c71e089521cabc899c7cc50117e5913f
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°LLM Inference Serving SIGÈÎÎñ.md	3a852349165248ed3dcbcfae74b0c702
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°MindChem´úÂëÖØ¹¹.md	609f6cb0c081b69f8f94e333a6ef9960
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°MindFlow GINOÄ£ĞÍÇ¨ÒÆ²¹³ä.md	d5f4eae6c80ddfdc2ce375322b641aab
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°MindFlow GINOÄ£ĞÍÇ¨ÒÆ²¹³äÈÎÎñ¹Ø±Õ.md	8fbd827e53cdfa7789f9866df44c70d3
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°MindScience Êı¾İÇı¶¯°¸ÀıÍêÉÆ.md	4dd3be86c581e811c25bfec77c5eaa87
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°MindSPONGE´æÁ¿°¸ÀıÑéÖ¤¼°ÎÄµµ²¹³ä6¸ö.md	b9bf1db8c36dff5ff0185e2169be8d9b
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°MindSpore Lite SIGÈÎÎñ.md	607a918e37d3a6489f5fd9f3831e997b
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°MindSpore Science SIGÈÎÎñ.md	1c62239b98b688deaebb4ab5aa6050de
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°MindSpore´´ĞÂ´óÄ£ĞÍ°¸Àı11.md	6c9aeec44b2b6cd375161dabd8aa352d
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°NPUÁ¿»¯ÌØĞÔ¿ª·¢.md	8acb576d803d8b54ac463aa801efa29a
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°TritonËã×Ó¿ª·¢½ÓÈë.md	235f3af51ab6adb8283589faeef170b3
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°»ùÓÚMindSpore NLPÊµÏÖERNIE45Ó¦ÓÃ°¸Àı¿ª·¢.md	a8770ad0716a018ac74c3a9cac2c532a
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°»ùÓÚMindSpore NLPÊµÏÖmultiple choiceÓ¦ÓÃ°¸Àı¿ª·¢.md	0fc7d9d8fb82f30e3b52a23d1a1099d7
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°»ùÓÚMindSpore NLPÊµÏÖprotein foldingÓ¦ÓÃ°¸Àı¿ª·¢.md	912d8bdf2c62c90b2a890b4dd4bbe48e
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°»ùÓÚMindSpore ¼æÈİ½Ó¿ÚÊµÏÖ¶¯ÊÖÑ§Éî¶ÈÑ§Ï°01-03ÕÂ½Ú´úÂë¸üĞÂ.md	39d251af4571d2876ede6dc2ded06d7b
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°»ùÓÚMindSpore ¼æÈİ½Ó¿ÚÊµÏÖ¶¯ÊÖÑ§Éî¶ÈÑ§Ï°07-09ÕÂ½Ú´úÂë¸üĞÂ.md	c31000a70968174d497da96a10ba2283
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°»ùÓÚMindSpore ¼æÈİ½Ó¿ÚÊµÏÖ¶¯ÊÖÑ§Éî¶ÈÑ§Ï°10-12ÕÂ½Ú´úÂë¸üĞÂ.md	1a583fc46b4df4c00e5b94ff1b6987c4
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°»ùÓÚMindSporeÊµÏÖWaveNetÓïÒôºÏ³ÉÓ¦ÓÃ°¸ÀıÓÅ»¯.md	6400c1ed951993ab98d660af132345a9
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°¼¼Êõ¹«¿ª¿ÎÄÚÈİ²âÊÔÈÎÎñ11.md	fde641971dce8ce6a6639966329759bf
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°ÁªÊÖÊéÉúÉçÇø»ùÓÚMindSpore TransformersÌ×¼şÇ¨ÒÆLLama33 .md	affcd4c865bfffb7dbe2e9f1c67e59ed
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_¿ªÔ´ÊµÏ°Ïã³ÈÅÉ¿ª·¢°åÓ¦ÓÃ¿ª·¢ÈÎÎñ.md	9e2e32d5173f9b0867aa6db5f31d135a
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_•NË¼MindSpore¿ªÔ´ÉçÇøÊµÏ°¼Æ»®2025.md	a366bd60facce7abd4b6aeb751b68021
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_community_•NË¼MindSpore¼¼Êõ¹«¿ª¿ÎÄÚÈİ¿ª·¢²âÊÔÈÎÎñ.md	34914f0ece6c7319aaec554906393fbf
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Bug BatchNormGradExt dtype ÍÆµ¼ÎÊÌâ.md	efb1ddecfa8015cdde0de06f7ac41d32
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Bug linalgnorm complex ³¡¾°Êä³öÊı¾İÀàĞÍÍÆµ¼´íÎó.md	eb5eb657e22642823eebc37df7d92696
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Bug Performance degradation on 310P due to Even.md	7cf9ab85299bb11cb0956c141b0df6bf
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Bug Qwen3 jitcapture_modetrace fails on A.md	a9424d65ddf1a9731e1a014c660ca16e
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Bug ¶¯Ì¬Í¼¸ß½×Î¢·ÖÏÔ´æĞ¹Â¶.md	30f8670b20c8f615b8749f569b14e0b3
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Bug ¸üĞÂglog°æ±¾´Ó040Éı¼¶µ½071ÔÚCUDA111ÉÏÃæ»áÓöµ½±àÒëÎÊÌâ.md	dc7b8b4440b596203905d3f574e4914d
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Bug ÁéÇş³¡¾°Ö´ĞĞÓÃÀı½áÊøºó´¥·¢coredump.md	05e5bcca8a8a3fd5384b8265d49a2cf6
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Feature hyper_offload×Ô¶¯µ÷ÓÅÎ¢µ÷½Ó¿Ú.md	a60de17bd01f93d450eb25deb348b497
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Feature Tensor Index È«·ÖÖ§Òì²½Ö´ĞĞ¸ÄÔì.md	eb59aa36ffe27afc2773651bda9548c3
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Feature Tools Èı·½ÒÀÀµ×é¼şÉı¼¶  NumPy Éı¼¶Ö§³Ö.md	1c4111e3b4b99c686c751653a8091d35
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Feature Ç°¶Ë×Ô¶¨Òåinfer.md	0063d676d8176970b830159cfa91cb0e
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Feature ĞÂÔöFusedAdamW ÓÅ»¯Æ÷.md	7020c04b0fb10855f4564f7011f152a6
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Feature ¾²Ì¬Í¼Ö§³ÖÅäÖÃCellÊä³ö×öÖØ¼ÆËã.md	8b10c2e3d0182b561ca98da1a3d268d8
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_MindSpore272ÔÚAscend°²×°µÄÎÊÌâ.md	2a43de0815870854dafe9b94f8170ed3
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_RFC HyperOffload¶¯Ì¬Í¼³¡¾°×Ô¶¯ÓÅ»¯.md	cf7f33e21c4b8e53927e0e0662622efa
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_RFC HyperOffload¾²Ì¬Í¼³¡¾°ÓÅ»¯.md	19556b82a9a32b26875ce47f6fa714c1
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_RFC MindSporeºó¶ËÒÀÀµ·ÖÎöºÍÖØ¹¹.md	8be56751c9c6d243b584d8c83c9b8368
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_RFC ²ã´Î»¯ÄÚ´æ - Ö´ĞĞĞò±àÒëÓÅ»¯·½°¸.md	3c5b717e740db5094282d7f8bc236b66
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_RFC °óºË°óÄÚ´æÈë¿ÚÖ§³ÖÍ³Ò»ÎÄ¼şÅäÖÃ.md	0fab0735c64709b3dfa880c75ace352d
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_RFC¶¯Ì¬Í¼ÏÂ View ÀàËã×ÓĞÔÄÜÓÅ»¯.md	dfe42ad20e78ade89c674a725569271a
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Task OPS  MindSporeTest Ëã×Ó²âÊÔÓÃÀıÇ¨ÒÆÓÅ»¯.md	a3b2753b43fc325eb7cb25bd4993d2e0
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_Task op_pluginÖ§³Öcompute-dependËã×Ó.md	9db78c6d87bfefbfbe565c220c54b672
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_TaskÓÃÀıÖ´ĞĞºÄÊ±ÓÅ»¯Áé»îµ÷¶ÈĞ¡ÓÃÀıµ½µ¥¿¨²¢·¢Ö´ĞĞ.md	689616db5868ea2145e74892a171d49b
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_mindspore_mindspore_´ıÍêÉÆRFC SwitchInlineÊÊÅäHyperOffloadÖ´ĞĞĞò±àÒëµ÷ÓÅ.md	cb72e29bf1e87c58799478acbc4feee9
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_     PaddleNLP   examples    lexical_analysis   .md	373525d4cd30000c33469e11b92abb8a
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_Bug TypeError __init__ got an unexpected key.md	a32a863428a0c7a55307c33b0b1135ff
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_label studioµ¼³öjsonÎÄ¼şÔÚÊ¹ÓÃlabel_studiopyÊ±±¨´í.md	87f3a53dc0ad812e53e0b9bc053df3a2
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_paddlenlp 242  text_summarization pipeline ÏÂÔØÄ£ĞÍ³ö.md	0da22d5c851b0de7ffccca4286e991d0
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_Question  cannot import name download from a.md	f3d515663398858409afc46179b6965e
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_Question PaddleNLPÊ¹ÓÃÊ±±¨´íImportError DLL load f.md	96f47165c32358fe8f4f17d403f64ae9
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_Question uieÓÃfastdeploy²¿ÊğÆô¶¯·şÎñ±¨´í.md	9074f4a52777ce4df3226b6046a12472
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_Question ĞÅÏ¢³éÈ¡ÓÃµÄfinetunepyÔËĞĞ±¨´í.md	ac83c6228fbbaab150431f104046b3e0
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_Question ÔÚ½øĞĞÎÄ±¾ÏàËÆ¶ÈÆ¥ÅäÊ±³¢ÊÔÔËĞĞÊ¾ÀıÎÄµµ½á¹û±¨´í»òµÃµ½ÍêÈ«²»Ò»ÑùµÄ½á¹û.md	5a99bc8ce9760a2bbc84bcd6bdb74796
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_Question ÔÚ·ÉÌÚÀ¥ÂØxpuÉÏ°²×°paddlenlpºóÎŞ·¨Õı³£Ê¹ÓÃ.md	24aebe666f878a8c186d3e223ae086ec
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_Question ´ó¼ÒºÃÓĞÈËÊ¹ÓÃpyinstaller´ò°ü¹ıpaddleNLP UIEÂğ.md	3f40819abee20611e98201398000563e
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_text_summarizationÄ£ĞÍ¼ÓÔØÄ¿Â¼.md	65faadef113cc0fd6f3105056eeed840
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_Ê¹ÓÃDEV·ÖÖ§µ¥¿¨¶à¿¨½øĞĞÎ¢µ÷Ê±Òì³£Í£Ö¹.md	dba83a235bf4c9ecdc6db933e07deaf9
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_Ê¹ÓÃGpu¶à¿¨½øĞĞÄ£ĞÍÎ¢µ÷Ê±¿¨×¡.md	468bc560804ac60e7b199840bc4f1a50
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_PaddlePaddle_PaddleNLP_Á¿»¯¹ı³Ì±¨´í TypeError __init__ got an unexpected key.md	0d4afb25e6f0f92ca13a1165c037db56
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_arm±àÒë±¨´í jeson orin.md	bedaf2cbf20ec5fd6afd57d015e04c02
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_error void memcpyvoid const void size_t .md	d8808fcc11bafb435f18610fed16f0b5
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_Inference ¼ÓÔØÄ£ĞÍ±¨´íbecause it is missing required fi.md	20d1b5cd1d8511ca1de3bb9be06092ab
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_mac ÈçºÎÊ¹ÓÃ¶àºËCPUÑµÁ·Ä£ĞÍ.md	edcd09dc662eafe4e4100c6744601cb2
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_paddle32cuda126°²×°ºóËÀ»úµçÄÔÖØÆôºó¿ª»úÈÔÈ»ËÀ»ú.md	30a807b92391024ca9fd9ff0e1e83aa3
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_PaddleDetection»ùÓÚpaddleºÍ»ªÎª•NÌÚÏÔ¿¨ÑµÁ·Ä£ĞÍÏÔÊ¾µÄai core Ê¹ÓÃÂÊÒ».md	8e2bbdf6c17d04cf403cf0a09241cccb
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_paddlexµ¼Èëtransforms±¨´í.md	b3363b17c62aaf5c369fbe8e597df91f
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_release 30 °æ±¾µÄÍÆÀí¿âpaddle_inference ÔÚwin 10 ÔËĞĞÊ±¾­³£¿¨.md	93a2e6278b63ca0ed092b7987057cd50
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_Ê¹ÓÃpaddlepaddle 26 Ê±±¨´íIllegal instruction.md	2fbfdbf47ef19e427aad0b670b0afbff
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_Ê¹ÓÃ½Å±¾ÑµÁ·Ä£ĞÍ±¨´í.md	6d345ecac60d383cbb382ce4b505fc7c
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_¹ØÓÚ×Ô¶¯Î¢·ÖµÄ¾«¶È.md	8cb8dcb605afa1e61b17110db8c5d9ea
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_»ªÎª•NÌÚ910A modelarts°²×°paddle³ö´í.md	18bd703cc422c17b8e9068f55efcbd0a
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_Ï£ÍûÔÚÑµÁ·Æ÷Àï¼Óamsgrad ·½·¨.md	dd02e49b12bc33d98d98cb0ef94b8552
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_±¨´íImportError usrlocallibpython39dist-pack.md	f5b595c4062754dd4104d96c1cd81b07
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_ÍÆÀí¿âÓë´úÂë²»Æ¥ÅäÍÆÀí¿âÃ»ÓĞÕâ¸öEnableTunedTensorRtDynamicShapeº¯Êı.md	9dc835547dc43c42432c656a6a8674b8
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_ÑµÁ·placeÊÇ cpusave_paramÖ®ºóÔÚGPUÉÏload_param»á³ö´í.md	99624e41a5102418bfa003bb6dd366d7
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_ÑµÁ·Ò»ÂÖÖ®ºóÖ´ĞĞÆÀ¹ÀÏÔ´æÔö¼ÓÒ»±¶.md	5498b54a9d3125d33fd8b6a8a5edbc80
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_ÅÜCPU±¨´í.md	975a3c898bd6b99670ab59550456b6c3
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_·É½°¿ìËÙ°²×°±¨´í-CPU °æµÄ PaddlePaddle.md	e58d1dd87e7d6f5e5f610a5445c4ca61
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_·É½°¿ò¼Ü½¡¿µ¼ì²é±¨´í 507008.md	401c568220756fcd076f98c5e853b168
+E:\agent-system\pipeline\data\articles\gitee_gitee_issue_paddlepaddle_paddle_Çı¶¯ÎÊÌâ.md	425b0de9985a6c285d215b32c154b561
+E:\agent-system\pipeline\data\articles\juejin_2026±à³ÌÈ¦ºÜ»ğµÄ10¸öSkillsÇ°ÑÔ ×î½ü±à³ÌÈ¦×î»ğµÄÒ»¸ö´Ê·Ç Skil.md	006f59d44fddb5baa3036ebab39ecb04
+E:\agent-system\pipeline\data\articles\juejin_Cursor ×ª Codex ´ó°ë¸öÔÂÁÄÁÄÎÒµÄÕæÊµ¸ĞÊÜCursor ÈÃÎÒµÚÒ»´Î.md	eef01a9808ea4f3418ac4c908e690e91
+E:\agent-system\pipeline\data\articles\juejin_Kimi K3Ì«Å£ÁËµ«ÀÏ°åËµAPIÌ«¹óÈÃÎÒ±¾µØ»¯²¿ÊğÎÒËãÍê³É±¾ËûÕÇºìÁ³³Á.md	ab3d71857bec2506791ab079e2f63ad5
+E:\agent-system\pipeline\data\articles\juejin_ÔÙ¼û SuperpowersºÜ¶à Skill ÕæµÄ¿ÉÒÔÈÓµôÁËÇ°¼¸ÌìÔÚÖªºõ¿´µ½.md	b082c3f38cb0220a2eac3a6bbe0d8b9f
+E:\agent-system\pipeline\data\articles\juejin_Ğ´¸øÄêÇá³ÌĞòÔ±µÄ¼¸µã½¨Òé-2ÏÖÔÚ»¥ÁªÍøºìÀûÒÑ¾­ÏûÊ§ÁËÉîÖªÄêÇá³ÌĞòÔ±µÄ²»Ò×ÏÂÃæ.md	2b7011a8813231b6367a168b2a10588f
+E:\agent-system\pipeline\data\articles\juejin_Ğ¡³ÌĞòÉÏÏß°ëÄêÎÒ×¬ÁË¶àÉÙÇ®1 ¿ª·¢Àú³Ì Ê±¼ä¹ıµÃÕæ¿ì×ªÑÛ¼ä¸£Öí¼ÇÕËĞ¡³ÌĞòÉÏ.md	c5973bca1ead19cbfbc25a37c4590588
+E:\agent-system\pipeline\data\articles\juejin_ÃæÊÔ¹ÙÎÊÄãAI ÄÜĞ´ 80 µÄ´úÂëÁË¹«Ë¾ÎªÊ²Ã´»¹ĞèÒªÄãÏÈËµÒ»¸öÊÂÊµ.md	e0f8ddf68fd641a40355b5900d50f9a1
+E:\agent-system\pipeline\data\articles\sched_cnblogs_AI Èí¼ş¿ª·¢ÊµÕ½½Ì³ÌÒ»´ÓÒ»¸öÏë·¨µ½¿ÉÑéÖ¤½»¸¶ - DevWiki.md	c0de3802865773395929d68a07c2ddfe
+E:\agent-system\pipeline\data\articles\sched_cnblogs_Apache SeaTunnel Ìá½»Ò»¸öÈÎÎñ¶¼¾­¹ıÁËÊ²Ã´ - ApacheS.md	9b0f56f1eae155c21d5f252ed6326faa
+E:\agent-system\pipeline\data\articles\sched_cnblogs_LinuxOllama Termux  Ò»¿îÔËĞĞÔÚ Android Æ½Ì¨.md	15ebed7e652786a2226eebf34a4dedf1
+E:\agent-system\pipeline\data\articles\sched_cnblogs_NETWPF ³ÌĞòÔÚ²¿·Ö Windows µçÄÔÎŞ·¨±£´æÓÃ»§»·¾³±äÁ¿Ê¹ÓÃ D.md	9e9db76ab18037f93a8953f07b6bd679
+E:\agent-system\pipeline\data\articles\sched_cnblogs_Opus 5 ÏµÍ³ÌáÊ¾´Ê²ğ½âÄ£ĞÍÄÜÁ¦ÔËĞĞÊ±¹¤¾ß¼ÇÒä¹æÔòºÍ¿É¿¿ Agent.md	ce7be5fae647dce00fc6d9ee39d6ad93
+E:\agent-system\pipeline\data\articles\sched_cnblogs_PC¶Ë×Ô¶¯»¯²âÊÔÊµÕ½½Ì³Ì-10-pywinauto²Ù×÷µ¯³öÎÄ¼şÑ¡Ôñ¿ò ÏêÏ¸½Ì³Ì.md	bb6fae2ab290daab7d6702982981907e
+E:\agent-system\pipeline\data\articles\sched_cnblogs_Solon AOT  NativeÈı¶ÎÊ½±àÒë´Ó Java µ½Ô­Éú¿ÉÖ´ĞĞÎÄ¼ş.md	d9666914f28818d4785da578b8efc3c0
+E:\agent-system\pipeline\data\articles\sched_cnblogs_TrustedKnowledgeÒ»¸ö°ÑÖªÊ¶Todo²©¿ÍºÍ AI ´®ÆğÀ´µÄ¸ö.md	fb171ac788e7bd08a623f0472d0df749
+E:\agent-system\pipeline\data\articles\sched_cnblogs_Unity ÔÚPicoÖĞÇĞ»»³¡¾°ºóÈËÎï³öÉúÔÚÆæ¹ÖµÄÎ»ÖÃÔ­Òò¼°½â¾ö·½°¸ - ¼Î¾ı.md	d44f9e139d86c323c7ded080bc749cf3
+E:\agent-system\pipeline\data\articles\sched_cnblogs_´Ó PHP µ½ AI  Golang³ÌĞòÔ±×Ô¾È×ªĞÍÊÖ¼ÇÎåÊ®ÎåÔö¼Ó ar.md	72e4898cb71c13511e4c4da0205a12ac
+E:\agent-system\pipeline\data\articles\sched_cnblogs_Í¬ÊÂËµÎÒÊÇ²ÆÃÔ¹«Ë¾ÂòµÄ AI ÕËºÅÓĞÁ½¸öÈËÃ»ÓÃÎÒ½Ó¹ıÀ´ÁË - ±à³ÌÒ»Éú.md	ea8aa915b6b30cac2d9dc08d853b42a9
+E:\agent-system\pipeline\data\articles\sched_cnblogs_ÈçºÎÌáÉıÊıÑ§½¨Ä£ÖÊÁ¿ºËĞÄ·½·¨ÓëÈı´ó¹¤¾ßÍÆ¼ö - ÍÛÅ¶ÍæÍæ.md	0ff8764a9eda39f835bfaa9d2ad317f0
+E:\agent-system\pipeline\data\articles\sched_cnblogs_Õ÷³Ì6Ğ£×¼Á¿»¯ÖĞHistogramObserver½âÎö - µØÆ½ÏßÖÇÄÜ¼İÊ»¿ª.md	ccd05567f07ff3fd56a44f3d090f8f4e
+E:\agent-system\pipeline\data\articles\sched_cnblogs_Î¢·şÎñ¼Ü¹¹Éè¼ÆÄ£Ê½ µÚÈıÕÂ¶ÁÊé±Ê¼ÇÎ¢·şÎñ¼Ü¹¹ÖĞµÄ½ø³Ì¼äÍ¨ĞÅ - LYË«ÍÁ.md	a3c7e003d2d4a36a833bddfa2e3685e4
+E:\agent-system\pipeline\data\articles\sched_cnblogs_ÎÒµÄ³ÔÒ©ÌáĞÑ app ¸üĞÂV20À² - is81.md	2e5808bea289e2f40d414a49656b1fdb
+E:\agent-system\pipeline\data\articles\sched_cnblogs_ÉîÈë Linux ÄÚºËµÄºÚÏ»×Ódmesg ÃüÁîÍêÈ«Ö¸ÄÏ - dashery.md	90171640ae8b911c601bed8eecb91383
+E:\agent-system\pipeline\data\articles\sched_cnblogs_ÓÃAI×ö×Ô¶¯»¯²âÊÔÄÄĞ©ÊÇÕæ²»ĞĞÄÄĞ©ÊÇÄã²»»áÓÃ - ¿ñÊ¦.md	d45c0c09d946dfe1be3265826e87812c
+E:\agent-system\pipeline\data\articles\sched_cnblogs_ÏßÉÏ·şÎñÆ÷·´Ó¦ÂıÈçºÎÅÅ²é - RainµÄJava´óÉñÊµÕ½È¦.md	27580d8c90ff62f846b46e7f7aa23870
+E:\agent-system\pipeline\data\articles\sched_cnblogs_¼ÇÒ»´Î·Ö²¼Ê½¼¯ÈºÖªÊ¶ÌåÏµÊáÀí¸½¼Ü¹¹¾ö²ß¿ò¼Ü - DBAĞ¡Âí¸ç.md	c5658477b37e5ec11bd3078b6f57142b
+E:\agent-system\pipeline\data\articles\sched_cnblogs_ÃæÊÔÌâMySQL Ä¬ÈÏµÄÊÂÎñ¸ôÀë¼¶±ğÊÇÊ²Ã´ÎªÊ²Ã´Ñ¡ÔñÕâ¸ö¼¶±ğ - ·ğ×æÈÃ.md	a54aa6c7451fc3aac86f919d55d2edca
+E:\agent-system\pipeline\data\articles\sched_juejin_2026 ÉÏ°ëÄêÇ°¶ËÈ¦ÒÑ¾­Õ¨ÁËÎå´Î2026 ÉÏ°ëÄêÇ°¶ËÈ¦ÒÑ¾­Õ¨ÁËÎå´Î Ò»T.md	0aa0b63203aed4d4cec4b4de0ef415d9
+E:\agent-system\pipeline\data\articles\sched_juejin_2026±à³ÌÈ¦ºÜ»ğµÄ10¸öSkillsÇ°ÑÔ ×î½ü±à³ÌÈ¦×î»ğµÄÒ»¸ö´Ê·Ç Skil.md	ca8a727aba9ca3d311f5b53f81fd5671
+E:\agent-system\pipeline\data\articles\sched_juejin_Codex Çî¹í´ó¾ÈĞÇÇîÔòË¼±ä¸»ÔòËãÁË¸»¸ç¾Í²»ÓÃ¿´ÕâÆªÎÄÕÂÁË ÎªÁËÊØ.md	69e5e59dcfe7ab9acd2aef76a7ca19ac
+E:\agent-system\pipeline\data\articles\sched_juejin_Comate ÒÑÖ§³ÖDeepSeek-V4-Flash ÕıÊ½°æ7ÔÂ31ÈÕDee.md	d68777f055aabe1d02d9172b8a775d09
+E:\agent-system\pipeline\data\articles\sched_juejin_Cursor ×ª Codex ´ó°ë¸öÔÂÁÄÁÄÎÒµÄÕæÊµ¸ĞÊÜCursor ÈÃÎÒµÚÒ»´Î.md	00c1c938c1d7a5659129756cd2fc2512
+E:\agent-system\pipeline\data\articles\sched_juejin_Kimi K3Ì«Å£ÁËµ«ÀÏ°åËµAPIÌ«¹óÈÃÎÒ±¾µØ»¯²¿ÊğÎÒËãÍê³É±¾ËûÕÇºìÁ³³Á.md	40e10c85b0ad50a99aef1aa00bb26a56
+E:\agent-system\pipeline\data\articles\sched_juejin_Python Òì³£´¦Àí±¾ÎÄÃæÏòÒÑÓĞÇ°¶Ë¿ª·¢»ù´¡ÕıÔÚÑ§Ï° Python µÄ¿ª·¢Õß.md	673a10a2b9e5dbe6018f51f0555923d0
+E:\agent-system\pipeline\data\articles\sched_juejin_´Ó¶àÒ³Ãæµ½SPAÉîÈëHash Â·ÓÉÀí½âºÍÇ°¶ËÂ·ÓÉÔ­Àí´«Í³¶àÒ³Ã¿´ÎÌø×ª¶¼ÕûÒ³ÖØÔØ.md	2cbeb8f8f0a0458d2eeb59d1d058db8f
+E:\agent-system\pipeline\data\articles\sched_juejin_¹«Ë¾²»¸øÄãÅä AIÄã»á×Ô¼ºÌÍÇ®ÂğÇ°¼¸Ìì¹ä¼¼ÊõÉçÇøÊ±¿´µ½Ò»ÌõÍ¦ÓĞÒâË¼µÄÌû×Ó.md	c47fe215df14e12c3e06737194c3bf72
+E:\agent-system\pipeline\data\articles\sched_juejin_ÔÙ¼û SuperpowersºÜ¶à Skill ÕæµÄ¿ÉÒÔÈÓµôÁËÇ°¼¸ÌìÔÚÖªºõ¿´µ½.md	fb1e720225a823275264eacb9e343ef7
+E:\agent-system\pipeline\data\articles\sched_juejin_Ğ´¸øÄêÇá³ÌĞòÔ±µÄ¼¸µã½¨Òé-2ÏÖÔÚ»¥ÁªÍøºìÀûÒÑ¾­ÏûÊ§ÁËÉîÖªÄêÇá³ÌĞòÔ±µÄ²»Ò×ÏÂÃæ.md	67fe10c62e902a2e95dbc55a4c3f7214
+E:\agent-system\pipeline\data\articles\sched_juejin_Ç°¶ËÂ·ÓÉÒ»¶şÊ®ĞĞ´úÂëÊµÏÖ Hash Â·ÓÉ±¾ÎÄÆÊÎö´«Í³¶àÒ³µ¼º½±×¶ËÓëSPAÂ·.md	3b3db9cb4e56f53cd18b8400f4fa5fd7
+E:\agent-system\pipeline\data\articles\sched_juejin_ÊµÓÃĞÔ Max ĞÂ  Flutter    Dart Agent  Skil.md	0cbf13affd2d9a797377b788413a317a
+E:\agent-system\pipeline\data\articles\sched_juejin_Ğ¡³ÌĞòÉÏÏß°ëÄêÎÒ×¬ÁË¶àÉÙÇ®1 ¿ª·¢Àú³Ì Ê±¼ä¹ıµÃÕæ¿ì×ªÑÛ¼ä¸£Öí¼ÇÕËĞ¡³ÌĞòÉÏ.md	a2a69a2e7622146e81a0abd41eb7a09e
+E:\agent-system\pipeline\data\articles\sched_juejin_Ğ¡Ã×MiMoCode¹ÙÍøÑÕÖµ¸ßCodexÄÃÀ´°ÉÄúàÏ11ÍêÃÀ¸´¿Ì¿´µ½Ğ¡.md	5043ea83a5ac908ff9d1f684fda4f027
+E:\agent-system\pipeline\data\articles\sched_juejin_Ğ¯³ÌÔ±¹¤ÔÚĞ¯³Ì4ÄêÔÂĞ½3Íò×óÓÒ»ù±¾Ã»ÕÇĞ½ÁË²»¹ıÍ¦Âú×ãµÄ±Ï¾¹ÎÈ¶¨¸£ÀûÒ².md	3fdd92ef75adcd6d00a902c6428c6c21
+E:\agent-system\pipeline\data\articles\sched_juejin_ÈÕÖ¾Æ¾¿ÕÏûÊ§Filter Ë³Ğò´íÁËDubbo Ò»¸ö order ÖµÈÃ Ex.md	dd9685bbbb600cd755b10e3cf3e0722a
+E:\agent-system\pipeline\data\articles\sched_juejin_×î½ü¹«Ë¾ÉÕtoken±ÈÕĞÔ±¹¤»¹¹óÀÏ°å¸ÉãÂÁËÈçÌâ ÕâÕæµÄÃ»ÔÚ¿ªÍæĞ¦ Õâ.md	25a2073525f3cce16fbefc6b76fab74c
+E:\agent-system\pipeline\data\articles\sched_juejin_ÓĞjyÖªµÀuniapp¿ª·¢Ê±ºòÓÃÎ¢ĞÅ¿ª·¢¹¤¾ßÕæ»úÄ£ÄâÍ¼Æ¬²»ÏÔÊ¾ÊÇÎªÊ²Ã´µÄÃ´.md	c96382bed138cf61bdb321a1fe5b436d
+E:\agent-system\pipeline\data\articles\sched_juejin_Ã¿ÔÂ13ÒÚÃâ·ÑToken14¼ÒAI´ó³§µÄAPIÈÎÄãÓÃ°üÀ¨GeminiÓÃ AI.md	bc5b40647f3fe3bc80fb6461da3b8c30
+E:\agent-system\pipeline\data\articles\sched_juejin_ÏßÉÏ½Ó¿ÚÍ»È»³¬Ê±ÔõÃ´ÅĞ¶Ï¿¨ÔÚ NginxÏß³Ì³ØÁ¬½Ó³Ø»¹ÊÇ SQLÏßÉÏ½Ó¿Ú.md	cc307220b0425cd8338c6b2f5e530f27
+E:\agent-system\pipeline\data\articles\sched_juejin_ÃæÊÔ¹ÙÎÊÄãAI ÄÜĞ´ 80 µÄ´úÂëÁË¹«Ë¾ÎªÊ²Ã´»¹ĞèÒªÄãÏÈËµÒ»¸öÊÂÊµ.md	f1e3cbdb34e41f70acb81454d9b625ff

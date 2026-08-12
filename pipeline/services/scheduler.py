@@ -245,25 +245,76 @@ def _incremental_crawl_job() -> dict:
     except Exception as e:
         print(f"  [Scheduler] 博客园爬取失败: {e}")
 
-    # ── GitHub Trending ──
+    # ── Gitee Issues + Docs（国内直连 API，主数据源）──
+    try:
+        from crawlers.gitee_adapter import fetch_all_gitee_sources, save_to_markdown as gitee_save
+        gitee_issues, gitee_docs = fetch_all_gitee_sources()
+        gitee_items = gitee_issues + gitee_docs
+        gitee_new = 0
+        for item in gitee_items:
+            url = item.get("html_url", "")
+            if not url or state.is_duplicate(url):
+                continue
+            state.mark_crawled({
+                "url": url,
+                "title": item.get("title", ""),
+                "source": item.get("source", "gitee"),
+            })
+            new_articles.append({
+                "title": item.get("title", ""),
+                "url": url,
+                "source": item.get("source", "gitee"),
+            })
+            gitee_new += 1
+        if gitee_items:
+            gitee_save(gitee_items)
+        state.mark_source_crawled("gitee")
+        print(f"  [Scheduler] Gitee Issues+Docs: {gitee_new}/{len(gitee_items)} 篇新文章 (总拉取 {len(gitee_items)} 条)")
+    except Exception as e:
+        print(f"  [Scheduler] Gitee 爬取失败: {e}")
+
+    # ── GitHub Issues + Docs（纯 API 拉取，备用）──
+    try:
+        from crawlers.github_issues import fetch_all_github_sources, save_to_markdown
+        gh_issues, gh_docs = fetch_all_github_sources()
+        gh_items = gh_issues + gh_docs
+        gh_new = 0
+        for item in gh_items:
+            url = item.get("html_url", "")
+            if not url or state.is_duplicate(url):
+                continue
+            state.mark_crawled({
+                "url": url,
+                "title": item.get("title", ""),
+                "source": item.get("source", "github"),
+            })
+            new_articles.append({
+                "title": item.get("title", ""),
+                "url": url,
+                "source": item.get("source", "github"),
+            })
+            gh_new += 1
+        if gh_items:
+            save_to_markdown(gh_items)
+        state.mark_source_crawled("github_issues")
+        print(f"  [Scheduler] GitHub Issues+Docs: {gh_new}/{len(gh_items)} 篇新文章 (总拉取 {len(gh_items)} 条)")
+    except Exception as e:
+        print(f"  [Scheduler] GitHub 爬取失败: {e}")
+
+    # ── GitHub Trending（保留作为趋势参考，低权重来源）──
     try:
         from crawlers.multi_source import fetch_github_trending
-        repos = fetch_github_trending(limit=8)
-        new_count = 0
+        repos = fetch_github_trending(limit=5)
+        gh_trend_new = 0
         for a in repos:
             url = a.get("url", "")
             if state.is_duplicate(url):
                 continue
-            safe = ''.join(c for c in a['title'][:40] if c.isalnum() or c in (' ', '-', '_')).strip()
-            fpath = data_dir / f'sched_github_{safe}.md'
-            if not fpath.exists():
-                with open(fpath, 'w', encoding='utf-8') as f:
-                    f.write(f"# {a['title']}\n\n> GitHub Trending | {url}\n> 爬取时间: {datetime.now().isoformat()}\n\n{a.get('brief','')}")
             state.mark_crawled({"url": url, "title": a['title'], "source": "GitHub Trending"})
             new_articles.append({"title": a['title'], "url": url, "source": "GitHub Trending"})
-            new_count += 1
+            gh_trend_new += 1
         state.mark_source_crawled("github")
-        print(f"  [Scheduler] GitHub Trending: {new_count} 篇新文章")
+        print(f"  [Scheduler] GitHub Trending: {gh_trend_new} 篇新文章")
     except Exception as e:
         print(f"  [Scheduler] GitHub Trending 爬取失败: {e}")
 

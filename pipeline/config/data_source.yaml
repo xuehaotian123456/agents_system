@@ -1,0 +1,70 @@
+# ============================================================
+# Agent 双引擎系统 — 数据源配置
+# ============================================================
+# 控制爬虫行为、数据源开关、离线容错策略。
+# 修改后重启 Pipeline A2A 服务即可生效，无需改代码。
+#
+# 双源模式:
+#   enable_github=true  → GitHub API (需翻墙)
+#   enable_gitee=true   → Gitee API (国内直连)
+#   两者可同时开启，数据合并入库，可信度分别打分。
+#
+# Gitee Access Token（推荐配置）:
+#   1. 访问 https://gitee.com/profile/personal_access_tokens
+#   2. 创建 Token，勾选 user_info + projects（只读即可）
+#   3. 在 .env 中添加: GITEE_ACCESS_TOKEN=你的token
+#   未认证: 60 次/小时 | 认证后: 5000 次/小时
+
+data_source:
+  # ── 数据源总开关 ──
+  enable_github: false         # GitHub 需翻墙，国内环境默认关闭
+  enable_gitee: true           # Gitee 国内直连，主数据源
+  enable_juejin: true          # 掘金优质文章（低权重补充）
+  enable_cnblogs: true         # 博客园（低权重补充）
+
+  # ── 离线容错 ──
+  fallback_to_cache: true
+  max_retries: 3
+  cache_dir: "./cache/github_offline"
+
+# ── GitHub 仓库（需翻墙）──
+github:
+  repo_list:
+    - owner: "langchain-ai"
+      repo: "langgraph"
+      doc_path: "docs"
+    - owner: "langchain-ai"
+      repo: "langchain"
+      doc_path: "docs"
+    - owner: "vllm-project"
+      repo: "vllm"
+      doc_path: "docs/source"
+  timeout_sec: 30
+  issues_limit: 20
+  issues_since_days: 7
+
+# ── Gitee 仓库（国内直连，主数据源）──
+gitee:
+  repo_list:
+    - owner: "mindspore"
+      repo: "mindspore"
+      doc_path: "docs"
+    - owner: "mindspore"
+      repo: "community"
+      doc_path: ""
+    - owner: "paddlepaddle"
+      repo: "paddle"
+      doc_path: "docs"
+    - owner: "PaddlePaddle"
+      repo: "PaddleNLP"
+      doc_path: "docs"
+  timeout_sec: 30
+  issues_limit: 25
+  issues_since_days: 60        # Gitee issue 更新慢，放宽时间窗口
+
+# ── 脏数据过滤阈值 ──
+filter:
+  min_body_length: 100         # Gitee issue 平均较短，降低阈值
+  min_lines: 3
+  require_technical: true
+  filter_bot: true

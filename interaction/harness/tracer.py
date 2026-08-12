@@ -252,6 +252,165 @@ class AgentTracer:
 
     # ==================== 输出 ====================
 
+    def to_markdown(self, title: str = "Agent 决策链报告") -> str:
+        """
+        生成人类可读的 markdown 决策链报告。
+
+        面试/演示直接打印，一眼看出 Agent 的动态推理过程。
+        """
+        if not self.events:
+            return "*（无追踪事件）*"
+
+        lines = []
+        links = []
+        link_counter = [0]  # 闭包引用
+
+        def _ref_id():
+            link_counter[0] += 1
+            return link_counter[0]
+
+        # ── 标题 ──
+        lines.append(f"# {title}")
+        lines.append("")
+
+        # ── 概览表 ──
+        s = self.summary()
+        lines.append("## 会话概览")
+        lines.append("")
+        lines.append("| 指标 | 值 |")
+        lines.append("|:---|---|")
+        lines.append(f"| 模型 | `{self._model_used}` |")
+        lines.append(f"| 推理轮次 | {s['total_turns']} 轮 |")
+        lines.append(f"| LLM 调用 | {s['llm_calls']} 次 |")
+        lines.append(f"| 工具调用 | {s['tool_calls']} 次 |")
+        lines.append(f"| 子 Agent | {s['subagents']} 个 |")
+        lines.append(f"| 总耗时 | {s['total_elapsed_ms']:.0f} ms |")
+        if s['errors']:
+            lines.append(f"| 异常 | {s['errors']} 次 |")
+        lines.append("")
+
+        # ── 决策链 ──
+        lines.append("## 决策链")
+        lines.append("")
+
+        round_tools = {}   # turn -> [(tool_name, success, latency)]
+        round_thoughts = {}  # turn -> [thoughts]
+        round_errors = {}    # turn -> [errors]
+        final_answer = ""
+
+        for e in self.events:
+            t = e.turn
+            d = e.data
+
+            if e.type == TraceEventType.LLM_THINKING:
+                round_thoughts.setdefault(t, []).append(d.get("thought_preview", ""))
+            elif e.type == TraceEventType.TOOL_RESULT:
+                round_tools.setdefault(t, []).append((
+                    d.get("tool_name", "?"),
+                    d.get("success", True),
+                    d.get("latency_ms", 0),
+                    d.get("result_preview", ""),
+                ))
+            elif e.type == TraceEventType.ERROR:
+                round_errors.setdefault(t, []).append(d.get("message", ""))
+            elif e.type == TraceEventType.FINAL_ANSWER:
+                final_answer = d.get("answer_preview", "")
+            elif e.type == TraceEventType.CONTEXT_COMPRESS:
+                lines.append(f"*[压缩] 上下文压缩: {d.get('before_tokens',0)} -> {d.get('after_tokens',0)} tokens (-{d.get('reduction_ratio',0)}%)*")
+                lines.append("")
+
+        # 逐轮输出
+        for turn in sorted(set(list(round_thoughts.keys()) + list(round_tools.keys()))):
+            lines.append(f"### Round {turn}")
+            lines.append("")
+
+            # 思考
+            thoughts = round_thoughts.get(turn, [])
+            for th in thoughts:
+                lines.append(f"> **[*] 思考**: {th}")
+                lines.append("")
+
+            # 工具
+            tools = round_tools.get(turn, [])
+            for i, (tname, ok, lat, preview) in enumerate(tools):
+                status = "[OK]" if ok else "[FAIL]"
+                lines.append(f"**>> {status} {tname}** ({lat:.0f}ms)")
+                lines.append("")
+                preview_clean = preview[:250].replace("\n", " ")
+                lines.append(f"> {preview_clean}")
+                lines.append("")
+
+            # 错误
+            errs = round_errors.get(turn, [])
+            for err in errs:
+                lines.append(f"!! 异常: {err}")
+                lines.append("")
+
+            lines.append("---")
+            lines.append("")
+
+        # ── 最终回答 ──
+        if final_answer:
+            lines.append("## 最终回答")
+            lines.append("")
+            lines.append(final_answer[:2000])
+            lines.append("")
+
+        # ── 统计 ──
+        lines.append("## 统计")
+        lines.append("")
+        lines.append("| 指标 | 值 |")
+        lines.append("|:---|---|")
+        lines.append(f"| 总轮次 | {s['total_turns']} |")
+        lines.append(f"| LLM 调用 | {s['llm_calls']} |")
+        lines.append(f"| 工具调用 | {s['tool_calls']} |")
+        lines.append(f"| 总耗时 | {s['total_elapsed_ms']:.0f}ms |")
+        if s['tool_calls'] > 0:
+            lines.append(f"| 平均工具延迟 | {s['avg_tool_latency_ms']:.1f}ms |")
+        lines.append(f"| 事件总数 | {s['events_count']} |")
+        lines.append("")
+
+        return "\n".join(lines)
+
+    def to_chain(self) -> list[dict]:
+        """
+        导出为结构化决策链，方便程序化消费。
+
+        Returns:
+            [{turn, thought, tool_name, tool_success, tool_latency_ms, tool_result}]
+        """
+        chain = []
+        current = {"turn": 0, "thought": "", "tool_name": "",
+                    "tool_success": True, "tool_latency_ms": 0, "tool_result": ""}
+
+        for e in self.events:
+            d = e.data
+            if e.type == TraceEventType.TURN_START:
+                if current["thought"] or current["tool_name"]:
+                    chain.append(current)
+                current = {"turn": e.turn, "thought": "", "tool_name": "",
+                            "tool_success": True, "tool_latency_ms": 0, "tool_result": ""}
+            elif e.type == TraceEventType.LLM_THINKING:
+                current["thought"] = d.get("thought_preview", "")
+            elif e.type == TraceEventType.TOOL_RESULT:
+                current["tool_name"] = d.get("tool_name", "")
+                current["tool_success"] = d.get("success", True)
+                current["tool_latency_ms"] = d.get("latency_ms", 0)
+                current["tool_result"] = d.get("result_preview", "")[:300]
+
+        if current["thought"] or current["tool_name"]:
+            chain.append(current)
+
+        return chain
+
+    @property
+    def _model_used(self) -> str:
+        """从事件中提取模型名"""
+        for e in self.events:
+            if e.type == TraceEventType.SESSION_START:
+                return e.data.get("model", "unknown")
+        return "unknown"
+
     def to_dict(self) -> dict:
         """导出完整轨迹为字典"""
         return {

@@ -1,5 +1,6 @@
 """LangGraph 四节点: Planner → Retriever → Reflector → Summarizer"""
 import json
+from datetime import datetime
 from model.factory import robust_llm_call
 from agent.state import AgentState
 from agent.tools import ALL_TOOLS
@@ -32,6 +33,32 @@ PLANNER_PROMPT = """你是一个技术助手规划器。精选 2-3 个最相关�
     "sub_queries": ["子问题"]
 }}"""
 
+def _rule_based_plan(query: str) -> dict:
+    """
+    规则兜底：当 Planner LLM JSON 解析失败时，根据 query 关键词智能选择工具。
+    不依赖 LLM 输出质量，保证系统在最坏情况下也能运行。
+    """
+    q = query.lower()
+    # 对比类
+    if any(kw in q for kw in ["对比", "vs", "区别", "比较", "哪个好", "优缺点"]):
+        return {"intent": query, "requires_search": True,
+                "suggested_tools": ["compare_tech", "rag_search"], "target_entity": ""}
+    # 热榜/趋势类
+    if any(kw in q for kw in ["热榜", "热门", "趋势", "最新", "最近", "今天"]):
+        return {"intent": query, "requires_search": True,
+                "suggested_tools": ["trending_list"], "target_entity": ""}
+    # 实体关联/报错类 → 优先 KG
+    if any(kw in q for kw in ["关联", "相关", "关系", "依赖", "报错", "错误", "异常"]):
+        return {"intent": query, "requires_search": True,
+                "suggested_tools": ["kg_lookup", "rag_search"], "target_entity": ""}
+    # 邮件/配置类
+    if any(kw in q for kw in ["邮件", "发送", "推送", "订阅", "摘要"]):
+        return {"intent": query, "requires_search": True,
+                "suggested_tools": ["send_digest_email"], "target_entity": ""}
+    # 默认: RAG 检索
+    return {"intent": query, "requires_search": True,
+            "suggested_tools": ["rag_search"], "target_entity": ""}
+
 def planner_node(state: AgentState) -> AgentState:
     query = state["query"]
     tool_names = [t.name for t in ALL_TOOLS]
@@ -46,9 +73,18 @@ def planner_node(state: AgentState) -> AgentState:
         if start >= 0 and end > start:
             plan = json.loads(content[start:end])
         else:
-            plan = {"intent": query, "requires_search": True, "suggested_tools": ["rag_search"]}
-    except Exception:
-        plan = {"intent": query, "requires_search": True, "suggested_tools": ["rag_search"]}
+            plan = _rule_based_plan(query)
+            state.setdefault("errors", []).append({
+                "node": "planner", "error": "JSON提取失败",
+                "timestamp": datetime.now().isoformat()
+            })
+    except Exception as e:
+        plan = _rule_based_plan(query)
+        state.setdefault("errors", []).append({
+            "node": "planner", "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        })
+        logger.warning(f"[Planner] LLM 解析失败，使用规则兜底: {e}")
 
     state["plan"] = plan
     logger.info(f"[Planner] intent={plan.get('intent', '')[:60]}")
@@ -74,15 +110,18 @@ def retriever_node(state: AgentState) -> AgentState:
     except Exception:
         pass
 
-    # KG 实体扩散：为所有检索类工具提供扩展词
+    # KG 多跳实体扩散：为所有检索类工具提供扩展词
     kg_expanded_terms = []
+    kg_chain_text = ""
     try:
         from rag.knowledge_graph import get_kg
         kg = get_kg()
         if kg.is_built:
-            kg_expanded_terms = kg.one_hop_expand(query, max_entities=3)
-            if kg_expanded_terms:
-                logger.info(f"[KG扩散] {kg_expanded_terms[:5]}")
+            mh = kg.multi_hop_expand(query, max_hops=2, top_per_hop=3)
+            if mh and mh.get("expanded_entities"):
+                kg_expanded_terms = mh["expanded_entities"][:10]
+                kg_chain_text = mh.get("chain_text", "")
+                logger.info(f"[KG多跳扩散] {len(kg_expanded_terms)} 实体, 链: {kg_chain_text[:100]}")
     except Exception:
         pass
 
@@ -90,6 +129,7 @@ def retriever_node(state: AgentState) -> AgentState:
     suggested = suggested[:3]
 
     # 执行 Planner 建议的每个工具
+    failed_tools = []
     for tool_name in suggested:
         # 有实时工具时跳过 rag_search
         if has_realtime_tools and tool_name == "rag_search":
@@ -106,7 +146,11 @@ def retriever_node(state: AgentState) -> AgentState:
         try:
             # 通用调用：根据工具签名自动路由
             if tool_name == "rag_search":
-                result = tool.invoke({"query": query})
+                # 注入 KG 多跳扩散词，提升 RAG 召回
+                enriched_query = query
+                if kg_expanded_terms:
+                    enriched_query = query + " " + " ".join(kg_expanded_terms[:5])
+                result = tool.invoke({"query": enriched_query})
             elif tool_name == "trending_list":
                 result = tool.invoke({"source": "juejin"})
             elif tool_name == "fetch_article":
@@ -176,8 +220,28 @@ def retriever_node(state: AgentState) -> AgentState:
             state["tool_calls"].append({"tool": tool_name, "result": result_str[:800]})
             logger.info(f"[Retriever] {tool_name} 完成: {len(result_str)} 字符")
         except Exception as e:
-            logger.warning(f"[Retriever] {tool_name} 失败: {e}")
-            context_parts.append(f"[{tool_name}]: 执行异常 - {e}")
+            failed_tools.append(tool_name)
+            error_msg = f"{type(e).__name__}: {str(e)[:200]}"
+            logger.warning(f"[Retriever] {tool_name} 失败: {error_msg}")
+            context_parts.append(f"[{tool_name}]: 执行异常 - {error_msg}")
+            state.setdefault("errors", []).append({
+                "node": "retriever", "tool": tool_name, "error": error_msg,
+                "timestamp": datetime.now().isoformat()
+            })
+
+    # 降级：所有工具均失败 → 返回明确错误信息，让 LLM 诚实告知用户
+    if not context_parts and failed_tools:
+        logger.warning(f"[Retriever] 所有工具失败 ({failed_tools})，触发降级")
+        state["degradation_triggered"] = True
+        context_parts.append(
+            "当前所有检索工具均暂时不可用。请诚实告知用户这一情况，"
+            "建议用户稍后重试或换个方式提问。不要编造信息。"
+        )
+
+    # ── 注入 KG 多跳推理链到上下文 ──
+    if kg_chain_text:
+        context_parts.append(
+            "[KG 推理链] (GraphRAG 多跳扩散):\n" + kg_chain_text)
 
     state["context"] = "\n\n---\n".join(context_parts) if context_parts else "无可用信息"
     state["retrieval_rounds"] += 1
@@ -225,8 +289,14 @@ def reflector_node(state: AgentState) -> AgentState:
         start = content.find("{")
         end = content.rfind("}") + 1
         reflection = json.loads(content[start:end]) if start >= 0 and end > start else {"verdict": "pass", "confidence": 0.6}
-    except Exception:
-        reflection = {"verdict": "pass", "confidence": 0.6}
+    except Exception as e:
+        # LLM 调用失败 → 跳过反思，直接进入 Summarizer
+        logger.warning(f"[Reflector] LLM 调用失败，跳过反思: {e}")
+        state.setdefault("errors", []).append({
+            "node": "reflector", "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        })
+        reflection = {"verdict": "pass", "confidence": 0.5}
 
     state["confidence"] = reflection.get("confidence", 0.6)
     verdict = reflection.get("verdict", "pass")

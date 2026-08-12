@@ -63,6 +63,7 @@ class CrawlState:
             "articles": {},        # {url: {title, source, crawled_at, content_hash}}
             "last_crawl": {},      # {source_name: "2026-08-06T12:00:00"}
             "last_full_crawl": None,  # 最近一次全量爬取时间
+            "repo_state": {},      # GitHub 仓库增量状态: {"owner/repo": {"last_issue_number": N, "last_doc_sha": "..."}}
             "smtp_config": {       # 用户通过 Harness 对话配置的 SMTP（优先于 .env）
                 "host": "",
                 "port": 465,
@@ -217,6 +218,28 @@ class CrawlState:
         """检查用户是否已通过对话配置了 SMTP"""
         cfg = self._data.get("smtp_config", {})
         return bool(cfg.get("host") and cfg.get("user") and cfg.get("password"))
+
+    # ==================== GitHub 仓库增量状态 ====================
+
+    def get_repo_state(self, owner: str, repo: str) -> dict:
+        """获取指定仓库的增量爬取状态"""
+        key = f"{owner}/{repo}"
+        return self._data.get("repo_state", {}).get(key, {
+            "last_issue_number": 0,
+            "last_doc_sha": "",
+            "last_crawl_time": None,
+        })
+
+    def update_repo_state(self, owner: str, repo: str, **kwargs):
+        """更新仓库增量状态（issue_number, doc_sha 等）"""
+        if "repo_state" not in self._data:
+            self._data["repo_state"] = {}
+        key = f"{owner}/{repo}"
+        current = self._data["repo_state"].get(key, {})
+        current.update(kwargs)
+        current["last_crawl_time"] = datetime.now().isoformat()
+        self._data["repo_state"][key] = current
+        self._save()
 
     # ==================== 状态查询 ====================
 

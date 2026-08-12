@@ -15,6 +15,8 @@ class AgentState(TypedDict):
     retry_count: int
     max_retries: int
     session_id: str
+    errors: list[dict]                # ★ 新增: 错误追踪 [{"node", "tool", "error", "timestamp"}]
+    degradation_triggered: bool       # ★ 新增: 是否触发降级策略
 
 def initial_state(query: str, session_id: str = "default") -> AgentState:
     return {
@@ -30,4 +32,6 @@ def initial_state(query: str, session_id: str = "default") -> AgentState:
         "retry_count": 0,
         "max_retries": 2,
         "session_id": session_id,
+        "errors": [],
+        "degradation_triggered": False,
     }

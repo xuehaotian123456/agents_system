@@ -32,7 +32,7 @@ A2A_TOOLS = [
     # ── 原有工具 (9个) ──
     {"name": "rag_search", "description": "从已爬取的技术文章中搜索知识。入参 query", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}}}},
     {"name": "trending_list", "description": "获取掘金/博客园/GitHub/HackerNews/OSChina 实时技术热榜。入参 source (juejin/cnblogs/github/hackernews/oschina/all)", "inputSchema": {"type": "object", "properties": {"source": {"type": "string", "default": "juejin"}}}},
-    {"name": "kg_lookup", "description": "查询知识图谱中技术关键词的关联实体。入参 entity_name", "inputSchema": {"type": "object", "properties": {"entity_name": {"type": "string"}}}},
+    {"name": "kg_lookup", "description": "查询知识图谱中技术关键词的关联实体。支持多跳扩散推理链。入参 entity_name。查询关联/报错/依赖类问题时自动返回 2-hop 推理链路", "inputSchema": {"type": "object", "properties": {"entity_name": {"type": "string"}}}},
     {"name": "fetch_article", "description": "爬取并保存指定URL的技术文章。入参 url", "inputSchema": {"type": "object", "properties": {"url": {"type": "string"}}}},
     {"name": "search_web", "description": "搜索网络上的技术内容。入参 query", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}}}},
     {"name": "code_example", "description": "从知识库中搜索代码示例。入参 keyword", "inputSchema": {"type": "object", "properties": {"keyword": {"type": "string"}}}},
@@ -75,26 +75,31 @@ async def create_task(request: Request):
     query = body.get("query", "")
     use_stream = body.get("stream", True)
 
+    # 会话隔离: 每个请求使用唯一 thread_id（支持中断恢复）
+    thread_id = body.get("session_id", "a2a_default")
+
     if not use_stream:
         try:
             from agent.state import initial_state
             from agent.graph import graph
-            state = initial_state(query)
-            result = graph.invoke(state, {"configurable": {"thread_id": "a2a"}})
+            state = initial_state(query, session_id=thread_id)
+            result = graph.invoke(state, {"configurable": {"thread_id": thread_id}})
             answer = result.get("answer", "无法生成回答")
-            return JSONResponse({"answer": answer, "status": "completed"})
+            errors = result.get("errors", [])
+            return JSONResponse({"answer": answer, "status": "completed",
+                                 "errors": len(errors), "thread_id": thread_id})
         except Exception as e:
             return JSONResponse({"answer": f"错误: {e}", "status": "error"})
 
     # 流式模式
     async def event_stream():
         try:
-            yield f"event: status\ndata: {json.dumps({'status': 'started', 'agent': 'DevPilot LangGraph'})}\n\n"
+            yield f"event: status\ndata: {json.dumps({'status': 'started', 'agent': 'DevPilot LangGraph', 'thread_id': thread_id})}\n\n"
 
             from agent.state import initial_state
             from agent.graph import graph
-            state = initial_state(query)
-            result = graph.invoke(state, {"configurable": {"thread_id": "a2a"}})
+            state = initial_state(query, session_id=thread_id)
+            result = graph.invoke(state, {"configurable": {"thread_id": thread_id}})
 
             plan = result.get("plan", {})
             yield f"event: plan\ndata: {json.dumps({'intent': plan.get('intent', ''), 'tools': plan.get('suggested_tools', [])})}\n\n"

@@ -1,118 +1,12 @@
 # Agent 双引擎系统 — 技术规格书
 
-> **项目名**：Agent 双引擎系统 (Agent Dual-Engine System)
-> **根目录**：`E:\agent-system\`
-> **最后更新**：2026-08-06
-> **开发环境**：Windows 11 · Python 3.11 · Conda (rag_env)
+> **GraphRAG 增强的技术知识 Agent 系统**
+>
+> 版本: 2.0 | 更新: 2026-08-12
 
 ---
 
-## 一、项目概述
-
-### 1.1 一句话
-
-**双引擎 Agent 系统**：LangGraph StateGraph 负责 Pipeline 层（爬取→入库→推送），CC-Harness AgentLoop 负责 Interaction 层（对话→工具调用→报告），A2A 协议互通。
-
-### 1.2 目录结构
-
-```
-E:\agent-system\
-├── TECHNICAL_SPEC.md      ← 本文档
-├── interaction\            ← Interaction 层 (CC-Harness 自研框架)
-│   ├── harness/            # 核心引擎
-│   ├── server/             # FastAPI + Web UI
-│   ├── profiles/           # Agent 配置
-│   ├── demos/              # Demo 脚本
-│   ├── benchmarks/         # 对比评测
-│   ├── tools/              # 工具系统
-│   └── infrastructure/     # 基础设施
-│
-└── pipeline\               ← Pipeline 层 (LangGraph DevPilot)
-    ├── agent/              # LangGraph 四节点
-    ├── crawlers/           # 爬虫
-    ├── rag/                # 向量检索 + KG
-    ├── services/           # 趋势分析 + 图谱 + 定时 + 邮件
-    ├── data/               # 文章 + 图谱文件
-    ├── app.py              # Streamlit UI
-    └── a2a_server.py       # A2A Server
-```
-
-### 1.3 为什么分两层
-
-| | Pipeline 层 (pipeline/) | Interaction 层 (interaction/) |
-|:---|:---|:---|
-| **引擎** | LangGraph StateGraph | CC-Harness AgentLoop |
-| **决策方式** | 编译时预设 DAG | 运行时 LLM 动态决策 |
-| **触发** | 定时任务 / 手动触发 | 用户随时对话 |
-| **核心动作** | 爬虫 → 清洗 → 分块 → embedding → 入库 → 邮件 | LLM推理 → A2A调工具 → 报告/图表/词云 |
-| **资源** | CPU/网络密集 | GPU/API 密集 |
-| **失败影响** | 重试即可 | 必须即时响应 |
-
-分开的价值：各自用最合适的架构、独立演化、互不拖垮。A2A 是唯一接触面。
-
-### 1.4 对标参考
-
-| 参考项目 | 借鉴点 |
-|:---|:---|
-| [字节 DeerFlow](https://github.com/bytedance/deer-flow) | Harness vs App 分层思想 |
-| [a2a-openai-agent](https://github.com/MuhammadAbdullah95/a2a-openai-agent) | 三种框架 A2A 混用 |
-| [GPT Researcher](https://github.com/assafelovic/gpt-researcher) | 技术调研 Agent Demo |
-| [a2aproject/A2A](https://github.com/a2aproject/A2A) | 官方 A2A 协议 (24k+ stars) |
-| [Agently](https://pypi.org/project/agently/) | 结构化流式输出 + TriggerFlow |
-
----
-
-## 二、开发环境
-
-### 2.1 统一环境
-
-```bash
-conda activate rag_env
-python --version   # Python 3.11
-```
-
-### 2.2 环境变量
-
-两个子目录各自有 `.env`（内容相同，或在根目录放一个 `.env` 两个都读）：
-
-```bash
-# LLM API
-DASHSCOPE_API_KEY=sk-your-key
-DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-DEEPSEEK_API_KEY=sk-your-key         # 可选
-
-# A2A 互连
-DEVPILOT_A2A_URL=http://localhost:8010
-HARNESS_API_URL=http://localhost:8020
-
-# Pipeline 配置
-CRAWL_INTERVAL_HOURS=6
-SMTP_HOST=smtp.example.com
-SMTP_PORT=587
-SMTP_FROM=devpilot@example.com
-SMTP_PASSWORD=your-password
-```
-
-### 2.3 启动命令
-
-```bash
-# === Pipeline 层 ===
-cd E:\agent-system\pipeline
-streamlit run app.py                     # UI (8501)
-python a2a_server.py                     # A2A Server (8010)
-
-# === Interaction 层 ===
-cd E:\agent-system\interaction
-uvicorn server.app:app --port 8020       # API + Web UI (8020)
-python demos/research_demo.py            # 技术调研 Demo
-python benchmarks/compare_frameworks.py  # 框架对比
-```
-
----
-
-## 三、系统架构
-
-### 3.1 整体架构
+## 一、系统架构
 
 ```
                        用户
@@ -125,208 +19,242 @@ python benchmarks/compare_frameworks.py  # 框架对比
           ▼                             ▼
 ┌─────────────────────┐     A2A      ┌──────────────────────────┐
 │  Pipeline 层         │◄───────────►│  Interaction 层           │
-│  pipeline/           │             │  interaction/             │
-│  (LangGraph)         │  工具调用    │  (CC-Harness AgentLoop)   │
-│                      │ ◄───────── │                           │
-│  ┌────────────────┐  │            │  ┌───────────────────────┐│
-│  │ 爬虫引擎        │  │  流式结果  │  │ AgentLoop 主循环       ││
-│  │ 掘金/博客园     │  │ ─────────► │  │ Think→Act→Observe     ││
-│  │ /GitHub (TODO)  │  │            │  └───────────────────────┘│
-│  └────────────────┘  │            │                           │
-│                      │            │  ┌───────────────────────┐│
-│  ┌────────────────┐  │            │  │ 工具系统               ││
-│  │ 数据处理         │  │            │  │ rag_search (本地)      ││
-│  │ 分块→embed→入库 │  │            │  │ A2A Tools (9个远程)    ││
-│  └────────────────┘  │            │  │ MCP Tools (外部)       ││
-│                      │            │  └───────────────────────┘│
-│  ┌────────────────┐  │            │                           │
-│  │ 知识图谱        │  │            │  ┌───────────────────────┐│
-│  │ 3180+ 实体      │  │            │  │ 安全层                 ││
-│  │ pyvis 交互图    │  │            │  │ Guardrails → Policy    ││
-│  └────────────────┘  │            │  │ → HITL                 ││
-│                      │            │  └───────────────────────┘│
-│  ┌────────────────┐  │            │                           │
-│  │ 定时任务 (TODO) │  │            │  ┌───────────────────────┐│
-│  │ 邮件推送 (TODO) │  │            │  │ 报告引擎               ││
-│  └────────────────┘  │            │  │ 调研→对比→图表→词云    ││
-│                      │            │  │ Map-Reduce 协作        ││
-│  端口: 8010 (A2A)    │            │  └───────────────────────┘│
-│                      │            │  端口: 8020 (API+WebUI)   │
-└─────────────────────┘            └──────────────────────────┘
+│  (LangGraph)         │  15 工具    │  (CC-Harness AgentLoop)   │
+│                      │             │                           │
+│  Planner→Retriever   │             │  Think→Act→Observe        │
+│  →Reflector→         │             │  动态决策引擎              │
+│  Summarizer          │             │                           │
+│                      │             │  Tracer 决策链可视化       │
+│  GraphRAG 三路融合   │             │  ContextEngine 分层压缩    │
+│  Vector+BM25+KG      │             │                           │
+│                      │             │                           │
+│  KG 多跳推理         │             │                           │
+│  11,942 实体         │             │                           │
+└─────────────────────┘             └──────────────────────────┘
 ```
 
-### 3.2 A2A 暴露工具 (Pipeline → Interaction)
+### 为什么分两层
 
-| 工具 | 入参 | 说明 |
+| | Pipeline 层 | Interaction 层 |
 |:---|:---|:---|
-| `rag_search` | query | 知识库搜索 |
-| `trending_list` | source | 实时热榜 |
-| `kg_lookup` | entity_name | 知识图谱查询 |
-| `fetch_article` | url | 爬取文章 |
-| `search_web` | query | 网络搜索 |
-| `code_example` | keyword | 代码示例 |
-| `compare_tech` | tech_a, tech_b | 技术对比 |
-| `daily_digest` | — | 今日摘要 |
-| `trend_report` | — | 趋势报告 |
+| **引擎** | LangGraph StateGraph | CC-Harness AgentLoop |
+| **决策方式** | 编译时预设 DAG 节点 | 运行时 LLM 动态决策 |
+| **适合场景** | 爬取→入库→推送 (固定流程) | 对话→工具调用→反思 (开放式) |
+| **状态管理** | TypedDict + MemorySaver | Pydantic Session 自包含 |
+| **依赖** | LangGraph, LangChain | 零 LangChain，纯 openai 库 |
 
 ---
 
-## 四、当前完成状态
+## 二、核心技术组件
 
-### 4.1 Interaction 层 (interaction/)
+### 2.1 AgentLoop 引擎 (`interaction/harness/agent_loop.py`)
 
-| 模块 | 文件 | 状态 |
-|:---|:---|:---:|
-| AgentLoop 引擎 | harness/agent_loop.py | ✅ |
-| LLM 适配层（多Provider+流式） | harness/llm_adapter.py | ✅ |
-| 上下文压缩引擎 | harness/context_engine.py | ✅ |
-| 结构化追踪器 | harness/tracer.py | ✅ |
-| 三层安全护栏 | harness/guardrails/ | ✅ |
-| 确定性策略引擎 | harness/policy_engine.py | ✅ |
-| Human-in-the-Loop | harness/hitl.py | ✅ |
-| 断点恢复 (CheckpointSaver) | harness/checkpoint.py | ✅ |
-| 评测框架 + pass^k | harness/eval/ | ✅ |
-| MCP 协议 | harness/mcp/ | ✅ |
-| A2A 协议 | harness/a2a/ | ✅ |
-| 三种多Agent协作 | harness/multi_agent.py | ✅ |
-| 双层记忆系统 | harness/memory/ | ✅ |
-| Prompt 版本管理 + A/B | harness/prompt_manager.py | ✅ |
-| Agent Profile 配置中心 | harness/agent_profile.py | ✅ |
-| FastAPI + SSE + WebSocket | server/app.py | ✅ |
-| Pico.css Web UI | server/static/index.html | ✅ |
-| 4 个 Agent Profile | profiles/*.yaml | ✅ |
-| 端到端 Demo | demos/research_demo.py | ✅ |
-| 框架对比 Benchmark | benchmarks/compare_frameworks.py | ✅ |
+**ReAct 循环** (Reasoning + Acting):
 
-### 4.2 Pipeline 层 (pipeline/)
+```
+while session.can_continue():
+    1. 压缩检查 → 超窗口 75% 触发分层摘要
+    2. LLM 结构化输出 → AgentAction {action_type, thought, tool_call, answer}
+    3. 动作执行:
+       - final_answer  → 流式输出，退出
+       - tool_call     → 执行工具，结果注入上下文
+       - spawn_subagent → 独立 AgentLoop，摘要返回
+    4. 结果写入 Session，回到步骤 1
+```
 
-| 模块 | 文件 | 状态 |
-|:---|:---|:---:|
-| LangGraph 四节点 | agent/graph.py, nodes.py, state.py | ✅ |
-| 12 个工具 | agent/tools/ | ✅ |
-| 爬虫（掘金+博客园） | crawlers/ | ✅ |
-| 混合检索 | rag/hybrid_retriever.py | ✅ |
-| 知识图谱 | rag/knowledge_graph.py | ✅ |
-| 趋势分析 | services/trends.py | ✅ |
-| 图谱可视化 | services/graph_viz.py | ✅ |
-| Streamlit UI | app.py | ✅ |
-| A2A Server (9工具) | a2a_server.py | ✅ |
-| LLM 工厂 | model/factory.py | ✅ |
-| **GitHub Trending 爬虫** | crawlers/github_trending.py | 🔲 |
-| **定时爬取调度** | services/scheduler.py | 🔲 |
-| **邮件推送** | services/mailer.py | 🔲 |
+**关键设计**:
+- **一次一个工具**: 不用 OpenAI parallel tool calls，每个结果立即注入影响下一轮决策
+- **结构化输出双重保障**: 原生 JSON mode + Prompt fallback + `_repair_action()` 自动修复
+- **多 Provider 自动路由**: 模型名 → Provider → base_url → API key 链式推断
+- **模型降级链**: 主模型失败 → 依次尝试 fallback_models
+
+### 2.2 上下文引擎 (`interaction/harness/context_engine.py`)
+
+**三层摘要金字塔**:
+
+```
+L0: 最近 4 条 — 保留原文
+L1: 中期 6 条 — LLM 压缩 150 字
+L2: 早期余下 — LLM 压缩 200 字
+```
+
+Token 预算 (qwen-plus 32k): System 800 + Tools 1000 + History 20000 + Answer 10200
+
+### 2.3 决策链追踪器 (`interaction/harness/tracer.py`)
+
+12 种事件类型，输出:
+- `to_markdown()` — 面试级人类可读报告
+- `to_chain()` — 结构化决策链
+- `to_json()` — 持久化 / LangFuse
 
 ---
 
-## 五、开发计划
+## 三、GraphRAG 检索系统
 
-### 5.1 Pipeline 层待做
+### 3.1 三路混合检索 (`pipeline/rag/hybrid_retriever.py`)
 
-| # | 任务 | 文件 | 说明 |
+```
+用户查询
+  ├─ Vector 路: ChromaDB 语义相似度, top_k=10
+  ├─ BM25 路: jieba 分词 + 词频匹配, top_k=10
+  └─ Graph 路: KG 多跳扩散 → 关联 chunk, top_k=5
+         ↓
+    三路去重合并
+         ↓
+    可信度加权: score × (0.7 + 0.3 × credibility)
+         ↓
+    BGE-Reranker 精排 → top_k=3
+```
+
+### 3.2 知识图谱 (`pipeline/rag/knowledge_graph.py`)
+
+**构建**: jieba.posseg 词性标注 → 实体归一化 → 共现矩阵 → IDF 过滤 → JSON 持久化
+
+**规模**: 11,942 实体 | 11,234 共现边 | 4,331 chunks
+
+**核心 API**:
+| 方法 | 功能 | 
+|:---|:---|
+| `multi_hop_expand(query, max_hops=3)` | BFS 多层实体扩散，返回完整推理链 |
+| `find_path(entity_a, entity_b)` | 两实体间最短关联路径 |
+| `graph_retrieve(query, top_k=5)` | 图检索转为 Document 列表 |
+
+### 3.3 分块策略
+
+RecursiveCharacterTextSplitter: chunk_size=300, overlap=30, 分隔符 `["\n\n","\n","。",".","！","？","，",","]`
+
+---
+
+## 四、LangGraph Pipeline
+
+### 4.1 四节点图
+
+```
+PLANNER ─→ RETRIEVER ─→ REFLECTOR ─→ SUMMARIZER → END
+   │           │              │
+   │     KG多跳扩散      置信度<0.5→重试
+   │     全失败→降级     LLM失败→跳过
+   └── LLM失败→规则兜底
+```
+
+### 4.2 三级异常降级
+
+```
+L1: 单工具失败 → 其他工具继续
+L2: 所有工具失败 → degradation_triggered → 跳过 Reflector
+L3: LLM 失败 → 规则兜底 (Planner) / 跳过反思 (Reflector)
+```
+
+---
+
+## 五、数据质量治理
+
+### 5.1 可信度分级
+
+| 来源 | 可信度 |
+|:---|:---|
+| official_doc (GitHub/Gitee 官方文档) | 1.00 |
+| gitee_repo_doc | 0.95 |
+| github_issue_labeled | 0.85 |
+| gitee_issue_labeled | 0.75 |
+| tech_blog_quality | 0.50 |
+| rss_headline | 0.30 |
+
+### 5.2 冲突消解
+
+同知识点多源冲突 → 高权威覆盖低权威 → 低权威文档降级标记 `suppressed=True`
+
+### 5.3 脏数据过滤
+
+字数<100 / 含广告词 / 纯外链(>30% URL) / 仅标题RSS → 丢弃
+
+### 5.4 离线容错
+
+GitHub: enable_github=false → REST API → 失败 3 次 → 离线缓存
+
+---
+
+## 六、评测体系
+
+### 评测方法
+
+| 方法 | 指标 | 查询数 |
+|:---|:---|:---|
+| 关键词匹配 | Recall@5, Hit Rate, MRR | 50 条 (6 类 × 3 难度) |
+| LLM-as-Judge | Answerability (0-1) | 50 条 |
+| 负样本测试 | 诚实拒答率 | 15 条 |
+
+### 当前结果
+
+**关键词匹配 (50 条)**:
+
+| 指标 | 纯向量 | GraphRAG | 提升 |
 |:---|:---|:---|:---|
-| **P1** | GitHub Trending 爬虫 | crawlers/github_trending.py | 解析 GitHub Trending 页面 |
-| **P2** | 定时爬取调度 | services/scheduler.py | APScheduler，每 N 小时全量爬取 |
-| **P3** | 邮件推送 | services/mailer.py | SMTP 发送技术日报 |
-| **P4** | 增量更新去重 | crawlers/ 扩展 | 已爬文章不重复入向量库 |
+| Recall@5 | 57% | 73% | **+16%** |
+| 实体关联类 | 60% | 78% | +18% |
+| 报错溯源类 | 86% | 94% | +8% |
 
-### 5.2 Interaction 层待做
+**负样本测试 (15 条)**:
 
-| # | 任务 | 说明 |
+| 类型 | 拒答率 |
+|:---|---:|
+| hallucination_trap (编造术语) | 100% |
+| vague (模糊问题) | 100% |
+| irrelevant (无关问题) | 100% |
+| **总体** | **80%** |
+
+### 评测局限
+
+- 关键词匹配是弱 proxy，非人工相关性别定
+- 50 条不足统计显著 (建议 200+)
+- LLM-as-Judge 自身有 bias
+
+---
+
+## 七、系统规模
+
+| 组件 | 代码量 | 文件数 |
 |:---|:---|:---|
-| **H1** | A2A 工具自动注册到 ToolRegistry | 启动时自动从 DevPilot 发现工具 |
-| **H2** | 调研报告生成链路打通 | 多源→KG→对比→Markdown报告 |
-| **H3** | Web UI 完善 | 历史记录、错误优化 |
+| Interaction 层 | ~7,500 行 | 45 模块 |
+| Pipeline 层 | ~3,500 行 | 20+ 模块 |
+| 评测体系 | ~1,000 行 | 7 脚本 |
+| **总计** | **~12,000 行** | **70+ 文件** |
 
-### 5.3 改进空间（对标 2026 夏季前沿）
-
-| # | 改进点 | 当前状态 | 前沿标准 | 建议 |
-|:---|:---|:---|:---|:---|
-| **I1** | 结构化输出自动修复 | 有 `_extract_json` + `_repair_action`，单次尝试 | 所有主流框架标配 2 次自动修复循环（Schema错误→反馈给模型→重试） | 在 `llm_adapter.generate_structured()` 中加入 repair loop |
-| **I2** | 可观测性分层 | AgentTracer 一层 | 行业标配 3-5 层：事件回调 + 指标导出 + 结构化追踪 + deep-debug + 实时面板 | Tracer 增加 Prometheus metrics 导出 |
-| **I3** | 成本追踪 | Token 计数在 LLMAdapter 里 | 所有框架都在做 per-run cost rollup + per-model pricing table | LLMAdapter 已有基础，加一个全局 CostTracker |
-| **I4** | 流式事件类型完善 | 6 种事件（session/thinking/tool/answer/done/error） | 行业标准 ~15 种细粒度事件类型 | 增加 step_start, guardrail_triggered, repair_attempted 等 |
-| **I5** | Guardrails 双模式 | block/rewrite 两种 action | 行业标配 strict（抛异常）vs soft（优雅终止）+ 工具结果校验 | ToolGuard 增加 strict/soft mode |
-| **I6** | Agent→Agent 统一 Trace | Tracer 每个 Session 独立 | 行业标配：handoff 链中所有 Agent 写入同一个 Trace | 多Agent模式中传递共享 Tracer |
-
-这些改进不是"必须做"，而是**面试时的加分项**——你知道前沿在做什么，框架里有对应设计（哪怕简化版），面试官会觉得你眼界够。
+| 数据 | 规模 |
+|:---|:---|
+| 文章 | 227 篇 |
+| Chunks | 4,331 |
+| KG 实体 | 11,942 |
+| 爬虫源 | 6 个 (Gitee+GitHub+掘金+博客园+HN+OSChina) |
+| A2A 工具 | 15 个 |
 
 ---
 
-## 六、执行路线图
+## 八、运行方式
 
-### Phase 1: Pipeline 层补完
+### 启动
 
-```
-□ P1: GitHub Trending 爬虫
-□ P2: 定时爬取调度  
-□ P3: 邮件推送
-□ P4: 增量去重
-□ 验证: 手动触发→3源爬取→入库→KG更新→邮件收到
-```
-
-### Phase 2: Interaction 层补完
-
-```
-□ H1: A2A 工具自动注册
-□ H2: 调研报告链路
-□ H3: Web UI 完善
+```bash
+# Pipeline A2A (先启动)
+cd pipeline && uvicorn a2a_server:app --host 0.0.0.0 --port 8010
+# Interaction Web UI
+cd interaction && uvicorn server.app:app --host 0.0.0.0 --port 8020
 ```
 
-### Phase 3 (可选加分): 前沿改进
+### 评测
 
-```
-□ I1: 结构化输出自动修复循环
-□ I2: Prometheus metrics 导出
-□ I3: 全局 CostTracker
-```
-
-### Phase 4: 收尾
-
-```
-□ 两项目 README 重写
-□ 录 Demo 视频
-□ Gitee 推送
+```bash
+cd pipeline
+python eval/e2e_demo.py          # 端到端演示 (面试跑这个)
+python eval/run_eval.py          # 对比评测
+python eval/negative_test.py     # 负样本测试
+python eval/llm_judge_eval.py    # LLM-as-Judge
+python eval/generate_report.py   # 生成报告
 ```
 
----
+### 数据维护
 
-## 七、对话操作约定
-
-**同一个对话中操作两个子目录**，说清楚当前在操作哪个：
-
-```
-cd E:\agent-system\interaction   # Interaction 层
-cd E:\agent-system\pipeline      # Pipeline 层
-```
-
-每次开始新任务时报：`[Phase X] [任务编号] — interaction / pipeline`
-
----
-
-## 八、简历呈现
-
-### 项目名
-
-**Agent 双引擎系统 — Pipeline + Interaction 分层架构**
-
-### 一句话
-
-基于 LangGraph 和自研 CC-Harness 的双层 Agent 系统，通过 A2A 协议实现跨框架互操作。
-
-### 技术亮点
-
-```
-- 分层 Agent 架构: LangGraph StateGraph（管道层）+ 自研 CC-Harness AgentLoop（交互层）
-- 跨框架互操作: Google A2A 协议连接异构 Agent，9 个工具自动发现与注册
-- 自研 CC-Harness 框架: AgentLoop 动态决策、三层护栏、pass^k 评测、断点恢复
-- 知识图谱: jieba + 共现矩阵 + pyvis 交互式，3180+ 实体
-- 混合检索: 向量 + BM25 + BGE-Reranker，MRR@5 85%
-- 技术调研 Demo: 多源搜索 → KG 关联 → 对比分析 → 结构化报告
-```
-
-### 规模
-
-```
-- CC-Harness: ~7000 行 Python，45 模块，零 LangChain 依赖
-- Pipeline: 493 文档块，3180+ KG 实体，9 个 A2A 工具
+```bash
+curl -X POST http://localhost:8010/tools/force_update -d '{}'     # 强制爬取
+curl -X POST http://localhost:8010/tools/get_pipeline_status -d '{}'  # 状态
 ```

@@ -297,6 +297,38 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"   A2A: DevPilot 未连接 ({e}) — 仅本地工具可用")
 
+    # ── 自动发现 MCP Server（Model Context Protocol）──
+    mcp_tools_registered = 0
+    mcp_servers_json = os.getenv("MCP_SERVERS", "")
+    if not mcp_servers_json:
+        # 默认配置：本地文件系统 MCP + 网络搜索 MCP
+        mcp_servers_json = json.dumps([
+            {"name": "filesystem", "transport": "stdio",
+             "command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]},
+        ])
+    try:
+        mcp_configs = json.loads(mcp_servers_json) if isinstance(mcp_servers_json, str) else mcp_servers_json
+        from harness.mcp import MCPServerRegistry, MCPServerConfig, register_mcp_tools
+
+        mcp_registry = MCPServerRegistry()
+        for cfg in mcp_configs:
+            if isinstance(cfg, dict):
+                mcp_registry.register(MCPServerConfig(
+                    name=cfg.get("name", "mcp"),
+                    transport=cfg.get("transport", "stdio"),
+                    command=cfg.get("command", ""),
+                    args=cfg.get("args", []),
+                    base_url=cfg.get("base_url", ""),
+                ))
+
+        await mcp_registry.connect_all()
+        mcp_tools_registered = await register_mcp_tools(state.tool_registry, mcp_registry)
+        state._mcp_registry = mcp_registry  # 保持连接
+
+        print(f"   MCP: {mcp_tools_registered} 个外部工具已注册 (from {len(mcp_configs)} MCP Servers)")
+    except Exception as e:
+        print(f"   MCP: 未启用 ({e}) — MCP Server 不可用，不影响核心功能")
+
     print(f"✅ Server 就绪 — http://0.0.0.0:8020")
     print(f"   Web UI:  http://0.0.0.0:8020")
     print(f"   API 文档: http://0.0.0.0:8020/docs")

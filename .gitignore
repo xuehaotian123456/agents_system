@@ -51,6 +51,13 @@ logs/
 Thumbs.db
 desktop.ini
 
+# 面试材料（非上传，仅本地参考）
+README_INTERVIEW.md
+SYSTEM_FULL_WALKTHROUGH.md
+
+# 离线缓存
+pipeline/cache/
+
 # 临时文件
 tmp/
 temp/

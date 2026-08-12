@@ -17,8 +17,10 @@ class VectorStore:
         persist = str(Path(__file__).parent.parent / chroma_cfg["persist_directory"])
         os.makedirs(persist, exist_ok=True)
 
+        self._persist_dir = persist
+        self._collection_name = chroma_cfg["collection_name"]
         self.store = Chroma(
-            collection_name=chroma_cfg["collection_name"],
+            collection_name=self._collection_name,
             embedding_function=embed_model,
             persist_directory=persist,
         )
@@ -31,10 +33,37 @@ class VectorStore:
         self.all_docs = []
         self.hybrid_retriever = None
 
-    def load_articles(self):
+    def reset_collection(self):
+        """清空并重建 ChromaDB collection（修复膨胀问题）"""
+        try:
+            from chromadb import PersistentClient
+            client = PersistentClient(path=self._persist_dir)
+            try:
+                client.delete_collection(self._collection_name)
+                logger.info(f"[VectorStore] 已删除旧 collection: {self._collection_name}")
+            except Exception:
+                pass  # collection 不存在
+            # 重新创建
+            self.store = Chroma(
+                collection_name=self._collection_name,
+                embedding_function=embed_model,
+                persist_directory=self._persist_dir,
+            )
+            logger.info(f"[VectorStore] Collection 已重建: {self._collection_name}")
+        except Exception as e:
+            logger.warning(f"[VectorStore] reset_collection 失败: {e}，继续使用现有 collection")
+
+    def load_articles(self, force_rebuild: bool = False):
         data_path = str(Path(__file__).parent.parent / data_cfg.get("data_path", "data/articles"))
         allowed = tuple(data_cfg.get("allowed_types", ["md", "txt"]))
         md5_store = str(Path(__file__).parent.parent / data_cfg["md5_store"])
+
+        # ── 强制重建: 清空 ChromaDB + MD5 缓存 ──
+        if force_rebuild:
+            self.reset_collection()
+            if os.path.exists(md5_store):
+                os.remove(md5_store)
+            logger.info("[VectorStore] 强制重建模式: MD5 缓存已清除")
 
         # 加载 md5 缓存
         md5_cache = {}
@@ -106,13 +135,29 @@ class VectorStore:
         hybrid_cfg = get_hybrid_config()
         if hybrid_cfg.get("enabled") and self.all_chunks:
             from rag.hybrid_retriever import HybridRetriever
+
+            # ── 初始化图检索器（Graph-RAG 第三路召回）──
+            graph_retriever = None
+            try:
+                from rag.knowledge_graph import get_kg
+                from rag.graph_retriever import GraphRetriever
+                kg = get_kg()
+                if kg.is_built and self.all_chunks:
+                    graph_retriever = GraphRetriever(kg, self.all_chunks, self.all_docs, top_k=5)
+                    logger.info(f"GraphRetriever 就绪: {kg.entity_count} 实体")
+                else:
+                    logger.info("GraphRetriever 跳过: KG 未构建或无数据")
+            except Exception as e:
+                logger.warning(f"GraphRetriever 初始化跳过: {e}")
+
             self.hybrid_retriever = HybridRetriever(
                 self.store, self.all_chunks, self.all_docs,
                 top_k_retrieve=hybrid_cfg["top_k_retrieve"],
                 top_k_rerank=hybrid_cfg["top_k_rerank"],
                 alpha=hybrid_cfg["alpha"],
+                graph_retriever=graph_retriever,
             )
-            logger.info(f"混合检索器初始化完成: {len(self.all_chunks)} chunks")
+            logger.info(f"混合检索器初始化完成: {len(self.all_chunks)} chunks (含图检索: {graph_retriever is not None})")
 
     def search(self, query: str, top_k: int = 5) -> list[Document]:
         if self.hybrid_retriever:
