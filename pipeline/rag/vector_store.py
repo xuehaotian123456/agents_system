@@ -74,9 +74,9 @@ class VectorStore:
                         parts = line.strip().split("\t")
                         if len(parts) == 2:
                             md5_cache[parts[0]] = parts[1]
-            except (UnicodeDecodeError, Exception):
-                # 文件损坏，跳过缓存
-                md5_cache = {}
+            except Exception as e:
+                # 缓存失效会导致全量重复入库 (ChromaDB 膨胀)，必须显式告警
+                logger.warning(f"[VectorStore] MD5 缓存读取失败: {e} — 将全量重新入库!")
 
         files = list_files_by_type(data_path, allowed)
         new_md5 = {}
@@ -103,7 +103,10 @@ class VectorStore:
                 logger.warning(f"文章加载失败: {fpath}: {e}")
 
         # 更新 md5
-        with open(md5_store, "w") as f:
+        # ★ 必须显式 utf-8: Windows 默认 GBK, 中文文件名下 GBK 写入 + UTF-8 读取
+        #   会导致 UnicodeDecodeError → 缓存静默失效 → 每次全量重复入库
+        #   (ChromaDB 膨胀 15 倍的根因)
+        with open(md5_store, "w", encoding="utf-8") as f:
             for path, md5 in new_md5.items():
                 f.write(f"{path}\t{md5}\n")
 
