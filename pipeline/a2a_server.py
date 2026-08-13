@@ -91,9 +91,8 @@ async def create_task(request: Request):
         except Exception as e:
             return JSONResponse({"answer": f"错误: {e}", "status": "error"})
 
-    # 流式模式（节点级进度事件流: status → plan → tool → answer → done）
-    # 注意: 这里流的是 Pipeline 节点进度，不是 token 级流式输出；
-    # token 级流式由 Interaction 层 (llm_adapter.stream) 提供。
+    # 流式模式（SSE 实时决策事件流: status → plan → tool → answer → done）
+    # 注意: 这里流的是 Pipeline 节点进度与决策过程，不是 token 级流式输出。
     async def event_stream():
         try:
             yield f"event: status\ndata: {json.dumps({'status': 'started', 'agent': 'DevPilot LangGraph', 'thread_id': thread_id, 'stream_granularity': 'node-level'})}\n\n"

@@ -722,22 +722,7 @@ async def list_tools():
 
 
 # ==================== 会话端点 ====================
-
-@app.get("/api/sessions")
-async def list_sessions():
-    """列出活跃会话"""
-    return {
-        "count": len(state.sessions),
-        "sessions": [
-            {
-                "id": sid,
-                "turns": s.total_turns,
-                "messages": len(s.messages),
-                "tokens": s.estimate_total_tokens(),
-            }
-            for sid, s in state.sessions.items()
-        ],
-    }
+# 注: /api/sessions 列表端点定义于上方 (line ~403)，此处只保留删除端点
 
 
 @app.delete("/api/sessions/{session_id}")

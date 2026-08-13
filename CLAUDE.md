@@ -64,7 +64,7 @@ E:\agent-system\
     │   ├── tracer.py         # ★ 决策链追踪 (to_markdown / to_chain)
     │   ├── types.py          # Pydantic v2 数据模型
     │   ├── subagent.py       # 子Agent调度
-    │   ├── guardrails/       # 三层安全护栏
+    │   ├── guardrails/       # 输入护栏(注入/越狱硬拦截, 已接入主链路)
     │   └── ...
     └── tools/                # 工具系统
 ```
