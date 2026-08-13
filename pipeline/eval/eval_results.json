@@ -3,40 +3,40 @@
   "total_chunks": 4331,
   "evaluation_note": "expected_entities关键词匹配是弱标注proxy，非人工相关性别定。建议引入LLM-as-judge补充。",
   "overall": {
-    "vec_recall@5": 0.565,
-    "graph_recall@5": 0.758,
-    "vec_hit_rate": 0.9,
+    "vec_recall@5": 0.652,
+    "graph_recall@5": 0.777,
+    "vec_hit_rate": 0.94,
     "graph_hit_rate": 1.0,
-    "vec_mrr": 0.9,
-    "graph_mrr": 0.938,
-    "improvement_recall": 0.193,
-    "improvement_hit_rate": 0.1,
+    "vec_mrr": 0.91,
+    "graph_mrr": 0.935,
+    "improvement_recall": 0.125,
+    "improvement_hit_rate": 0.06,
     "degradation_success_rate": 1.0
   },
   "by_category": {
     "entity_association": {
       "name": "多跳推理类（测多步关联能力）",
       "count": 10,
-      "vec_recall@5": 0.6,
-      "graph_recall@5": 0.85
+      "vec_recall@5": 0.667,
+      "graph_recall@5": 0.883
     },
     "fact_lookup": {
       "name": "多跳推理类（测多步关联能力）",
       "count": 10,
-      "vec_recall@5": 0.383,
+      "vec_recall@5": 0.508,
       "graph_recall@5": 0.567
     },
     "error_tracing": {
       "name": "多跳推理类（测多步关联能力）",
       "count": 10,
-      "vec_recall@5": 0.858,
+      "vec_recall@5": 0.942,
       "graph_recall@5": 0.942
     },
     "trending": {
       "name": "多跳推理类（测多步关联能力）",
       "count": 8,
-      "vec_recall@5": 0.635,
-      "graph_recall@5": 0.875
+      "vec_recall@5": 0.771,
+      "graph_recall@5": 0.917
     },
     "compare": {
       "name": "多跳推理类（测多步关联能力）",
@@ -47,25 +47,25 @@
     "multi_hop": {
       "name": "多跳推理类（测多步关联能力）",
       "count": 6,
-      "vec_recall@5": 0.542,
-      "graph_recall@5": 0.708
+      "vec_recall@5": 0.625,
+      "graph_recall@5": 0.75
     }
   },
   "by_difficulty": {
     "easy": {
       "count": 6,
-      "vec_recall@5": 0.389,
+      "vec_recall@5": 0.542,
       "graph_recall@5": 0.736
     },
     "hard": {
       "count": 24,
-      "vec_recall@5": 0.604,
-      "graph_recall@5": 0.767
+      "vec_recall@5": 0.681,
+      "graph_recall@5": 0.781
     },
     "medium": {
       "count": 20,
-      "vec_recall@5": 0.571,
-      "graph_recall@5": 0.754
+      "vec_recall@5": 0.65,
+      "graph_recall@5": 0.783
     }
   }
 }

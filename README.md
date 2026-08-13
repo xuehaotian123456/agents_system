@@ -79,8 +79,9 @@ python eval/e2e_demo.py
 | LLM-as-Judge | Answerability (0-1) | 50 条查询 |
 | 负样本测试 | 诚实拒答率 | 15 条 (5 类陷阱) |
 
-**当前结果** (同 k 口径: 纯向量仅 ChromaDB top-5 vs GraphRAG 三路融合 top-5): GraphRAG 比纯向量 RAG Recall@5 提升 **+19%**（56%→76%）；实体关联类 **+25%**；负样本诚实拒答率 **80%**，幻觉陷阱 100% 拦截。
+**当前结果** (同 k 口径: 纯向量仅 ChromaDB top-5 vs GraphRAG 三路融合 top-5): GraphRAG 比纯向量 RAG Recall@5 提升 **+13%~+19%**（最近一次实测 65%→78%）；实体关联类 **+22%**；负样本诚实拒答率 **80%**，幻觉陷阱 100% 拦截。
 
+> ⚠️ 单次评测有 HNSW 近似检索噪声（跨重建波动 ±5-9 个百分点），报告采用区间 + 最近一次实测。
 > ⚠️ 评测数据依赖全量语料（227 篇文章）。clone 后先运行 `curl -X POST http://localhost:8010/tools/force_update -d '{}'` 拉取数据，再跑评测复现。
 
 ---
