@@ -405,10 +405,18 @@ def save_to_markdown(items: list[dict],
         )
 
         if fpath.exists():
+            # ★ 比较时忽略"爬取时间"行: 内容没变就不重写文件。
+            # 否则每次爬取都重写 → 文件 md5 变化 → 向量库重复入库
+            # (ChromaDB 新旧版本并存, 曾致 2,936 个重复 chunk)
+            def _strip_ts(text: str) -> str:
+                return "\n".join(
+                    ln for ln in text.split("\n")
+                    if not ln.startswith("> 爬取时间"))
+
             h1 = hashlib.md5(
-                fpath.read_text(encoding="utf-8", errors="replace")
+                _strip_ts(fpath.read_text(encoding="utf-8", errors="replace"))
                 .encode()).hexdigest()
-            h2 = hashlib.md5(content.encode()).hexdigest()
+            h2 = hashlib.md5(_strip_ts(content).encode()).hexdigest()
             if h1 == h2:
                 continue
 

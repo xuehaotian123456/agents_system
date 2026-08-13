@@ -519,10 +519,18 @@ def save_to_markdown(items: list[dict], data_dir: Path | None = None):
         )
 
         # 去重：相同标题且内容相同则跳过
+        # ★ 忽略"爬取时间"行比较: 内容没变就不重写, 避免文件 md5 抖动
+        #   导致向量库重复入库 (与 gitee_adapter 同根因)
         if fpath.exists():
+            def _strip_ts(text: str) -> str:
+                return "\n".join(
+                    ln for ln in text.split("\n")
+                    if not ln.startswith("> 爬取时间"))
+
             existing_hash = hashlib.md5(
-                fpath.read_text(encoding="utf-8", errors="replace").encode()).hexdigest()
-            new_hash = hashlib.md5(content.encode()).hexdigest()
+                _strip_ts(fpath.read_text(encoding="utf-8", errors="replace"))
+                .encode()).hexdigest()
+            new_hash = hashlib.md5(_strip_ts(content).encode()).hexdigest()
             if existing_hash == new_hash:
                 continue
 

@@ -1,17 +1,17 @@
 {
   "total_queries": 50,
-  "total_chunks": 4206,
+  "total_chunks": 5089,
   "evaluation_note": "expected_entities关键词匹配是弱标注proxy，非人工相关性别定。建议引入LLM-as-judge补充。",
   "overall": {
-    "vec_recall@5": 0.77,
-    "graph_recall@5": 0.783,
-    "vec_hit_rate": 1.0,
-    "graph_hit_rate": 0.98,
-    "vec_mrr": 0.936,
-    "graph_mrr": 0.933,
-    "improvement_recall": 0.013,
-    "improvement_hit_rate": -0.02,
-    "degradation_success_rate": 0.98
+    "vec_recall@5": 0.763,
+    "graph_recall@5": 0.788,
+    "vec_hit_rate": 0.98,
+    "graph_hit_rate": 1.0,
+    "vec_mrr": 0.932,
+    "graph_mrr": 0.951,
+    "improvement_recall": 0.025,
+    "improvement_hit_rate": 0.02,
+    "degradation_success_rate": 1.0
   },
   "by_category": {
     "entity_association": {
@@ -41,8 +41,8 @@
     "compare": {
       "name": "对比分析类（测多工具编排）",
       "count": 6,
-      "vec_recall@5": 0.472,
-      "graph_recall@5": 0.431
+      "vec_recall@5": 0.417,
+      "graph_recall@5": 0.472
     },
     "multi_hop": {
       "name": "多跳推理类（测多步关联能力）",
@@ -59,13 +59,13 @@
     },
     "hard": {
       "count": 24,
-      "vec_recall@5": 0.788,
+      "vec_recall@5": 0.774,
       "graph_recall@5": 0.806
     },
     "medium": {
       "count": 20,
       "vec_recall@5": 0.788,
-      "graph_recall@5": 0.771
+      "graph_recall@5": 0.783
     }
   }
 }
