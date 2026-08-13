@@ -63,3 +63,4 @@ pipeline/cache/
 tmp/
 temp/
 pipeline/data/duplicates/
+PROBLEM_LOG.md
