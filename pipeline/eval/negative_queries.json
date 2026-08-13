@@ -1,17 +1,242 @@
 [
-  {"id":"n01","category":"negative","difficulty":"out_of_domain","question":"pandas 的 DataFrame 如何做 groupby 聚合操作？","expected_answer":"知识库中没有 pandas 相关文档，应诚实告知用户","note":"pandas未在语料库中出现"},
-  {"id":"n02","category":"negative","difficulty":"out_of_domain","question":"React 18 的 Concurrent Mode 和 Suspense 怎么配合使用？","expected_answer":"知识库中没有 React 相关文档","note":"前端框架,语料库以AI/ML为主"},
-  {"id":"n03","category":"negative","difficulty":"out_of_domain","question":"Kubernetes 中 StatefulSet 和 Deployment 有什么区别？","expected_answer":"知识库中没有 K8s 相关文档","note":"基础设施,不在语料库范围"},
-  {"id":"n04","category":"negative","difficulty":"out_of_domain","question":"scikit-learn 的 GridSearchCV 如何使用自定义评分函数？","expected_answer":"知识库中没有 scikit-learn 文档","note":"0次出现"},
-  {"id":"n05","category":"negative","difficulty":"out_of_domain","question":"Golang 的 goroutine 和 channel 怎么实现生产者消费者模式？","expected_answer":"知识库中没有 Go 相关文档","note":"编程语言,不在语料库范围"},
-  {"id":"n06","category":"negative","difficulty":"time_sensitive","question":"2026年8月 MindSpore 最新发布的版本号是多少，包含了哪些新特性？","expected_answer":"知识库中可能没有8月的最新信息，应说明信息的时效性","note":"时效敏感,数据可能过期"},
-  {"id":"n07","category":"negative","difficulty":"time_sensitive","question":"今天 GitHub 上最热的 AI 开源项目是什么？","expected_answer":"实时数据需要调用 trending_list 工具，静态知识库无法回答","note":"需要实时数据"},
-  {"id":"n08","category":"negative","difficulty":"hallucination_trap","question":"MindSpore 的 NeuralShader 模块如何实现可微分渲染？","expected_answer":"MindSpore 没有 NeuralShader 这个模块，应指出不存在","note":"编造的模块名,测试幻觉"},
-  {"id":"n09","category":"negative","difficulty":"hallucination_trap","question":"PaddleNLP 的 TransformerX 模型和 BERT 有什么区别？","expected_answer":"PaddleNLP 没有 TransformerX 这个模型","note":"编造的模型名"},
-  {"id":"n10","category":"negative","difficulty":"hallucination_trap","question":"MindSpore Lite 如何在 iOS 上做 CoreML 模型转换？","expected_answer":"MindSpore Lite可能不支持CoreML转换，应诚实说明","note":"跨框架功能,可能不存在"},
-  {"id":"n11","category":"negative","difficulty":"vague","question":"那个优化器怎么用？","expected_answer":"问题过于模糊，应追问具体是哪个优化器","note":"指代不明"},
-  {"id":"n12","category":"negative","difficulty":"vague","question":"帮我修一下这个报错","expected_answer":"没有提供报错信息，应要求用户补充详细信息","note":"缺少关键信息"},
-  {"id":"n13","category":"negative","difficulty":"irrelevant","question":"今天天气怎么样？适合出去跑步吗？","expected_answer":"与技术知识库完全无关，应说明自己的能力范围","note":"完全无关"},
-  {"id":"n14","category":"negative","difficulty":"irrelevant","question":"推荐一家北京好吃的川菜馆","expected_answer":"与技术知识库完全无关","note":"完全无关"},
-  {"id":"n15","category":"negative","difficulty":"irrelevant","question":"帮我写一封辞职信","expected_answer":"与技术知识库无关，但如果有相关模板也可以尝试","note":"非技术问题"}
+  {
+    "id": "n01",
+    "category": "negative",
+    "difficulty": "out_of_domain",
+    "question": "pandas 的 DataFrame 如何做 groupby 聚合操作？",
+    "expected_answer": "知识库中没有 pandas 相关文档，应诚实告知用户",
+    "note": "pandas未在语料库中出现"
+  },
+  {
+    "id": "n02",
+    "category": "negative",
+    "difficulty": "out_of_domain",
+    "question": "React 18 的 Concurrent Mode 和 Suspense 怎么配合使用？",
+    "expected_answer": "知识库中没有 React 相关文档",
+    "note": "前端框架,语料库以AI/ML为主"
+  },
+  {
+    "id": "n03",
+    "category": "negative",
+    "difficulty": "out_of_domain",
+    "question": "Kubernetes 中 StatefulSet 和 Deployment 有什么区别？",
+    "expected_answer": "知识库中没有 K8s 相关文档",
+    "note": "基础设施,不在语料库范围"
+  },
+  {
+    "id": "n04",
+    "category": "negative",
+    "difficulty": "out_of_domain",
+    "question": "scikit-learn 的 GridSearchCV 如何使用自定义评分函数？",
+    "expected_answer": "知识库中没有 scikit-learn 文档",
+    "note": "0次出现"
+  },
+  {
+    "id": "n05",
+    "category": "negative",
+    "difficulty": "out_of_domain",
+    "question": "Golang 的 goroutine 和 channel 怎么实现生产者消费者模式？",
+    "expected_answer": "知识库中没有 Go 相关文档",
+    "note": "编程语言,不在语料库范围"
+  },
+  {
+    "id": "n06",
+    "category": "negative",
+    "difficulty": "time_sensitive",
+    "question": "2026年8月 MindSpore 最新发布的版本号是多少，包含了哪些新特性？",
+    "expected_answer": "知识库中可能没有8月的最新信息，应说明信息的时效性",
+    "note": "时效敏感,数据可能过期"
+  },
+  {
+    "id": "n07",
+    "category": "negative",
+    "difficulty": "time_sensitive",
+    "question": "今天 GitHub 上最热的 AI 开源项目是什么？",
+    "expected_answer": "实时数据需要调用 trending_list 工具，静态知识库无法回答",
+    "note": "需要实时数据"
+  },
+  {
+    "id": "n08",
+    "category": "negative",
+    "difficulty": "hallucination_trap",
+    "question": "MindSpore 的 NeuralShader 模块如何实现可微分渲染？",
+    "expected_answer": "MindSpore 没有 NeuralShader 这个模块，应指出不存在",
+    "note": "编造的模块名,测试幻觉"
+  },
+  {
+    "id": "n09",
+    "category": "negative",
+    "difficulty": "hallucination_trap",
+    "question": "PaddleNLP 的 TransformerX 模型和 BERT 有什么区别？",
+    "expected_answer": "PaddleNLP 没有 TransformerX 这个模型",
+    "note": "编造的模型名"
+  },
+  {
+    "id": "n10",
+    "category": "negative",
+    "difficulty": "hallucination_trap",
+    "question": "MindSpore Lite 如何在 iOS 上做 CoreML 模型转换？",
+    "expected_answer": "MindSpore Lite可能不支持CoreML转换，应诚实说明",
+    "note": "跨框架功能,可能不存在"
+  },
+  {
+    "id": "n11",
+    "category": "negative",
+    "difficulty": "vague",
+    "question": "那个优化器怎么用？",
+    "expected_answer": "问题过于模糊，应追问具体是哪个优化器",
+    "note": "指代不明"
+  },
+  {
+    "id": "n12",
+    "category": "negative",
+    "difficulty": "vague",
+    "question": "帮我修一下这个报错",
+    "expected_answer": "没有提供报错信息，应要求用户补充详细信息",
+    "note": "缺少关键信息"
+  },
+  {
+    "id": "n13",
+    "category": "negative",
+    "difficulty": "irrelevant",
+    "question": "今天天气怎么样？适合出去跑步吗？",
+    "expected_answer": "与技术知识库完全无关，应说明自己的能力范围",
+    "note": "完全无关"
+  },
+  {
+    "id": "n14",
+    "category": "negative",
+    "difficulty": "irrelevant",
+    "question": "推荐一家北京好吃的川菜馆",
+    "expected_answer": "与技术知识库完全无关",
+    "note": "完全无关"
+  },
+  {
+    "id": "n15",
+    "category": "negative",
+    "difficulty": "irrelevant",
+    "question": "帮我写一封辞职信",
+    "expected_answer": "与技术知识库无关，但如果有相关模板也可以尝试",
+    "note": "非技术问题"
+  },
+  {
+    "id": "n16",
+    "category": "negative",
+    "difficulty": "out_of_domain",
+    "question": "PostgreSQL 的物化视图和普通视图在查询性能上有什么区别？",
+    "expected_answer": "知识库没有数据库调优文档",
+    "note": "数据库领域"
+  },
+  {
+    "id": "n17",
+    "category": "negative",
+    "difficulty": "out_of_domain",
+    "question": "ESP32 嵌入式开发中 FreeRTOS 任务调度怎么配置？",
+    "expected_answer": "知识库没有嵌入式文档",
+    "note": "嵌入式领域"
+  },
+  {
+    "id": "n18",
+    "category": "negative",
+    "difficulty": "out_of_domain",
+    "question": "Unity 中 Shader 的透明渲染队列怎么排序？",
+    "expected_answer": "知识库没有游戏开发文档",
+    "note": "游戏开发领域"
+  },
+  {
+    "id": "n19",
+    "category": "negative",
+    "difficulty": "hallucination_trap",
+    "question": "MindSpore QuantumX 模块支持哪些量子门操作？",
+    "expected_answer": "MindSpore 没有 QuantumX 模块",
+    "note": "编造模块名"
+  },
+  {
+    "id": "n20",
+    "category": "negative",
+    "difficulty": "hallucination_trap",
+    "question": "PaddleNLP 的 SuperBERT 预训练模型的参数量是多少？",
+    "expected_answer": "PaddleNLP 没有 SuperBERT 模型",
+    "note": "编造模型名"
+  },
+  {
+    "id": "n21",
+    "category": "negative",
+    "difficulty": "hallucination_trap",
+    "question": "PaddlePaddle 的 DistributedTransformer 类有哪些参数？",
+    "expected_answer": "该 API 名不存在",
+    "note": "编造 API"
+  },
+  {
+    "id": "n22",
+    "category": "negative",
+    "difficulty": "time_sensitive",
+    "question": "2026 年 8 月 Gitee 上 Star 数最高的 AI 项目是什么？",
+    "expected_answer": "实时排名需要爬取,静态知识库应说明",
+    "note": "实时性"
+  },
+  {
+    "id": "n23",
+    "category": "negative",
+    "difficulty": "time_sensitive",
+    "question": "本周 MindSpore 社区新增了几个 RFC 提案？",
+    "expected_answer": "需要增量爬取最新数据",
+    "note": "时效性"
+  },
+  {
+    "id": "n24",
+    "category": "negative",
+    "difficulty": "vague",
+    "question": "这个配置怎么改？",
+    "expected_answer": "缺少上下文,应追问具体哪个配置",
+    "note": "指代不明"
+  },
+  {
+    "id": "n25",
+    "category": "negative",
+    "difficulty": "vague",
+    "question": "模型训练不起来怎么办？",
+    "expected_answer": "缺少报错信息,应追问",
+    "note": "信息不足"
+  },
+  {
+    "id": "n26",
+    "category": "negative",
+    "difficulty": "irrelevant",
+    "question": "推荐一部好看的科幻电影",
+    "expected_answer": "与技术无关",
+    "note": "无关"
+  },
+  {
+    "id": "n27",
+    "category": "negative",
+    "difficulty": "irrelevant",
+    "question": "帮我分析一下这支股票明天会不会涨",
+    "expected_answer": "与技术无关且无法回答",
+    "note": "无关"
+  },
+  {
+    "id": "n28",
+    "category": "negative",
+    "difficulty": "irrelevant",
+    "question": "周末北京去哪玩比较好？",
+    "expected_answer": "与技术无关",
+    "note": "无关"
+  },
+  {
+    "id": "n29",
+    "category": "negative",
+    "difficulty": "hallucination_trap",
+    "question": "LangGraph 的 QuantumEdge 节点类型怎么使用？",
+    "expected_answer": "LangGraph 没有 QuantumEdge",
+    "note": "编造 API"
+  },
+  {
+    "id": "n30",
+    "category": "negative",
+    "difficulty": "hallucination_trap",
+    "question": "PaddleOCR 的 NeuralFont 字体渲染模块如何配置？",
+    "expected_answer": "PaddleOCR 没有 NeuralFont 模块",
+    "note": "编造模块名"
+  }
 ]

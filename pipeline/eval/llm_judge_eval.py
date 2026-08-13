@@ -100,18 +100,54 @@ def judge_answerability(question: str, docs: list[str], llm_model=None) -> dict:
                     except json.JSONDecodeError:
                         pass
 
-        # 安全提取 scores
+        # 安全提取 scores + 分制归一化
+        # ★ LLM 输出非确定: 有时用 0-3 分制, 有时混入 0-100 分制 (曾致
+        #   Answerability 14387% 的荒谬数字) → 统一钳制到 [0,3]
         raw_scores = data.get("scores", [0] * min(len(docs), 5))
         scores = []
         for s in raw_scores[:5]:
             try:
-                scores.append(int(s))
+                v = float(s)
             except (ValueError, TypeError):
-                scores.append(0)
+                v = 0.0
+            if v > 3:
+                # 疑似 100 分制 → 等比缩放到 0-3
+                v = v / 100.0 if v <= 100 else 3.0
+            scores.append(max(0.0, min(3.0, v)))
 
         # 补齐
         while len(scores) < min(len(docs), 5):
             scores.append(0)
+
+        # 解析完全失败 (scores 全 0 且 raw 无法解析) → 重试一次
+        if not data or all(s == 0 for s in scores):
+            retry_prompt = prompt + "\n\n★ 严格要求: 只输出 JSON 对象本身, 不要解释文字, 评分用 0-3 整数。"
+            resp = robust_llm_call(retry_prompt)
+            content = resp.content if hasattr(resp, 'content') else str(resp)
+            retry_data = {}
+            try:
+                retry_data = json.loads(content.strip())
+            except json.JSONDecodeError:
+                m = re.search(r'\{[\s\S]*\}', content)
+                if m:
+                    try:
+                        retry_data = json.loads(m.group(0))
+                    except json.JSONDecodeError:
+                        retry_data = {}
+            if retry_data:
+                data = retry_data
+                raw_scores = data.get("scores", [0] * min(len(docs), 5))
+                scores = []
+                for s in raw_scores[:5]:
+                    try:
+                        v = float(s)
+                    except (ValueError, TypeError):
+                        v = 0.0
+                    if v > 3:
+                        v = v / 100.0 if v <= 100 else 3.0
+                    scores.append(max(0.0, min(3.0, v)))
+                while len(scores) < min(len(docs), 5):
+                    scores.append(0)
 
         return {
             "scores": scores,

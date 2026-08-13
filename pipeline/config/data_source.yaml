@@ -64,13 +64,23 @@ gitee:
     # ── 扩语料 (2026-08-13): 官方文档源仓库, 提高 KG 共现权重差 ──
     - owner: "mindspore"
       repo: "docs"
-      doc_path: "docs"
+      doc_path: "docs/mindspore"
     - owner: "paddlepaddle"
       repo: "docs"
       doc_path: "docs"
     - owner: "PaddlePaddle"
       repo: "PaddleOCR"
       doc_path: "doc"
+    # ── 二次扩语料 (2026-08-13): 更多生态仓库 ──
+    - owner: "openeuler"
+      repo: "docs"
+      doc_path: "docs"
+    - owner: "PaddlePaddle"
+      repo: "PaddleSeg"
+      doc_path: "docs"
+    - owner: "PaddlePaddle"
+      repo: "PaddleDetection"
+      doc_path: "docs"
   timeout_sec: 30
   issues_limit: 25
   issues_since_days: 60        # Gitee issue 更新慢，放宽时间窗口

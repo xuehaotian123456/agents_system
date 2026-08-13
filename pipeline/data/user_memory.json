@@ -5,7 +5,7 @@
         "Python": 5,
         "编程": 4,
         "角度": 2,
-        "React": 2,
+        "React": 3,
         "Vue": 1,
         "掘金": 1,
         "技术": 2,
@@ -16,55 +16,88 @@
         "tracker": 4,
         "工具": 4,
         "关键词": 4,
-        "AI": 9,
-        "模型": 6,
+        "AI": 11,
+        "模型": 10,
         "LLM": 4,
         "Agent": 4,
         "动态": 4,
         "async": 1,
         "await": 1,
-        "pandas": 1,
-        "DataFrame": 1,
-        "groupby": 1,
-        "Concurrent": 1,
-        "Mode": 1,
-        "Suspense": 1,
-        "Kubernetes": 1,
-        "StatefulSet": 1,
-        "Deployment": 1,
-        "区别": 2,
-        "scikit": 1,
-        "learn": 1,
-        "GridSearchCV": 1,
-        "评分": 1,
-        "函数": 1,
-        "Golang": 1,
-        "goroutine": 1,
-        "channel": 1,
-        "生产者": 1,
-        "消费者": 1,
-        "模式": 1,
-        "MindSpore": 3,
-        "版本号": 1,
-        "特性": 1,
-        "GitHub": 1,
-        "开源": 1,
-        "项目": 1,
-        "NeuralShader": 1,
-        "模块": 1,
-        "微分": 1,
-        "PaddleNLP": 1,
-        "TransformerX": 1,
-        "BERT": 1,
-        "Lite": 1,
-        "iOS": 1,
-        "CoreML": 1,
-        "跑步": 1,
-        "川菜馆": 1,
-        "辞职信": 1
+        "pandas": 2,
+        "DataFrame": 2,
+        "groupby": 2,
+        "Concurrent": 2,
+        "Mode": 2,
+        "Suspense": 2,
+        "Kubernetes": 2,
+        "StatefulSet": 2,
+        "Deployment": 2,
+        "区别": 5,
+        "scikit": 2,
+        "learn": 2,
+        "GridSearchCV": 2,
+        "评分": 2,
+        "函数": 2,
+        "Golang": 2,
+        "goroutine": 2,
+        "channel": 2,
+        "生产者": 2,
+        "消费者": 2,
+        "模式": 2,
+        "MindSpore": 8,
+        "版本号": 2,
+        "特性": 2,
+        "GitHub": 2,
+        "开源": 2,
+        "项目": 3,
+        "NeuralShader": 2,
+        "模块": 4,
+        "微分": 2,
+        "PaddleNLP": 3,
+        "TransformerX": 2,
+        "BERT": 2,
+        "Lite": 2,
+        "iOS": 2,
+        "CoreML": 2,
+        "跑步": 2,
+        "川菜馆": 2,
+        "辞职信": 2,
+        "PostgreSQL": 1,
+        "物化": 1,
+        "视图": 2,
+        "普通": 1,
+        "性能": 1,
+        "ESP32": 1,
+        "嵌入式": 1,
+        "FreeRTOS": 1,
+        "任务调度": 1,
+        "Unity": 1,
+        "Shader": 1,
+        "队列": 1,
+        "排序": 1,
+        "QuantumX": 1,
+        "量子": 1,
+        "SuperBERT": 1,
+        "数量": 1,
+        "PaddlePaddle": 1,
+        "DistributedTransformer": 1,
+        "参数": 1,
+        "Gitee": 1,
+        "Star": 1,
+        "社区": 1,
+        "RFC": 1,
+        "科幻电影": 1,
+        "股票": 1,
+        "LangGraph": 1,
+        "QuantumEdge": 1,
+        "节点": 1,
+        "类型": 1,
+        "PaddleOCR": 1,
+        "NeuralFont": 1,
+        "字体": 1
       },
-      "last_seen": "2026-08-12 17:26",
-      "query_count": 30
+      "last_seen": "2026-08-13 17:51",
+      "query_count": 60
     },
     "t1": {
       "keywords": {
@@ -79,125 +112,6 @@
     }
   },
   "sessions": [
-    {
-      "session": "default",
-      "query": "Python异步编程怎么学",
-      "keywords": [
-        "Python",
-        "编程"
-      ],
-      "time": "2026-08-06 14:37"
-    },
-    {
-      "session": "default",
-      "query": "换个角度搜索: Python异步编程怎么学",
-      "keywords": [
-        "角度",
-        "Python",
-        "编程"
-      ],
-      "time": "2026-08-06 14:38"
-    },
-    {
-      "session": "t1",
-      "query": "Python异步编程",
-      "keywords": [
-        "Python",
-        "编程"
-      ],
-      "time": "2026-08-06 14:38"
-    },
-    {
-      "session": "t1",
-      "query": "Docker容器化",
-      "keywords": [
-        "Docker",
-        "容器"
-      ],
-      "time": "2026-08-06 14:38"
-    },
-    {
-      "session": "t1",
-      "query": "React前端开发",
-      "keywords": [
-        "React"
-      ],
-      "time": "2026-08-06 14:38"
-    },
-    {
-      "session": "default",
-      "query": "Python异步编程怎么学",
-      "keywords": [
-        "Python",
-        "编程"
-      ],
-      "time": "2026-08-06 14:39"
-    },
-    {
-      "session": "default",
-      "query": "React和Vue对比",
-      "keywords": [
-        "React",
-        "Vue"
-      ],
-      "time": "2026-08-06 14:39"
-    },
-    {
-      "session": "default",
-      "query": "帮我看看掘金热榜",
-      "keywords": [
-        "掘金"
-      ],
-      "time": "2026-08-06 14:40"
-    },
-    {
-      "session": "default",
-      "query": "帮我分析当前技术热词趋势",
-      "keywords": [
-        "技术",
-        "热词",
-        "趋势"
-      ],
-      "time": "2026-08-06 15:10"
-    },
-    {
-      "session": "default",
-      "query": "分析当前技术热词趋势",
-      "keywords": [
-        "技术",
-        "热词",
-        "趋势"
-      ],
-      "time": "2026-08-06 15:11"
-    },
-    {
-      "session": "default",
-      "query": "什么是协程",
-      "keywords": [
-        "协程"
-      ],
-      "time": "2026-08-06 15:24"
-    },
-    {
-      "session": "default",
-      "query": "什么是协程",
-      "keywords": [
-        "协程"
-      ],
-      "time": "2026-08-06 15:24"
-    },
-    {
-      "session": "default",
-      "query": "帮我创建一个名为 ai_tracker 的自定义工具，关键词是 AI、大模型、LLM、Agent，用来跟踪AI最新动态",
-      "keywords": [
-        "ai",
-        "tracker",
-        "工具",
-        "关键词",
-        "AI"
-      ],
-      "time": "2026-08-06 15:47"
-    },
     {
       "session": "default",
       "query": "换个角度搜索: 帮我创建一个名为 ai_tracker 的自定义工具，关键词是 AI、大模型、LLM、Agent，用来跟踪AI最新动态",
@@ -400,24 +314,329 @@
         "辞职信"
       ],
       "time": "2026-08-12 17:26"
+    },
+    {
+      "session": "default",
+      "query": "pandas 的 DataFrame 如何做 groupby 聚合操作？",
+      "keywords": [
+        "pandas",
+        "DataFrame",
+        "groupby"
+      ],
+      "time": "2026-08-13 17:42"
+    },
+    {
+      "session": "default",
+      "query": "React 18 的 Concurrent Mode 和 Suspense 怎么配合使用？",
+      "keywords": [
+        "React",
+        "Concurrent",
+        "Mode",
+        "Suspense"
+      ],
+      "time": "2026-08-13 17:42"
+    },
+    {
+      "session": "default",
+      "query": "Kubernetes 中 StatefulSet 和 Deployment 有什么区别？",
+      "keywords": [
+        "Kubernetes",
+        "StatefulSet",
+        "Deployment",
+        "区别"
+      ],
+      "time": "2026-08-13 17:43"
+    },
+    {
+      "session": "default",
+      "query": "scikit-learn 的 GridSearchCV 如何使用自定义评分函数？",
+      "keywords": [
+        "scikit",
+        "learn",
+        "GridSearchCV",
+        "评分",
+        "函数"
+      ],
+      "time": "2026-08-13 17:43"
+    },
+    {
+      "session": "default",
+      "query": "Golang 的 goroutine 和 channel 怎么实现生产者消费者模式？",
+      "keywords": [
+        "Golang",
+        "goroutine",
+        "channel",
+        "生产者",
+        "消费者"
+      ],
+      "time": "2026-08-13 17:43"
+    },
+    {
+      "session": "default",
+      "query": "2026年8月 MindSpore 最新发布的版本号是多少，包含了哪些新特性？",
+      "keywords": [
+        "MindSpore",
+        "版本号",
+        "特性"
+      ],
+      "time": "2026-08-13 17:44"
+    },
+    {
+      "session": "default",
+      "query": "今天 GitHub 上最热的 AI 开源项目是什么？",
+      "keywords": [
+        "GitHub",
+        "AI",
+        "开源",
+        "项目"
+      ],
+      "time": "2026-08-13 17:44"
+    },
+    {
+      "session": "default",
+      "query": "MindSpore 的 NeuralShader 模块如何实现可微分渲染？",
+      "keywords": [
+        "MindSpore",
+        "NeuralShader",
+        "模块",
+        "微分"
+      ],
+      "time": "2026-08-13 17:45"
+    },
+    {
+      "session": "default",
+      "query": "PaddleNLP 的 TransformerX 模型和 BERT 有什么区别？",
+      "keywords": [
+        "PaddleNLP",
+        "TransformerX",
+        "模型",
+        "BERT",
+        "区别"
+      ],
+      "time": "2026-08-13 17:45"
+    },
+    {
+      "session": "default",
+      "query": "MindSpore Lite 如何在 iOS 上做 CoreML 模型转换？",
+      "keywords": [
+        "MindSpore",
+        "Lite",
+        "iOS",
+        "CoreML",
+        "模型"
+      ],
+      "time": "2026-08-13 17:45"
+    },
+    {
+      "session": "default",
+      "query": "那个优化器怎么用？",
+      "keywords": [],
+      "time": "2026-08-13 17:45"
+    },
+    {
+      "session": "default",
+      "query": "帮我修一下这个报错",
+      "keywords": [],
+      "time": "2026-08-13 17:46"
+    },
+    {
+      "session": "default",
+      "query": "今天天气怎么样？适合出去跑步吗？",
+      "keywords": [
+        "跑步"
+      ],
+      "time": "2026-08-13 17:46"
+    },
+    {
+      "session": "default",
+      "query": "推荐一家北京好吃的川菜馆",
+      "keywords": [
+        "川菜馆"
+      ],
+      "time": "2026-08-13 17:46"
+    },
+    {
+      "session": "default",
+      "query": "帮我写一封辞职信",
+      "keywords": [
+        "辞职信"
+      ],
+      "time": "2026-08-13 17:47"
+    },
+    {
+      "session": "default",
+      "query": "PostgreSQL 的物化视图和普通视图在查询性能上有什么区别？",
+      "keywords": [
+        "PostgreSQL",
+        "物化",
+        "视图",
+        "普通",
+        "视图"
+      ],
+      "time": "2026-08-13 17:47"
+    },
+    {
+      "session": "default",
+      "query": "ESP32 嵌入式开发中 FreeRTOS 任务调度怎么配置？",
+      "keywords": [
+        "ESP32",
+        "嵌入式",
+        "FreeRTOS",
+        "任务调度"
+      ],
+      "time": "2026-08-13 17:47"
+    },
+    {
+      "session": "default",
+      "query": "Unity 中 Shader 的透明渲染队列怎么排序？",
+      "keywords": [
+        "Unity",
+        "Shader",
+        "队列",
+        "排序"
+      ],
+      "time": "2026-08-13 17:47"
+    },
+    {
+      "session": "default",
+      "query": "MindSpore QuantumX 模块支持哪些量子门操作？",
+      "keywords": [
+        "MindSpore",
+        "QuantumX",
+        "模块",
+        "量子"
+      ],
+      "time": "2026-08-13 17:48"
+    },
+    {
+      "session": "default",
+      "query": "PaddleNLP 的 SuperBERT 预训练模型的参数量是多少？",
+      "keywords": [
+        "PaddleNLP",
+        "SuperBERT",
+        "模型",
+        "数量"
+      ],
+      "time": "2026-08-13 17:48"
+    },
+    {
+      "session": "default",
+      "query": "PaddlePaddle 的 DistributedTransformer 类有哪些参数？",
+      "keywords": [
+        "PaddlePaddle",
+        "DistributedTransformer",
+        "参数"
+      ],
+      "time": "2026-08-13 17:48"
+    },
+    {
+      "session": "default",
+      "query": "2026 年 8 月 Gitee 上 Star 数最高的 AI 项目是什么？",
+      "keywords": [
+        "Gitee",
+        "Star",
+        "AI",
+        "项目"
+      ],
+      "time": "2026-08-13 17:48"
+    },
+    {
+      "session": "default",
+      "query": "本周 MindSpore 社区新增了几个 RFC 提案？",
+      "keywords": [
+        "MindSpore",
+        "社区",
+        "RFC"
+      ],
+      "time": "2026-08-13 17:49"
+    },
+    {
+      "session": "default",
+      "query": "这个配置怎么改？",
+      "keywords": [],
+      "time": "2026-08-13 17:49"
+    },
+    {
+      "session": "default",
+      "query": "模型训练不起来怎么办？",
+      "keywords": [
+        "模型"
+      ],
+      "time": "2026-08-13 17:49"
+    },
+    {
+      "session": "default",
+      "query": "推荐一部好看的科幻电影",
+      "keywords": [
+        "科幻电影"
+      ],
+      "time": "2026-08-13 17:50"
+    },
+    {
+      "session": "default",
+      "query": "帮我分析一下这支股票明天会不会涨",
+      "keywords": [
+        "股票"
+      ],
+      "time": "2026-08-13 17:50"
+    },
+    {
+      "session": "default",
+      "query": "周末北京去哪玩比较好？",
+      "keywords": [],
+      "time": "2026-08-13 17:51"
+    },
+    {
+      "session": "default",
+      "query": "LangGraph 的 QuantumEdge 节点类型怎么使用？",
+      "keywords": [
+        "LangGraph",
+        "QuantumEdge",
+        "节点",
+        "类型"
+      ],
+      "time": "2026-08-13 17:51"
+    },
+    {
+      "session": "default",
+      "query": "PaddleOCR 的 NeuralFont 字体渲染模块如何配置？",
+      "keywords": [
+        "PaddleOCR",
+        "NeuralFont",
+        "字体",
+        "模块"
+      ],
+      "time": "2026-08-13 17:51"
     }
   ],
   "topics": [
     [
       "AI",
-      9
+      11
+    ],
+    [
+      "模型",
+      10
+    ],
+    [
+      "MindSpore",
+      8
     ],
     [
       "Python",
       6
     ],
     [
-      "模型",
-      6
-    ],
-    [
       "编程",
       5
+    ],
+    [
+      "区别",
+      5
+    ],
+    [
+      "React",
+      4
     ],
     [
       "ai",
@@ -448,11 +667,15 @@
       4
     ],
     [
-      "React",
+      "模块",
+      4
+    ],
+    [
+      "项目",
       3
     ],
     [
-      "MindSpore",
+      "PaddleNLP",
       3
     ],
     [
@@ -466,22 +689,6 @@
     [
       "热词",
       2
-    ],
-    [
-      "趋势",
-      2
-    ],
-    [
-      "协程",
-      2
-    ],
-    [
-      "区别",
-      2
-    ],
-    [
-      "Vue",
-      1
     ]
   ]
 }

@@ -1,15 +1,15 @@
 {
   "total_queries": 50,
-  "total_chunks": 5089,
+  "total_chunks": 7206,
   "evaluation_note": "expected_entities关键词匹配是弱标注proxy，非人工相关性别定。建议引入LLM-as-judge补充。",
   "overall": {
     "vec_recall@5": 0.763,
-    "graph_recall@5": 0.788,
+    "graph_recall@5": 0.792,
     "vec_hit_rate": 0.98,
     "graph_hit_rate": 1.0,
-    "vec_mrr": 0.932,
-    "graph_mrr": 0.951,
-    "improvement_recall": 0.025,
+    "vec_mrr": 0.945,
+    "graph_mrr": 0.941,
+    "improvement_recall": 0.028,
     "improvement_hit_rate": 0.02,
     "degradation_success_rate": 1.0
   },
@@ -18,13 +18,13 @@
       "name": "实体关联类（测 Graph-RAG 优势）",
       "count": 10,
       "vec_recall@5": 0.858,
-      "graph_recall@5": 0.917
+      "graph_recall@5": 0.883
     },
     "fact_lookup": {
       "name": "事实查找类（测基础 RAG）",
       "count": 10,
       "vec_recall@5": 0.642,
-      "graph_recall@5": 0.592
+      "graph_recall@5": 0.617
     },
     "error_tracing": {
       "name": "报错溯源类（测图谱关联能力）",
@@ -48,24 +48,24 @@
       "name": "多跳推理类（测多步关联能力）",
       "count": 6,
       "vec_recall@5": 0.75,
-      "graph_recall@5": 0.792
+      "graph_recall@5": 0.833
     }
   },
   "by_difficulty": {
     "easy": {
       "count": 6,
       "vec_recall@5": 0.639,
-      "graph_recall@5": 0.736
+      "graph_recall@5": 0.778
     },
     "hard": {
       "count": 24,
       "vec_recall@5": 0.774,
-      "graph_recall@5": 0.806
+      "graph_recall@5": 0.792
     },
     "medium": {
       "count": 20,
       "vec_recall@5": 0.788,
-      "graph_recall@5": 0.783
+      "graph_recall@5": 0.796
     }
   }
 }
