@@ -62,7 +62,7 @@ python eval/e2e_demo.py
 - 三路去重 → 可信度加权 → BGE-Reranker 精排 → top_k=3
 
 ### 知识图谱多跳推理
-- 11,814 实体 / 11,810 共现边（jieba.posseg 抽取 + 共现矩阵 + IDF 过滤）
+- 11,686 实体 / 11,810 共现边（jieba.posseg 抽取 + 共现矩阵 + IDF 过滤）
 - `multi_hop_expand`: BFS 1-3 跳实体扩散，返回完整推理链
 - `find_path(A, B)`: 实体间最短关联路径
 

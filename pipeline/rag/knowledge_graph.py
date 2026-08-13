@@ -35,6 +35,11 @@ _STOPWORDS = {
     "there", "where", "what", "which", "who", "whom", "whose", "why", "how",
     "up", "down", "out", "off", "through", "between", "among", "during",
     "per", "via", "etc", "e.g", "i.e", "vs", "com", "www", "http", "https",
+    # ── 爬虫元数据词 (来源 header 污染共现矩阵的假邻居) ──
+    "gitee", "github", "community", "develop", "issue", "issues", "repo",
+    "repository", "readme", "docs", "md", "source", "来源", "可信度", "标签",
+    "platform", "fork", "star", "branch", "commit", "release", "version",
+    "hackernews", "oschina", "trending", "rss", "头条", "热榜", "转载",
 }
 
 _ALLOWED_POS = {'n', 'nr', 'ns', 'nt', 'nz', 'eng', 'x', 'j', 'l'}
@@ -92,6 +97,12 @@ class KnowledgeGraph:
         return len(self.entity_to_chunks)
 
     def build(self, chunks: List[str]):
+        # ★ 必须重置: 否则重复 build 会累积旧实体/边 (此前 KG 实体数漂移的原因之一)
+        self.entity_to_chunks.clear()
+        self.co_occurrence.clear()
+        self.chunk_entities.clear()
+        self.entity_freq.clear()
+
         self._total_chunks = len(chunks)
         logger.info(f"[KG] 构建: {self._total_chunks} chunks")
 
@@ -129,7 +140,8 @@ class KnowledgeGraph:
         entities = set()
         for pair in pseg.cut(text):
             word, flag = pair.word.strip(), pair.flag
-            if len(word) < 2 or word in _STOPWORDS:
+            # 停用词大小写不敏感 (Gitee/gitee 都过滤)
+            if len(word) < 2 or word in _STOPWORDS or word.lower() in _STOPWORDS:
                 continue
             if flag not in _ALLOWED_POS and not flag.startswith('n'):
                 continue

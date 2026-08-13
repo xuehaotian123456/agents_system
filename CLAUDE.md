@@ -198,7 +198,7 @@ python eval/e2e_demo.py
 |:---|:---|
 | 文章数 | 220 篇 (内容去重后) |
 | Chunks | 4,206 |
-| KG 实体 | 11,814 (英文停用词清洗后) |
+| KG 实体 | 11,686 (英文停用词清洗后) |
 | ChromaDB | 4,206 embeddings (1:1) |
 | URL 去重 | 251 条 |
 | 数据源 | Gitee (MindSpore + Paddle) + 掘金 + 博客园 + HN + OSChina |
@@ -223,7 +223,7 @@ python eval/e2e_demo.py
 
 ### 规模
 
-- Pipeline: ~3500 行 Python，4 节点 + 14 工具，6 源爬虫，11,814 KG 实体
+- Pipeline: ~3500 行 Python，4 节点 + 14 工具，6 源爬虫，11,686 KG 实体
 - Interaction: ~7500 行 Python，45 模块，零 LangChain
 - 评测: 50 条查询 + 15 条负样本 + LLM-as-Judge
 

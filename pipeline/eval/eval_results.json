@@ -6,40 +6,40 @@
     "vec_recall@5": 0.77,
     "graph_recall@5": 0.783,
     "vec_hit_rate": 1.0,
-    "graph_hit_rate": 1.0,
+    "graph_hit_rate": 0.98,
     "vec_mrr": 0.936,
-    "graph_mrr": 0.941,
+    "graph_mrr": 0.933,
     "improvement_recall": 0.013,
-    "improvement_hit_rate": 0.0,
-    "degradation_success_rate": 1.0
+    "improvement_hit_rate": -0.02,
+    "degradation_success_rate": 0.98
   },
   "by_category": {
     "entity_association": {
-      "name": "多跳推理类（测多步关联能力）",
+      "name": "实体关联类（测 Graph-RAG 优势）",
       "count": 10,
       "vec_recall@5": 0.858,
       "graph_recall@5": 0.917
     },
     "fact_lookup": {
-      "name": "多跳推理类（测多步关联能力）",
+      "name": "事实查找类（测基础 RAG）",
       "count": 10,
       "vec_recall@5": 0.642,
       "graph_recall@5": 0.592
     },
     "error_tracing": {
-      "name": "多跳推理类（测多步关联能力）",
+      "name": "报错溯源类（测图谱关联能力）",
       "count": 10,
       "vec_recall@5": 0.942,
       "graph_recall@5": 0.942
     },
     "trending": {
-      "name": "多跳推理类（测多步关联能力）",
+      "name": "时效查询类（测爬虫链路）",
       "count": 8,
       "vec_recall@5": 0.844,
       "graph_recall@5": 0.917
     },
     "compare": {
-      "name": "多跳推理类（测多步关联能力）",
+      "name": "对比分析类（测多工具编排）",
       "count": 6,
       "vec_recall@5": 0.472,
       "graph_recall@5": 0.431
@@ -60,12 +60,12 @@
     "hard": {
       "count": 24,
       "vec_recall@5": 0.788,
-      "graph_recall@5": 0.795
+      "graph_recall@5": 0.806
     },
     "medium": {
       "count": 20,
       "vec_recall@5": 0.788,
-      "graph_recall@5": 0.783
+      "graph_recall@5": 0.771
     }
   }
 }
