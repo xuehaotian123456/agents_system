@@ -164,19 +164,22 @@ python eval/e2e_demo.py
 
 ### 当前结果 (50 条查询, 4331 chunks, 11942 KG 实体)
 
+> 口径: 纯向量 = 仅 ChromaDB top-5；GraphRAG = 三路 RRF 融合 + Reranker top-5。**两边同 k 对比**。
+
 | 指标 | 纯向量 RAG | GraphRAG | 提升 |
 |:---|:---|:---|:---|
-| Recall@5 | 57% | 73% | **+16%** |
-| 实体关联类 | 60% | 78% | +18% |
+| Recall@5 | 56% | 76% | **+19%** |
+| 实体关联类 | 60% | 85% | +25% |
 | 报错溯源类 | 86% | 94% | +8% |
-| 多跳推理类 | 54% | 67% | +12% |
+| 多跳推理类 | 54% | 71% | +17% |
 
 ### 评测局限性 (面试时需说明)
 
 - expected_entities 关键词匹配是弱标注 proxy，不是人工相关性别定
-- LLM-as-Judge 补充了更准确的 answerability 评估
+- LLM-as-Judge 补充了更准确的 answerability 评估（基线同为仅 ChromaDB）
 - 50 条查询仍不够统计显著，建议 200+
-- 负样本测试验证了诚实拒答能力
+- 负样本测试验证了诚实拒答能力（80% 拒答率, 幻觉陷阱 100% 拦截）
+- 全量评测数据需运行 force_update 拉取后复现（种子数据仅保证 demo 可跑）
 
 ---
 
@@ -197,7 +200,7 @@ python eval/e2e_demo.py
 
 **这个项目的亮点**：
 
-1. **GraphRAG 三路融合 + 多跳推理**：不是简单的向量检索，而是 Vector + BM25 + KG 三路召回。KG 支持 BFS 多跳实体扩散（2-3 hops），能发现实体间的隐含关联链路。LLM-as-Judge 评测验证了 Answerability 提升。
+1. **GraphRAG 三路融合 + 多跳推理**：Vector + BM25 + KG 三路召回，RRF (Reciprocal Rank Fusion) 分数级融合（alpha 加权）+ 可信度加权 + BGE-Reranker 精排。KG 支持 BFS 多跳实体扩散（2-3 hops）与实体最短路径查找。评测（同 k 口径）验证 Recall@5 +19%。
 
 2. **双引擎分层架构**：LangGraph StateGraph 处理 Pipeline，自研 CC-Harness AgentLoop 处理对话。各用最合适的范式。
 

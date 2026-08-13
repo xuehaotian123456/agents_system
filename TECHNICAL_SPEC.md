@@ -99,11 +99,11 @@ Token 预算 (qwen-plus 32k): System 800 + Tools 1000 + History 20000 + Answer 1
   ├─ BM25 路: jieba 分词 + 词频匹配, top_k=10
   └─ Graph 路: KG 多跳扩散 → 关联 chunk, top_k=5
          ↓
-    三路去重合并
+    RRF 分数融合: Σ 1/(60+rank), alpha 加权 (向量×α, BM25×(1-α), 图×1.0)
          ↓
     可信度加权: score × (0.7 + 0.3 × credibility)
          ↓
-    BGE-Reranker 精排 → top_k=3
+    BGE-Reranker 精排 → top_k (默认 3, 评测统一 5)
 ```
 
 ### 3.2 知识图谱 (`pipeline/rag/knowledge_graph.py`)
@@ -186,12 +186,12 @@ GitHub: enable_github=false → REST API → 失败 3 次 → 离线缓存
 
 ### 当前结果
 
-**关键词匹配 (50 条)**:
+**关键词匹配 (50 条, 同 k 口径)**:
 
 | 指标 | 纯向量 | GraphRAG | 提升 |
 |:---|:---|:---|:---|
-| Recall@5 | 57% | 73% | **+16%** |
-| 实体关联类 | 60% | 78% | +18% |
+| Recall@5 | 56% | 76% | **+19%** |
+| 实体关联类 | 60% | 85% | +25% |
 | 报错溯源类 | 86% | 94% | +8% |
 
 **负样本测试 (15 条)**:

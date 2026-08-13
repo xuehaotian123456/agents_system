@@ -53,16 +53,19 @@ class HybridRetriever:
         except Exception:
             logger.warning("Reranker 不可用，将跳过重排序")
 
-    def search(self, query: str) -> List[Document]:
+    def search(self, query: str, k: Optional[int] = None) -> List[Document]:
         """
-        三路混合检索。
+        三路混合检索 (RRF 融合)。
 
         Args:
             query: 用户查询
+            k: 最终返回数量 (默认 top_k_rerank)
 
         Returns:
-            重排后的 top_k Document 列表
+            融合重排后的 top-k Document 列表
         """
+        final_k = k if k is not None else self.top_k_rerank
+
         # ── 第一路: 向量检索 ──
         vec_docs = self.vector_store.similarity_search(query, k=self.top_k_retrieve)
         for d in vec_docs:
@@ -86,29 +89,41 @@ class HybridRetriever:
             graph_docs = self.graph_retriever.search(query)
             logger.info(f"[HybridRetriever] 图检索: {len(graph_docs)} 个文档块")
 
-        # ── 三路去重合并 ──
-        seen = set()
-        merged = []
-        for d in vec_docs + bm25_docs + graph_docs:
-            key = d.page_content[:100]
-            if key not in seen:
-                seen.add(key)
-                merged.append(d)
+        # ── RRF (Reciprocal Rank Fusion) 分数融合 ──
+        # score(d) = Σ 1/(60 + rank_i(d))
+        # alpha 加权: 向量路 × alpha, BM25 路 × (1-alpha), 图路固定权重 1.0
+        # 融合后取 top-k 候选进 Reranker
+        RRF_K = 60
+        rrf_scores: dict[str, float] = {}
+        doc_by_key: dict[str, Document] = {}
 
-        # ── 可信度加权（重排前调权）──
+        def _add_route(docs: List[Document], weight: float):
+            for rank, d in enumerate(docs):
+                key = d.page_content[:100]
+                if key not in doc_by_key:
+                    doc_by_key[key] = d
+                rrf_scores[key] = rrf_scores.get(key, 0.0) + weight / (RRF_K + rank + 1)
+
+        _add_route(vec_docs, self.alpha)              # 向量路
+        _add_route(bm25_docs, 1.0 - self.alpha)       # BM25 路
+        _add_route(graph_docs, 1.0)                   # 图路
+
+        merged = [doc_by_key[k] for k in rrf_scores]
+        for d in merged:
+            d.metadata["rrf_score"] = round(rrf_scores[d.page_content[:100]], 5)
+
+        # ── 可信度加权 ──
         for doc in merged:
             credibility = doc.metadata.get("credibility", 0.5)
-            # 可信度因子: 0.7 + 0.3 * credibility → 低权威文档权重最多打 7 折
             weight = 0.7 + 0.3 * credibility
-            # 获取原有分数（如果有的话），否则使用默认值
-            base_score = doc.metadata.get("bm25_score", doc.metadata.get("graph_score", 0.5))
-            doc.metadata["credibility_weighted"] = round(base_score * weight, 4)
+            doc.metadata["credibility_weighted"] = round(
+                doc.metadata.get("rrf_score", 0) * weight, 6)
 
         # ── Reranker 精排 ──
-        if self.reranker and len(merged) > self.top_k_rerank:
+        if self.reranker and len(merged) > final_k:
             pairs = [[query, d.page_content] for d in merged]
             scores = self.reranker.predict(pairs)
-            # Reranker 分数 × 可信度因子（双重保证）
+            # Reranker 分数 × 可信度因子
             for doc, score in zip(merged, scores):
                 credibility = doc.metadata.get("credibility", 0.5)
                 doc.metadata["reranker_score"] = float(score * (0.7 + 0.3 * credibility))
@@ -116,18 +131,18 @@ class HybridRetriever:
                 zip(merged, [d.metadata.get("reranker_score", 0) for d in merged]),
                 key=lambda x: x[1], reverse=True,
             )
-            result = [d for d, _ in ranked[:self.top_k_rerank]]
+            result = [d for d, _ in ranked[:final_k]]
             logger.info(
-                f"[HybridRetriever] 三路融合: vec={len(vec_docs)} bm25={len(bm25_docs)} "
-                f"graph={len(graph_docs)} → merged={len(merged)} → reranked={len(result)}"
+                f"[HybridRetriever] 三路融合(RRF): vec={len(vec_docs)} bm25={len(bm25_docs)} "
+                f"graph={len(graph_docs)} → merged={len(merged)} → top{final_k}={len(result)}"
             )
             return result
 
-        # 无 Reranker 时按可信度加权排序
+        # 无 Reranker 时按可信度加权 RRF 排序
         merged.sort(key=lambda d: d.metadata.get("credibility_weighted", 0), reverse=True)
-        result = merged[:self.top_k_rerank]
+        result = merged[:final_k]
         logger.info(
-            f"[HybridRetriever] 三路融合(无Reranker): vec={len(vec_docs)} bm25={len(bm25_docs)} "
+            f"[HybridRetriever] 三路融合(RRF无Reranker): vec={len(vec_docs)} bm25={len(bm25_docs)} "
             f"graph={len(graph_docs)} → merged={len(result)}"
         )
         return result

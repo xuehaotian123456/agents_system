@@ -165,12 +165,12 @@ class AgentLoop:
                 return answer
 
             elif action.action_type == ActionType.TOOL_CALL:
-                result_text = await self._execute_tool_call(action.tool_call)
+                result_text, tool_success = await self._execute_tool_call(action.tool_call)
                 self.session.append_tool_result(
                     tool_name=action.tool_call.tool_name if action.tool_call else "unknown",
                     result=result_text if result_text else "工具返回空结果",
                     tool_call_id=str(turn),
-                    success=True,
+                    success=tool_success,
                 )
 
             elif action.action_type == ActionType.SPAWN_SUBAGENT:
@@ -206,11 +206,16 @@ class AgentLoop:
 
     # ==================== 工具调用执行 ====================
 
-    async def _execute_tool_call(self, tool_call: Optional[ToolCall]) -> str:
-        """执行工具调用"""
+    async def _execute_tool_call(self, tool_call: Optional[ToolCall]) -> tuple[str, bool]:
+        """
+        执行工具调用。
+
+        Returns:
+            (结果文本, 是否成功) — 失败状态必须真实传递给会话记录
+        """
         if tool_call is None:
             self.tracer.error("工具调用请求为空", recoverable=True)
-            return "工具调用请求为空"
+            return "工具调用请求为空", False
 
         tool_name = tool_call.tool_name
         args = tool_call.args
@@ -228,7 +233,7 @@ class AgentLoop:
             latency_ms=latency_ms,
         )
 
-        return result.content if result.success else f"工具执行失败：{result.error}"
+        return (result.content, True) if result.success else (f"工具执行失败：{result.error}", False)
 
     # ==================== 子 Agent 执行 ====================
 

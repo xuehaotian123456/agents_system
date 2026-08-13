@@ -162,12 +162,6 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
     vs_graph = VectorStore()
     vs_graph.load_articles()
 
-    vs_vec = VectorStore()
-    vs_vec.load_articles()
-    # 纯向量模式: 手动禁用 graph_retriever
-    if vs_vec.hybrid_retriever:
-        vs_vec.hybrid_retriever.graph_retriever = None
-
     t0 = time.time()
 
     results = {
@@ -183,9 +177,9 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
         difficulty = q.get("difficulty", "medium")
         qid = q.get("id", f"q{qi}")
 
-        # 检索
-        graph_docs = vs_graph.search(question)[:5]
-        vec_docs = vs_vec.search(question)[:5] if vs_vec.hybrid_retriever else vs_graph.store.similarity_search(question, k=5)
+        # 检索（基线口径与 run_eval 一致: 纯向量 = 仅 ChromaDB similarity）
+        graph_docs = vs_graph.search(question, top_k=5)
+        vec_docs = vs_graph.store.similarity_search(question, k=5)
 
         graph_texts = [d.page_content for d in graph_docs]
         vec_texts = [d.page_content for d in vec_docs]

@@ -318,7 +318,7 @@ async def lifespan(app: FastAPI):
                     transport=cfg.get("transport", "stdio"),
                     command=cfg.get("command", ""),
                     args=cfg.get("args", []),
-                    base_url=cfg.get("base_url", ""),
+                    url=cfg.get("url", cfg.get("base_url", "")),
                 ))
 
         await mcp_registry.connect_all()
@@ -349,10 +349,12 @@ app = FastAPI(
 )
 
 # CORS
+# 注意: allow_origins=["*"] 与 allow_credentials=True 是非法组合
+# (浏览器会拒绝带凭证的跨域请求)。本地开发场景无需凭证，禁用 credentials。
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

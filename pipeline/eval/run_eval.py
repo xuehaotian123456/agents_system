@@ -60,9 +60,9 @@ def init_vector_store(graph_enabled: bool = True):
     vs.load_articles()
 
     if graph_enabled and vs.hybrid_retriever:
-        # HybridRetriever.search 只接受 query，包装为统一接口
+        # 统一口径: GraphRAG 与纯向量都返回 k 篇
         def graph_fn(q, k=5):
-            return vs.hybrid_retriever.search(q)
+            return vs.hybrid_retriever.search(q, k=k)
         retriever_fn = graph_fn
         mode = "Graph-RAG (三路融合)"
     else:

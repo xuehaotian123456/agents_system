@@ -161,5 +161,5 @@ class VectorStore:
 
     def search(self, query: str, top_k: int = 5) -> list[Document]:
         if self.hybrid_retriever:
-            return self.hybrid_retriever.search(query)
+            return self.hybrid_retriever.search(query, k=top_k)
         return self.store.similarity_search(query, k=top_k)

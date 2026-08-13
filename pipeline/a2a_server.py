@@ -58,7 +58,7 @@ async def agent_card():
         "description": "技术调研助手 — 提供实时爬虫、知识图谱查询、代码搜索、技术对比。基于 LangGraph + 掘金/博客园数据。",
         "url": "http://localhost:8010",
         "version": "1.0.0",
-        "capabilities": {"streaming": True, "tools": True},
+        "capabilities": {"streaming": True, "tools": True, "stream_granularity": "node-level"},
         "tools": A2A_TOOLS,
     }
 
@@ -91,10 +91,12 @@ async def create_task(request: Request):
         except Exception as e:
             return JSONResponse({"answer": f"错误: {e}", "status": "error"})
 
-    # 流式模式
+    # 流式模式（节点级进度事件流: status → plan → tool → answer → done）
+    # 注意: 这里流的是 Pipeline 节点进度，不是 token 级流式输出；
+    # token 级流式由 Interaction 层 (llm_adapter.stream) 提供。
     async def event_stream():
         try:
-            yield f"event: status\ndata: {json.dumps({'status': 'started', 'agent': 'DevPilot LangGraph', 'thread_id': thread_id})}\n\n"
+            yield f"event: status\ndata: {json.dumps({'status': 'started', 'agent': 'DevPilot LangGraph', 'thread_id': thread_id, 'stream_granularity': 'node-level'})}\n\n"
 
             from agent.state import initial_state
             from agent.graph import graph
@@ -108,12 +110,10 @@ async def create_task(request: Request):
                 yield f"event: tool\ndata: {json.dumps({'name': tc.get('tool', '?'), 'result': str(tc.get('result', ''))[:200]})}\n\n"
 
             answer = result.get("answer", "无法生成回答")
-            chunks = re.split(r'(\s+)', answer)
-            for chunk in chunks:
-                if chunk:
-                    yield f"event: text\ndata: {json.dumps({'text': chunk})}\n\n"
+            # 完整回答作为单个事件发送（不做伪 token 切块）
+            yield f"event: answer\ndata: {json.dumps({'answer': answer, 'answer_length': len(answer)})}\n\n"
 
-            yield f"event: done\ndata: {json.dumps({'answer': answer, 'status': 'completed', 'confidence': result.get('confidence', 0)})}\n\n"
+            yield f"event: done\ndata: {json.dumps({'status': 'completed', 'confidence': result.get('confidence', 0)})}\n\n"
 
         except Exception as e:
             yield f"event: error\ndata: {json.dumps({'error': str(e)})}\n\n"
