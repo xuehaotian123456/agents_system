@@ -460,9 +460,38 @@ def _append_graph_markers(session, answer: str) -> str:
 
 # ==================== REST Chat API ====================
 
+def _input_guard_check(query: str) -> str | None:
+    """
+    安全护栏 (Layer 1): 输入检查。
+    返回 None = 通过；返回字符串 = 拦截原因。
+    """
+    from harness.guardrails.input_filter import InputGuard, RiskLevel
+
+    guard = InputGuard()
+    result = guard.check(query)
+
+    if not result.safe:
+        if result.risk_level in (RiskLevel.HIGH, RiskLevel.CRITICAL):
+            # 注入/越狱 → 硬拦截
+            return f"输入被安全护栏拦截: {result.reason}"
+        if result.risk_level == RiskLevel.LOW and result.sanitized_input:
+            # 滥用 → 返回净化后的输入（如截断超长文本）
+            return None  # 当前实现先放行，仅记录
+    return None
+
+
 @app.post("/api/chat")
 async def chat(req: ChatRequest) -> ChatResponse:
     """同步问答（非流式）"""
+    # ── 安全护栏: 输入检查 (Prompt 注入/越狱硬拦截) ──
+    guard_reason = _input_guard_check(req.query)
+    if guard_reason:
+        return ChatResponse(
+            answer=guard_reason,
+            session_id=req.session_id or "guard_blocked",
+            turns=0, tool_calls=0, elapsed_ms=0, trace=None,
+        )
+
     config = AgentConfig(
         max_turns=req.max_turns,
         model=req.model,
@@ -504,6 +533,13 @@ async def chat(req: ChatRequest) -> ChatResponse:
 @app.post("/api/chat/stream")
 async def chat_stream(req: ChatRequest):
     """SSE 流式问答"""
+    # ── 安全护栏: 输入检查 (Prompt 注入/越狱硬拦截) ──
+    guard_reason = _input_guard_check(req.query)
+    if guard_reason:
+        async def guard_stream() -> AsyncIterator[str]:
+            yield f"event: error\ndata: {json.dumps({'error': guard_reason})}\n\n"
+        return StreamingResponse(guard_stream(), media_type="text/event-stream")
+
     config = AgentConfig(
         max_turns=req.max_turns,
         model=req.model,
