@@ -54,6 +54,7 @@ desktop.ini
 # 面试材料（非上传，仅本地参考）
 README_INTERVIEW.md
 SYSTEM_FULL_WALKTHROUGH.md
+INTERVIEW_QA.md
 
 # 离线缓存
 pipeline/cache/

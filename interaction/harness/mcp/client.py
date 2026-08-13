@@ -164,31 +164,30 @@ class MCPClient:
         self._resources_cache = None
 
         if self.transport == "stdio":
-            if self._writer:
-                self._writer.close()
-                await self._writer.wait_closed()
-            if self._process:
-                self._process.terminate()
-                try:
-                    self._process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    self._process.kill()
+            proc = getattr(self, "_proc", None) or self._process
+            if proc:
+                if proc.returncode is None:
+                    proc.terminate()
+                    try:
+                        await asyncio.wait_for(proc.wait(), timeout=5)
+                    except (asyncio.TimeoutError, subprocess.TimeoutExpired):
+                        proc.kill()
 
         elif self.transport == "http":
             if self._session:
                 await self._session.close()
 
     async def _connect_stdio(self):
-        """建立 stdio 连接"""
-        self._process = subprocess.Popen(
-            [self._command] + self._args,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+        """建立 stdio 连接（asyncio 子进程，非阻塞）"""
+        import asyncio as _asyncio
+        self._proc = await _asyncio.create_subprocess_exec(
+            self._command, *self._args,
+            stdin=_asyncio.subprocess.PIPE,
+            stdout=_asyncio.subprocess.PIPE,
+            stderr=_asyncio.subprocess.PIPE,
             env=self._env,
         )
-        # 注意：asyncio subprocess 更合适，这里简化处理
-        # 生产环境应使用 asyncio.create_subprocess_exec
+        self._process = self._proc  # 兼容旧引用
 
     async def _connect_http(self):
         """建立 HTTP 连接"""
@@ -287,37 +286,43 @@ class MCPClient:
         }
 
         if self.transport == "stdio":
-            self._stdio_send(notification)
+            await self._stdio_send(notification)
         elif self.transport == "http":
             await self._http_request(notification)
 
     # ── stdio 传输 ──
 
     async def _stdio_request(self, request: dict) -> dict:
-        """通过 stdio 发送请求"""
-        self._stdio_send(request)
+        """通过 stdio 发送请求（异步，支持 server 日志/通知混入）"""
+        await self._stdio_send(request)
 
-        # 读取响应
-        if self._process and self._process.stdout:
-            line = self._process.stdout.readline()
+        proc = getattr(self, "_proc", None) or self._process
+        if not proc or not proc.stdout:
+            raise ConnectionError("MCP Server 进程未启动")
+
+        # 循环读取，跳过 server 发来的通知（无 id），直到匹配我们的请求 id
+        while True:
+            line = await proc.stdout.readline()
             if not line:
                 raise ConnectionError("MCP Server 连接已关闭")
 
             response = json.loads(line.decode("utf-8").strip())
+            if response.get("id") != request.get("id"):
+                continue  # 通知或其他请求的响应，跳过
 
             if "error" in response:
                 err = response["error"]
                 raise JSONRPCError(err["code"], err["message"], err.get("data"))
 
             return response.get("result", {})
-        raise ConnectionError("MCP Server 进程未启动")
 
-    def _stdio_send(self, message: dict):
-        """通过 stdio 发送消息"""
-        if self._process and self._process.stdin:
+    async def _stdio_send(self, message: dict):
+        """通过 stdio 发送消息（异步写）"""
+        proc = getattr(self, "_proc", None) or self._process
+        if proc and proc.stdin:
             payload = json.dumps(message, ensure_ascii=False) + "\n"
-            self._process.stdin.write(payload.encode("utf-8"))
-            self._process.stdin.flush()
+            proc.stdin.write(payload.encode("utf-8"))
+            await proc.stdin.drain()
 
     # ── HTTP 传输 ──
 
