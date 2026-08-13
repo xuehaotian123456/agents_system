@@ -22,7 +22,7 @@ E:\agent-system\
 ├── docker-compose.yml        # 一键部署
 │
 ├── pipeline/                 ← Pipeline 层 (LangGraph DevPilot)
-│   ├── a2a_server.py         # A2A Server (15工具, 端口8010)
+│   ├── a2a_server.py         # A2A Server (16工具, 端口8010)
 │   ├── app.py                # Streamlit UI (端口8501)
 │   ├── agent/                # LangGraph 四节点 + 14工具
 │   │   ├── graph.py          # 图组装: Planner→Retriever→Reflector→Summarizer
@@ -39,7 +39,7 @@ E:\agent-system\
 │   ├── rag/                  # GraphRAG 三路混合检索
 │   │   ├── vector_store.py   # ChromaDB + chunking + force_rebuild
 │   │   ├── hybrid_retriever.py    # 三路融合 (Vector+BM25+Graph)
-│   │   ├── knowledge_graph.py     # KG: 多跳扩散 + 路径查找 + 共现矩阵
+│   │   ├── knowledge_graph.py     # KG: 多跳扩散 + 路径查找 + 社区检测/摘要
 │   │   └── graph_retriever.py     # KG→Document 包装器
 │   ├── eval/                 # ★ 评测体系
 │   │   ├── run_eval.py       # 对比评测 (纯向量 vs GraphRAG)
@@ -118,6 +118,12 @@ query="MindSpore FusedAdamW"
   → Hop 2: 优化器 → [超参调优, 性能优化, RFC]
   → 扩散实体数: 15+
   → 注入 RAG 检索词 + 上下文
+
+社区机制 (微软 GraphRAG):
+  强边子图 (全局阈值 + 每实体 top-5 稀疏化)
+  → 标签传播社区检测 (11,529 社区)
+  → LLM 批量社区摘要 (45 个, 每批 10)
+  → global_search 工具: query 实体 → 定位社区 → 返回主题摘要
 ```
 
 ### Agent 四节点 Pipeline
@@ -214,7 +220,7 @@ python eval/e2e_demo.py
 
 **这个项目的亮点**：
 
-1. **GraphRAG 三路融合 + 多跳推理**：Vector + BM25 + KG 三路召回，RRF (Reciprocal Rank Fusion) 分数级融合（查询自适应权重）+ 可信度加权 + BGE-Reranker 精排。KG 支持 BFS 多跳实体扩散（2-3 hops）与实体最短路径查找。评测（同 k 口径, 干净库）验证多跳推理类 Recall +8.3%，且增益随语料规模单调上升（+1.3%→+2.5%→+2.8%）。
+1. **GraphRAG 三路融合 + 多跳推理 + 社区全局检索**：Vector + BM25 + KG 三路召回，RRF 分数级融合（查询自适应权重）+ 可信度加权 + BGE-Reranker 精排。KG 支持 BFS 多跳实体扩散（2-3 hops）、实体最短路径查找、**标签传播社区检测（kNN 稀疏化防坍缩，11,529 社区）+ LLM 社区摘要（45 个）+ 全局检索工具**——对齐微软 GraphRAG 社区机制。评测（同 k 口径, 干净库）验证多跳推理类 Recall +8.3%，增益随语料规模单调上升（+1.3%→+2.5%→+2.8%）。
 
 2. **双引擎分层架构**：LangGraph StateGraph 处理 Pipeline，自研 CC-Harness AgentLoop 处理对话。各用最合适的范式。
 

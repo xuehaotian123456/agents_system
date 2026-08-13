@@ -30,11 +30,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 JUDGE_PROMPT = """你是一个检索质量评估专家。给你一个用户问题和一系列检索到的文档，请判断这些文档能否回答用户问题。
 
-评分标准:
+逐文档评分标准 (scores, 每篇 0-3):
   0 = 完全无关: 文档与问题毫无关系
   1 = 弱相关: 提到了相关术语但没有实际内容
   2 = 部分可答: 文档包含部分答案，但信息不完整
   3 = 完全可答: 文档包含足够信息来完整回答问题
+
+整体判定标准 (overall_judgment, 文档集合作为整体能否支撑回答):
+  fully_answerable = 集合中信息足以完整回答
+  partially_answerable = 集合能回答一部分, 需补充
+  not_answerable = 集合无法支撑任何有效回答
 
 用户问题: {question}
 
@@ -58,10 +63,21 @@ def judge_answerability(question: str, docs: list[str], llm_model=None) -> dict:
     else:
         robust_llm_call = llm_model
 
-    # 格式化文档（截断每篇到 300 字符避免上下文爆炸）
+    # 格式化文档
+    # ★ 历史 bug: 截断到 300 字符, judge 只能看到每篇的一小部分
+    #   (chunk=800 时仅 37.5%, 答案在后半部分则永远看不到, 系统性低估)
+    # ★ 另一偏差: 官方文档 chunk 头部是 "来源/URL/爬取时间" 样板文字,
+    #   占掉 judge 的注意力
+    # 修复: 展示完整文档 + 剥离样板头
+    def _strip_boilerplate(text: str) -> str:
+        lines = [ln for ln in text.split("\n")
+                 if not ln.startswith(("> 来源", "> URL", "> 爬取时间",
+                                       "> 可信度", "> 标签"))]
+        return "\n".join(lines).strip()
+
     doc_texts = []
     for i, doc in enumerate(docs[:5]):
-        content = doc[:300].replace("\n", " ")
+        content = _strip_boilerplate(doc).replace("\n", " ")
         doc_texts.append(f"[文档{i+1}]\n{content}")
 
     prompt = JUDGE_PROMPT.format(
@@ -203,6 +219,8 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
     results = {
         "vec": [],
         "graph": [],
+        "vec_answerable": [],
+        "graph_answerable": [],
         "per_query": [],
         "win_tie_loss": {"graph_wins": 0, "vec_wins": 0, "ties": 0},
     }
@@ -227,6 +245,13 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
         graph_score = sum(graph_judge["scores"][:5]) / max(len(graph_judge["scores"][:5]), 1) / 3.0
         vec_score = sum(vec_judge["scores"][:5]) / max(len(vec_judge["scores"][:5]), 1) / 3.0
 
+        # 集合级可答性 (文档集合整体能否支撑回答 — RAG 评测标准口径)
+        def _is_answerable(j: dict) -> bool:
+            v = j.get("overall_judgment", "")
+            return v in ("fully_answerable", "partially_answerable")
+        graph_ans = _is_answerable(graph_judge)
+        vec_ans = _is_answerable(vec_judge)
+
         # Win/Tie/Loss
         if graph_score > vec_score + 0.05:
             results["win_tie_loss"]["graph_wins"] += 1
@@ -240,6 +265,8 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
 
         results["vec"].append(vec_score)
         results["graph"].append(graph_score)
+        results["vec_answerable"].append(1 if vec_ans else 0)
+        results["graph_answerable"].append(1 if graph_ans else 0)
         results["per_query"].append({
             "id": qid,
             "question": question[:80],
@@ -247,6 +274,8 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
             "difficulty": difficulty,
             "vec_score": round(vec_score, 3),
             "graph_score": round(graph_score, 3),
+            "vec_answerable": vec_ans,
+            "graph_answerable": graph_ans,
             "graph_reasoning": graph_judge.get("reasoning", ""),
             "wl": wl,
         })
@@ -268,9 +297,15 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
         print(f"\n{'='*60}")
         print(f"  评测结果")
         print(f"{'='*60}")
-        print(f"  纯向量 RAG Answerability:  {avg_vec:.2%}")
-        print(f"  GraphRAG Answerability:    {avg_graph:.2%}")
-        print(f"  提升:                      {improvement:+.1%}")
+        print(f"  逐文档均分 (严格口径):")
+        print(f"    纯向量 RAG Answerability:  {avg_vec:.2%}")
+        print(f"    GraphRAG Answerability:    {avg_graph:.2%}")
+        print(f"    提升:                      {improvement:+.1%}")
+        ans_vec_rate = sum(results["vec_answerable"]) / max(len(results["vec_answerable"]), 1)
+        ans_graph_rate = sum(results["graph_answerable"]) / max(len(results["graph_answerable"]), 1)
+        print(f"  集合级可答率 (RAG 标准口径, 5篇文档整体能否支撑回答):")
+        print(f"    纯向量:  {ans_vec_rate:.1%} ({sum(results['vec_answerable'])}/{len(results['vec_answerable'])})")
+        print(f"    GraphRAG: {ans_graph_rate:.1%} ({sum(results['graph_answerable'])}/{len(results['graph_answerable'])})")
         print(f"  GraphRAG 胜: {w['graph_wins']}/{total} ({w['graph_wins']/total:.0%})")
         print(f"  纯向量 胜:   {w['vec_wins']}/{total} ({w['vec_wins']/total:.0%})")
         print(f"  平局:        {w['ties']}/{total} ({w['ties']/total:.0%})")
@@ -323,6 +358,10 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
             "vec_answerability": round(avg_vec, 3),
             "graph_answerability": round(avg_graph, 3),
             "improvement": round(improvement, 3),
+            "vec_set_answerable_rate": round(
+                sum(results["vec_answerable"]) / max(len(results["vec_answerable"]), 1), 3),
+            "graph_set_answerable_rate": round(
+                sum(results["graph_answerable"]) / max(len(results["graph_answerable"]), 1), 3),
         },
         "win_tie_loss": w,
         "by_category": category_summary,

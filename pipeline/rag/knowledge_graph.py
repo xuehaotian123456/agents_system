@@ -87,6 +87,9 @@ class KnowledgeGraph:
         self.entity_freq: Counter = Counter()
         self._built = False
         self._total_chunks = 0
+        # 社区检测 (微软 GraphRAG 机制)
+        self.communities: dict = {}              # {entity: community_id}
+        self.community_summaries: dict = {}      # {cid: {summary, top_entities, size}}
 
     @property
     def is_built(self) -> bool:
@@ -477,6 +480,219 @@ class KnowledgeGraph:
         results.sort(key=lambda x: x["freq"], reverse=True)
         return results[:limit]
 
+    # ==================== 社区检测 + 社区摘要 (微软 GraphRAG 机制) ====================
+
+    def detect_communities(self, max_iter: int = 10,
+                           edge_weight_pct: int = 75,
+                           top_n_per_entity: int = 5) -> dict[str, int]:
+        """
+        标签传播社区检测 (纯 Python, 零第三方依赖)。
+
+        ★ 关键设计: 在稀疏化的强边子图上运行。
+        原始共现图是毛线球 (泛词桥接一切, 直接传播会坍缩成 1 个大社区
+        ——实测 11,469 社区里 3,563 实体塌进社区0)。两步稀疏化:
+          1. 全局权重阈值: 只保留 w >= P75 分位数的边 (剪噪音边)
+          2. 每实体 top-N: 每个实体最多保留最强的 top_n_per_entity 条边
+             (kNN 稀疏化, 防止 hub 实体桥接所有社区)
+
+        Args:
+            max_iter: 传播最大迭代轮数
+            edge_weight_pct: 边权重分位数阈值 (75 = 只保留 top 25% 强边)
+            top_n_per_entity: 每实体保留的最强邻居数 (防 hub 桥接)
+
+        Returns:
+            {entity: community_id}
+        """
+        # ── 强边子图 (全局阈值 + per-entity top-N 稀疏化) ──
+        all_weights = [w for nbrs in self.co_occurrence.values() for w in nbrs.values()]
+        if not all_weights:
+            return {}
+        threshold = max(4, sorted(all_weights)[int(len(all_weights) * edge_weight_pct / 100)])
+        logger.info(f"[KG社区] 强边阈值 w>={threshold} (P{edge_weight_pct}, 总边 {len(all_weights)})")
+
+        strong_edges: dict[str, list] = {}   # entity -> [(nb, w)]
+        for e, nbrs in self.co_occurrence.items():
+            kept = [(nb, w) for nb, w in nbrs.items() if w >= threshold]
+            kept.sort(key=lambda x: -x[1])
+            strong_edges[e] = kept[:top_n_per_entity]
+        n_edges = sum(len(v) for v in strong_edges.values())
+        logger.info(f"[KG社区] 稀疏化后边数: {n_edges} (每实体 top-{top_n_per_entity})")
+
+        # ── 标签传播 ──
+        labels = {e: i for i, e in enumerate(self.co_occurrence.keys())}
+        entities = list(labels.keys())
+
+        for _ in range(max_iter):
+            changed = 0
+            for e in entities:
+                neighbor_labels: dict[int, float] = {}
+                for nb, w in strong_edges.get(e, []):
+                    if nb in labels:
+                        neighbor_labels[labels[nb]] = neighbor_labels.get(labels[nb], 0.0) + w
+                if not neighbor_labels:
+                    continue
+                new_label = max(neighbor_labels, key=neighbor_labels.get)
+                if labels[e] != new_label:
+                    labels[e] = new_label
+                    changed += 1
+            if changed == 0:
+                break
+
+        # 社区重编号 (连续 id, 按大小排序)
+        from collections import Counter as _Counter
+        cid_counts = _Counter(labels.values())
+        ordered = sorted(cid_counts, key=lambda c: -cid_counts[c])
+        remap = {old: new for new, old in enumerate(ordered)}
+        labels = {e: remap[c] for e, c in labels.items()}
+
+        self.communities = labels
+        n_communities = len(set(labels.values()))
+        logger.info(f"[KG社区] 检测完成: {n_communities} 个社区 "
+                    f"(top: {[(c, n) for c, n in cid_counts.most_common(5)]})")
+        return labels
+
+    def build_community_summaries(self, chunks: list[str] | None = None,
+                                  min_size: int = 5, max_communities: int = 60) -> dict:
+        """
+        社区摘要: 每个社区用 LLM 生成一段语义摘要 (微软 GraphRAG 机制)。
+
+        Args:
+            chunks: 全局 chunk 文本 (用于找代表性片段)
+            min_size: 小于此实体数的社区跳过
+            max_communities: 最多摘要的社区数 (成本控制)
+
+        Returns:
+            {community_id: {"summary", "top_entities", "size"}}
+        """
+        if not getattr(self, "communities", None):
+            self.detect_communities()
+
+        # ── 社区分组 ──
+        from collections import defaultdict as _dd
+        comm_entities: dict[int, list] = _dd(list)
+        for e, c in self.communities.items():
+            comm_entities[c].append(e)
+
+        # 过滤 + 排序 (大社区优先)
+        valid = [(c, ents) for c, ents in comm_entities.items() if len(ents) >= min_size]
+        valid.sort(key=lambda x: -len(x[1]))
+        valid = valid[:max_communities]
+        logger.info(f"[KG社区] 摘要目标: {len(valid)} 个社区 (min_size={min_size})")
+
+        # ── 代表性 chunk 预计算 ──
+        chunk_by_comm: dict[int, list[str]] = _dd(list)
+        if chunks:
+            for e, c in self.communities.items():
+                for cid in self.entity_to_chunks.get(e, [])[:2]:
+                    if cid < len(chunks):
+                        chunk_by_comm[c].append(chunks[cid])
+
+        # ── LLM 批量摘要 (每批 10 社区) ──
+        summaries: dict = {}
+        batch_size = 10
+        try:
+            from model.factory import robust_llm_call
+        except Exception:
+            robust_llm_call = None
+
+        for i in range(0, len(valid), batch_size):
+            batch = valid[i:i + batch_size]
+            if robust_llm_call is None:
+                for c, ents in batch:
+                    summaries[c] = {
+                        "summary": f"社区主题: {', '.join(ents[:10])}",
+                        "top_entities": ents[:10], "size": len(ents)}
+                continue
+
+            prompt_parts = []
+            for idx, (c, ents) in enumerate(batch):
+                top_ents = sorted(ents, key=lambda e: self.entity_freq.get(e, 0), reverse=True)[:10]
+                snippets = (chunk_by_comm.get(c, [])[:2])
+                snippet_text = " | ".join(s[:120] for s in snippets)
+                prompt_parts.append(
+                    f"[社区{idx}] 实体: {', '.join(top_ents)}\n  代表片段: {snippet_text}")
+
+            prompt = (
+                "你是知识图谱社区分析师。以下是实体共现图检测出的社区, "
+                "每个社区代表一组紧密关联的技术概念。请为每个社区写一句"
+                "60字以内的中文摘要, 概括该社区的知识主题。\n\n"
+                + "\n".join(prompt_parts) +
+                "\n\n以JSON数组输出: [{\"index\":0,\"summary\":\"...\"}, ...]")
+
+            try:
+                resp = robust_llm_call(prompt)
+                raw = resp.content if hasattr(resp, 'content') else str(resp)
+                import json as _json, re as _re
+                try:
+                    data = _json.loads(raw.strip())
+                except Exception:
+                    m = _re.search(r'\[[\s\S]*\]', raw)
+                    data = _json.loads(m.group(0)) if m else []
+                parsed = {}
+                for item in data if isinstance(data, list) else []:
+                    if isinstance(item, dict) and "index" in item:
+                        parsed[int(item["index"])] = item.get("summary", "")
+                for idx, (c, ents) in enumerate(batch):
+                    top_ents = sorted(ents, key=lambda e: self.entity_freq.get(e, 0), reverse=True)[:10]
+                    summaries[c] = {
+                        "summary": parsed.get(idx, f"社区主题: {', '.join(top_ents[:6])}"),
+                        "top_entities": top_ents, "size": len(ents)}
+            except Exception as e:
+                logger.warning(f"[KG社区] 摘要 LLM 失败 (批次{i}): {e}")
+                for c, ents in batch:
+                    summaries[c] = {
+                        "summary": f"社区主题: {', '.join(ents[:8])}",
+                        "top_entities": ents[:8], "size": len(ents)}
+
+        self.community_summaries = summaries
+        self.save()
+        logger.info(f"[KG社区] 摘要完成: {len(summaries)} 个社区摘要")
+        return summaries
+
+    def global_search(self, query: str, top_k: int = 3) -> dict:
+        """
+        全局检索 (Global Search): 按社区索引回答"整体性"问题。
+
+        query 实体 → 定位所属社区 → 按命中实体权重排序 → 返回
+        社区摘要 + 代表实体 + 代表 chunk 索引。
+
+        Args:
+            query: 用户查询
+            top_k: 返回社区数
+
+        Returns:
+            {"communities": [{id, summary, top_entities, match_count}],
+             "matched_entities": [...]}
+        """
+        if not getattr(self, "community_summaries", None):
+            return {"communities": [], "matched_entities": [], "note": "社区摘要未构建, 先运行 build_community_summaries()"}
+
+        q_entities = list(self._extract(query))
+        if not q_entities:
+            return {"communities": [], "matched_entities": []}
+
+        # 命中社区计数 (按实体频次加权)
+        comm_scores: dict[int, float] = {}
+        matched = []
+        for e in q_entities:
+            c = self.communities.get(e)
+            if c is not None and c in self.community_summaries:
+                comm_scores[c] = comm_scores.get(c, 0) + self.entity_freq.get(e, 1)
+                matched.append(e)
+
+        ranked = sorted(comm_scores, key=lambda c: -comm_scores[c])[:top_k]
+        communities = []
+        for c in ranked:
+            info = self.community_summaries[c]
+            communities.append({
+                "id": c,
+                "summary": info.get("summary", ""),
+                "top_entities": info.get("top_entities", []),
+                "size": info.get("size", 0),
+                "match_count": round(comm_scores[c], 1),
+            })
+        return {"communities": communities, "matched_entities": matched[:10]}
+
     # ==================== 持久化 ====================
 
     def save(self, path: str = ""):
@@ -489,6 +705,9 @@ class KnowledgeGraph:
             "co_occurrence": {k: dict(v) for k, v in self.co_occurrence.items()},
             "entity_freq": dict(self.entity_freq),
             "total_chunks": self._total_chunks,
+            # 社区结构
+            "communities": {k: v for k, v in self.communities.items()},
+            "community_summaries": self.community_summaries,
         }
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
@@ -511,8 +730,13 @@ class KnowledgeGraph:
                 self.co_occurrence[k] = defaultdict(int, v)
             self.entity_freq = Counter(data.get("entity_freq", {}))
             self._total_chunks = data.get("total_chunks", 0)
+            # 社区结构
+            self.communities = {k: int(v) for k, v in data.get("communities", {}).items()}
+            self.community_summaries = {
+                int(k): v for k, v in data.get("community_summaries", {}).items()}
             self._built = True
-            logger.info(f"[KG] 已加载: {self.entity_count} entities (from {path})")
+            logger.info(f"[KG] 已加载: {self.entity_count} entities, "
+                        f"{len(self.community_summaries)} 社区摘要 (from {path})")
             return True
         except Exception as e:
             logger.warning(f"[KG] 加载失败: {e}")

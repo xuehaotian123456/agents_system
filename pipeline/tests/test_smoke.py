@@ -180,6 +180,37 @@ def test_quality_gate_disabled():
     assert result["stats"]["gate_disabled"] is True
 
 
+# ==================== 社区检测 + 全局检索 ====================
+
+def test_community_detection_and_global_search():
+    """社区检测 (kNN 稀疏化) + 全局检索 (离线, 无需 LLM)"""
+    from rag.knowledge_graph import KnowledgeGraph
+
+    kg = KnowledgeGraph()
+    chunks = [
+        "MindSpore 的 FusedAdamW 优化器融合权重衰减，提升训练性能",
+        "FusedAdamW 与 AdamW 的区别在于减少显存访问次数",
+        "MindSpore HyperOffload 把静态图显存卸载到主机内存",
+        "PaddleNLP 的 Taskflow 支持文本分类和序列标注任务",
+        "Taskflow 的 pipeline 接口可以加载预训练模型",
+        "PaddleOCR 支持中英文文本检测与识别",
+    ]
+    kg.build(chunks)
+
+    # 社区检测
+    labels = kg.detect_communities(top_n_per_entity=3)
+    assert len(labels) > 0, "社区检测失败"
+    # 不应坍缩成单一巨型社区
+    from collections import Counter
+    sizes = Counter(labels.values())
+    largest_ratio = sizes.most_common(1)[0][1] / max(len(labels), 1)
+    assert largest_ratio < 0.8, f"社区坍缩: 最大社区占 {largest_ratio:.0%}"
+
+    # 全局检索 (无摘要时返回 note, 不崩溃)
+    result = kg.global_search("MindSpore 优化器")
+    assert "note" in result or "communities" in result
+
+
 # ==================== 负样本诚实性 ====================
 
 def test_honesty_detector():

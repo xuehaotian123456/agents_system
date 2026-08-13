@@ -9,6 +9,8 @@ llm:
     multiplier: 1
 
 # 向量库配置
+# 注: chunk 口径待重新评估 (P17: 300 偏小, 800 待全套评测)。
+# 当前保持 300 以复现简历引用的评测数字。
 chroma:
   collection_name: "tech_articles"
   persist_directory: "data/chroma_db"

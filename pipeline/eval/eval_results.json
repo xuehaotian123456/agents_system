@@ -1,15 +1,15 @@
 {
   "total_queries": 50,
-  "total_chunks": 7206,
+  "total_chunks": 2703,
   "evaluation_note": "expected_entities关键词匹配是弱标注proxy，非人工相关性别定。建议引入LLM-as-judge补充。",
   "overall": {
-    "vec_recall@5": 0.763,
-    "graph_recall@5": 0.792,
+    "vec_recall@5": 0.797,
+    "graph_recall@5": 0.853,
     "vec_hit_rate": 0.98,
     "graph_hit_rate": 1.0,
-    "vec_mrr": 0.945,
-    "graph_mrr": 0.941,
-    "improvement_recall": 0.028,
+    "vec_mrr": 0.947,
+    "graph_mrr": 1.0,
+    "improvement_recall": 0.057,
     "improvement_hit_rate": 0.02,
     "degradation_success_rate": 1.0
   },
@@ -17,14 +17,14 @@
     "entity_association": {
       "name": "实体关联类（测 Graph-RAG 优势）",
       "count": 10,
-      "vec_recall@5": 0.858,
-      "graph_recall@5": 0.883
+      "vec_recall@5": 0.883,
+      "graph_recall@5": 0.95
     },
     "fact_lookup": {
       "name": "事实查找类（测基础 RAG）",
       "count": 10,
-      "vec_recall@5": 0.642,
-      "graph_recall@5": 0.617
+      "vec_recall@5": 0.65,
+      "graph_recall@5": 0.725
     },
     "error_tracing": {
       "name": "报错溯源类（测图谱关联能力）",
@@ -35,37 +35,37 @@
     "trending": {
       "name": "时效查询类（测爬虫链路）",
       "count": 8,
-      "vec_recall@5": 0.844,
-      "graph_recall@5": 0.917
+      "vec_recall@5": 0.917,
+      "graph_recall@5": 0.958
     },
     "compare": {
       "name": "对比分析类（测多工具编排）",
       "count": 6,
-      "vec_recall@5": 0.417,
-      "graph_recall@5": 0.472
+      "vec_recall@5": 0.5,
+      "graph_recall@5": 0.597
     },
     "multi_hop": {
       "name": "多跳推理类（测多步关联能力）",
       "count": 6,
-      "vec_recall@5": 0.75,
-      "graph_recall@5": 0.833
+      "vec_recall@5": 0.792,
+      "graph_recall@5": 0.875
     }
   },
   "by_difficulty": {
     "easy": {
       "count": 6,
-      "vec_recall@5": 0.639,
-      "graph_recall@5": 0.778
+      "vec_recall@5": 0.681,
+      "graph_recall@5": 0.736
     },
     "hard": {
       "count": 24,
-      "vec_recall@5": 0.774,
-      "graph_recall@5": 0.792
+      "vec_recall@5": 0.795,
+      "graph_recall@5": 0.84
     },
     "medium": {
       "count": 20,
-      "vec_recall@5": 0.788,
-      "graph_recall@5": 0.796
+      "vec_recall@5": 0.833,
+      "graph_recall@5": 0.904
     }
   }
 }

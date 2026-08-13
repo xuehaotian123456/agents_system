@@ -33,6 +33,7 @@ A2A_TOOLS = [
     {"name": "rag_search", "description": "从已爬取的技术文章中搜索知识。入参 query", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}}}},
     {"name": "trending_list", "description": "获取掘金/博客园/GitHub/HackerNews/OSChina 实时技术热榜。入参 source (juejin/cnblogs/github/hackernews/oschina/all)", "inputSchema": {"type": "object", "properties": {"source": {"type": "string", "default": "juejin"}}}},
     {"name": "kg_lookup", "description": "查询知识图谱中技术关键词的关联实体。支持多跳扩散推理链。入参 entity_name。查询关联/报错/依赖类问题时自动返回 2-hop 推理链路", "inputSchema": {"type": "object", "properties": {"entity_name": {"type": "string"}}}},
+    {"name": "global_search", "description": "全局检索: 基于社区摘要索引回答整体性问题。入参 query。返回相关社区主题摘要与代表实体，适合宏观问题", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}}}},
     {"name": "fetch_article", "description": "爬取并保存指定URL的技术文章。入参 url", "inputSchema": {"type": "object", "properties": {"url": {"type": "string"}}}},
     {"name": "search_web", "description": "搜索网络上的技术内容。入参 query", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}}}},
     {"name": "code_example", "description": "从知识库中搜索代码示例。入参 keyword", "inputSchema": {"type": "object", "properties": {"keyword": {"type": "string"}}}},

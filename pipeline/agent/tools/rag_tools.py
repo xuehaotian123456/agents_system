@@ -148,6 +148,25 @@ def kg_lookup(entity_name: str) -> str:
     except Exception as e:
         return f"KG查询异常: {e}"
 
+
+@tool(description="全局检索: 基于社区摘要索引回答整体性问题。入参 query（如'MindSpore 性能优化'），返回相关社区的主题摘要、代表实体。适合'这个项目整体在做什么'类宏观问题。")
+def global_search(query: str) -> str:
+    try:
+        from rag.knowledge_graph import get_kg
+        kg = get_kg()
+        result = kg.global_search(query, top_k=3)
+        if not result.get("communities"):
+            return result.get("note", "社区索引尚未构建。运行 python scripts/build_communities.py")
+        lines = [f"匹配实体: {', '.join(result['matched_entities'][:8])}", "相关社区:"]
+        for c in result["communities"]:
+            lines.append(
+                f"  - 社区{c['id']} ({c['size']} 实体, 命中权重 {c['match_count']}): "
+                f"{c['summary']}")
+            lines.append(f"    代表实体: {', '.join(c['top_entities'][:8])}")
+        return "\n".join(lines)
+    except Exception as e:
+        return f"全局检索异常: {e}"
+
 @tool(description="将文章内容或技术笔记保存到本地知识库。入参 title（标题）和 content（Markdown格式内容）。保存后可供后续检索使用。" )
 def save_article(title: str, content: str) -> str:
     try:
