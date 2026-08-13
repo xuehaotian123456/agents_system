@@ -1,30 +1,30 @@
 {
   "total_queries": 50,
-  "total_chunks": 4331,
+  "total_chunks": 4478,
   "evaluation_note": "expected_entities关键词匹配是弱标注proxy，非人工相关性别定。建议引入LLM-as-judge补充。",
   "overall": {
-    "vec_recall@5": 0.652,
-    "graph_recall@5": 0.777,
-    "vec_hit_rate": 0.94,
+    "vec_recall@5": 0.77,
+    "graph_recall@5": 0.783,
+    "vec_hit_rate": 1.0,
     "graph_hit_rate": 1.0,
-    "vec_mrr": 0.91,
-    "graph_mrr": 0.935,
-    "improvement_recall": 0.125,
-    "improvement_hit_rate": 0.06,
+    "vec_mrr": 0.936,
+    "graph_mrr": 0.937,
+    "improvement_recall": 0.013,
+    "improvement_hit_rate": 0.0,
     "degradation_success_rate": 1.0
   },
   "by_category": {
     "entity_association": {
       "name": "多跳推理类（测多步关联能力）",
       "count": 10,
-      "vec_recall@5": 0.667,
-      "graph_recall@5": 0.883
+      "vec_recall@5": 0.858,
+      "graph_recall@5": 0.917
     },
     "fact_lookup": {
       "name": "多跳推理类（测多步关联能力）",
       "count": 10,
-      "vec_recall@5": 0.508,
-      "graph_recall@5": 0.567
+      "vec_recall@5": 0.642,
+      "graph_recall@5": 0.592
     },
     "error_tracing": {
       "name": "多跳推理类（测多步关联能力）",
@@ -35,36 +35,36 @@
     "trending": {
       "name": "多跳推理类（测多步关联能力）",
       "count": 8,
-      "vec_recall@5": 0.771,
+      "vec_recall@5": 0.844,
       "graph_recall@5": 0.917
     },
     "compare": {
       "name": "多跳推理类（测多步关联能力）",
       "count": 6,
-      "vec_recall@5": 0.25,
-      "graph_recall@5": 0.514
+      "vec_recall@5": 0.472,
+      "graph_recall@5": 0.431
     },
     "multi_hop": {
       "name": "多跳推理类（测多步关联能力）",
       "count": 6,
-      "vec_recall@5": 0.625,
-      "graph_recall@5": 0.75
+      "vec_recall@5": 0.75,
+      "graph_recall@5": 0.792
     }
   },
   "by_difficulty": {
     "easy": {
       "count": 6,
-      "vec_recall@5": 0.542,
+      "vec_recall@5": 0.639,
       "graph_recall@5": 0.736
     },
     "hard": {
       "count": 24,
-      "vec_recall@5": 0.681,
-      "graph_recall@5": 0.781
+      "vec_recall@5": 0.788,
+      "graph_recall@5": 0.795
     },
     "medium": {
       "count": 20,
-      "vec_recall@5": 0.65,
+      "vec_recall@5": 0.788,
       "graph_recall@5": 0.783
     }
   }
