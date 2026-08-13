@@ -27,6 +27,9 @@ data_source:
   max_retries: 3
   cache_dir: "./cache/github_offline"
 
+  # ── LLM 质量门控 (LangGraph 条件路由: 入库/降权/丢弃) ──
+  enable_llm_quality_gate: true
+
 # ── GitHub 仓库（需翻墙）──
 github:
   repo_list:

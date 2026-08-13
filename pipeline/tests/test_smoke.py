@@ -117,6 +117,69 @@ def test_source_credibility():
     assert is_low_quality("这是一篇正常的技术文章内容。" * 30, title="正常文章") is False
 
 
+# ==================== 质量门控 (LangGraph 条件路由) ====================
+
+def test_quality_gate_routing_offline():
+    """
+    质量门控三路路由 (离线: 预写判定缓存, 零 LLM 成本)。
+    验证: 规则层拦截 + 条件边路由 + demote 降权 + 判定留痕。
+    """
+    from agent.quality_gate import run_quality_gate, _content_hash, _save_verdict_cache
+
+    docs = [
+        {"title": "广告软文", "content": "加微信领取免费课程，限时优惠扫码关注" * 10,
+         "credibility": 0.4, "source_type": "tech_blog_personal"},
+        {"title": "技术八卦文", "content": "某大厂员工薪资讨论与技术无关的生活内容" * 10,
+         "credibility": 0.5, "source_type": "tech_blog_quality"},
+        {"title": "软文推广", "content": "AI 技术文章但大部分是产品推广链接和联系方式" * 10,
+         "credibility": 0.5, "source_type": "tech_blog_quality"},
+        {"title": "正常技术文", "content": "LangGraph 的状态图构建方法与 Checkpointer 使用详解" * 10,
+         "credibility": 0.5, "source_type": "tech_blog_quality"},
+    ]
+
+    # 预写缓存: 八卦 skip, 软文 demote, 技术 ingest (离线模拟 LLM 判定结果)
+    cache = {
+        _content_hash(docs[1]): {"verdict": "skip", "reason": "离线测试: 与技术无关"},
+        _content_hash(docs[2]): {"verdict": "demote", "reason": "离线测试: 软文降权"},
+        _content_hash(docs[3]): {"verdict": "ingest", "reason": "离线测试: 正常"},
+    }
+    _save_verdict_cache(cache)
+
+    result = run_quality_gate(docs)
+
+    # 广告文: 规则层拦截 → skip
+    # 八卦文: LLM 判定 skip; 软文: demote (可信度 ×0.4); 技术文: ingest
+    assert result["stats"]["skip"] == 2, f"应 2 篇 skip: {result['stats']}"
+    assert result["stats"]["demote"] == 1, f"应 1 篇 demote: {result['stats']}"
+    assert result["stats"]["ingest"] == 1, f"应 1 篇 ingest: {result['stats']}"
+
+    # demote 降权验证
+    demoted = result["demote"][0]
+    assert demoted["quality_demoted"] is True
+    assert demoted["credibility"] == round(0.5 * 0.4, 2)
+
+    # 判定留痕验证
+    verdicts_in_trace = {t["title"]: t["verdict"] for t in result["trace"]}
+    assert verdicts_in_trace["广告软文"] == "skip"
+    assert verdicts_in_trace["技术八卦文"] == "skip"
+    assert verdicts_in_trace["软文推广"] == "demote"
+    assert verdicts_in_trace["正常技术文"] == "ingest"
+
+    # 清理测试缓存, 避免污染后续真实判定
+    from agent.quality_gate import VERDICT_CACHE_PATH
+    if VERDICT_CACHE_PATH.exists():
+        VERDICT_CACHE_PATH.unlink()
+
+
+def test_quality_gate_disabled():
+    """门控开关: enabled=False 时全部直通"""
+    from agent.quality_gate import run_quality_gate
+    docs = [{"title": "x", "content": "y" * 50, "credibility": 0.5}]
+    result = run_quality_gate(docs, enabled=False)
+    assert result["ingest"] == docs
+    assert result["stats"]["gate_disabled"] is True
+
+
 # ==================== 负样本诚实性 ====================
 
 def test_honesty_detector():

@@ -177,6 +177,63 @@ def trigger_manual_digest() -> dict:
     return _daily_digest_job()
 
 
+# ==================== 质量门控 ====================
+
+def _is_quality_gate_enabled() -> bool:
+    """质量门控总开关 (data_source.yaml: enable_llm_quality_gate)"""
+    try:
+        import yaml
+        cfg_path = PROJECT_ROOT / "config" / "data_source.yaml"
+        if cfg_path.exists():
+            with open(cfg_path, "r", encoding="utf-8") as f:
+                cfg = yaml.safe_load(f) or {}
+            return cfg.get("data_source", {}).get("enable_llm_quality_gate", True)
+    except Exception:
+        pass
+    return True
+
+
+def _apply_quality_gate(candidates: list[dict], source_label: str = "") -> list[dict]:
+    """
+    对候选文档运行质量门控 (规则层 + LLM 语义判定)。
+
+    Returns:
+        通过门的文档列表 (ingest 原样 + demote 带 quality_demoted 标记)。
+        skip 的文档被过滤, 判定留痕打印到日志。
+    """
+    if not candidates:
+        return []
+
+    try:
+        from agent.quality_gate import run_quality_gate
+
+        docs = [{
+            "title": c.get("title", ""),
+            "content": c.get("content", ""),
+            "credibility": c.get("credibility", 0.5),
+            "source_type": c.get("source_type", "unknown"),
+            "_candidate": c,
+        } for c in candidates]
+
+        result = run_quality_gate(docs, enabled=_is_quality_gate_enabled())
+        passed = []
+        for d in result["ingest"] + result["demote"]:
+            c = d["_candidate"]
+            if d.get("quality_demoted"):
+                c["quality_demoted"] = True
+                c["credibility"] = d.get("credibility", c.get("credibility", 0.5))
+            passed.append(c)
+
+        stats = result.get("stats", {})
+        if stats:
+            print(f"  [QualityGate] {source_label}: ingest={stats.get('ingest')} "
+                  f"demote={stats.get('demote')} skip={stats.get('skip')}")
+        return passed
+    except Exception as e:
+        print(f"  [QualityGate] {source_label}: 门控执行失败, 全部放行: {e}")
+        return candidates
+
+
 # ==================== 内部任务函数 ====================
 
 def _incremental_crawl_job() -> dict:
@@ -203,21 +260,31 @@ def _incremental_crawl_job() -> dict:
     try:
         from crawlers.juejin import fetch_juejin_hot, fetch_juejin_article
         ids = fetch_juejin_hot(limit=10)
+
+        # 收集新文章详情, 先过质量门再写文件
+        candidates = []
         for a in ids:
             url = a.get("url", "")
             if state.is_duplicate(url):
                 continue
             detail = fetch_juejin_article(a['id'])
             if detail and detail.get('title'):
-                safe = ''.join(c for c in detail['title'][:40] if c.isalnum() or c in (' ', '-', '_')).strip()
-                fpath = data_dir / f'sched_juejin_{safe}.md'
-                if not fpath.exists():
-                    with open(fpath, 'w', encoding='utf-8') as f:
-                        f.write(f"# {detail['title']}\n\n> 来源: 掘金 | {url}\n> 爬取时间: {datetime.now().isoformat()}\n\n{detail['content']}")
-                state.mark_crawled({"url": url, "title": detail['title'], "source": "掘金"})
-                new_articles.append({"title": detail['title'], "url": url, "source": "掘金"})
+                candidates.append({"title": detail['title'], "url": url,
+                                   "content": detail.get('content', '')})
+
+        gated = _apply_quality_gate(candidates, source_label="掘金")
+        for doc in gated:
+            safe = ''.join(c for c in doc['title'][:40] if c.isalnum() or c in (' ', '-', '_')).strip()
+            fpath = data_dir / f'sched_juejin_{safe}.md'
+            demote_note = "\n> 质量门控: demote (语义判定降权)\n" if doc.get("quality_demoted") else ""
+            if not fpath.exists():
+                with open(fpath, 'w', encoding='utf-8') as f:
+                    f.write(f"# {doc['title']}\n\n> 来源: 掘金 | {doc['url']}\n"
+                            f"> 爬取时间: {datetime.now().isoformat()}{demote_note}\n\n{doc['content']}")
+            state.mark_crawled({"url": doc['url'], "title": doc['title'], "source": "掘金"})
+            new_articles.append({"title": doc['title'], "url": doc['url'], "source": "掘金"})
         state.mark_source_crawled("juejin")
-        print(f"  [Scheduler] 掘金: {len([a for a in ids if not state.is_duplicate(a.get('url',''))])} 篇新文章")
+        print(f"  [Scheduler] 掘金: {len(gated)} 篇通过质量门 (候选 {len(candidates)})")
     except Exception as e:
         print(f"  [Scheduler] 掘金爬取失败: {e}")
 
@@ -225,23 +292,30 @@ def _incremental_crawl_job() -> dict:
     try:
         from crawlers.cnblogs import fetch_cnblogs_rss, fetch_cnblogs_article
         rss = fetch_cnblogs_rss(limit=10)
-        new_count = 0
+
+        candidates = []
         for a in rss:
             url = a.get("url", "")
             if state.is_duplicate(url):
                 continue
             content = fetch_cnblogs_article(url)
             if content:
-                safe = ''.join(c for c in a['title'][:40] if c.isalnum() or c in (' ', '-', '_')).strip()
-                fpath = data_dir / f'sched_cnblogs_{safe}.md'
-                if not fpath.exists():
-                    with open(fpath, 'w', encoding='utf-8') as f:
-                        f.write(f"{content}\n\n> 爬取时间: {datetime.now().isoformat()}")
-            state.mark_crawled({"url": url, "title": a['title'], "source": "博客园"})
-            new_articles.append({"title": a['title'], "url": url, "source": "博客园"})
+                candidates.append({"title": a['title'], "url": url, "content": content})
+
+        gated = _apply_quality_gate(candidates, source_label="博客园")
+        new_count = 0
+        for doc in gated:
+            safe = ''.join(c for c in doc['title'][:40] if c.isalnum() or c in (' ', '-', '_')).strip()
+            fpath = data_dir / f'sched_cnblogs_{safe}.md'
+            demote_note = "\n\n> 质量门控: demote (语义判定降权)" if doc.get("quality_demoted") else ""
+            if not fpath.exists():
+                with open(fpath, 'w', encoding='utf-8') as f:
+                    f.write(f"{doc['content']}{demote_note}\n\n> 爬取时间: {datetime.now().isoformat()}")
+            state.mark_crawled({"url": doc['url'], "title": doc['title'], "source": "博客园"})
+            new_articles.append({"title": doc['title'], "url": doc['url'], "source": "博客园"})
             new_count += 1
         state.mark_source_crawled("cnblogs")
-        print(f"  [Scheduler] 博客园: {new_count} 篇新文章")
+        print(f"  [Scheduler] 博客园: {new_count} 篇通过质量门 (候选 {len(candidates)})")
     except Exception as e:
         print(f"  [Scheduler] 博客园爬取失败: {e}")
 
@@ -250,8 +324,20 @@ def _incremental_crawl_job() -> dict:
         from crawlers.gitee_adapter import fetch_all_gitee_sources, save_to_markdown as gitee_save
         gitee_issues, gitee_docs = fetch_all_gitee_sources()
         gitee_items = gitee_issues + gitee_docs
+
+        # 质量门控: 官方文档 (credibility>=0.9) 走快通道免 LLM 判定 (省成本)
+        official = [it for it in gitee_items if it.get("credibility", 0) >= 0.9]
+        community = [it for it in gitee_items if it.get("credibility", 0) < 0.9]
+        gate_docs = [{"title": it.get("title", ""), "content": it.get("body", ""),
+                      "credibility": it.get("credibility", 0.5),
+                      "source_type": it.get("source_type", "unknown"),
+                      "_item": it} for it in community]
+        gated = _apply_quality_gate(gate_docs, source_label="Gitee社区内容")
+
+        # 官方文档 + 通过门的社区内容
+        final_items = official + [g["_item"] for g in gated]
         gitee_new = 0
-        for item in gitee_items:
+        for item in final_items:
             url = item.get("html_url", "")
             if not url or state.is_duplicate(url):
                 continue
@@ -266,10 +352,11 @@ def _incremental_crawl_job() -> dict:
                 "source": item.get("source", "gitee"),
             })
             gitee_new += 1
-        if gitee_items:
-            gitee_save(gitee_items)
+        if final_items:
+            gitee_save(final_items)
         state.mark_source_crawled("gitee")
-        print(f"  [Scheduler] Gitee Issues+Docs: {gitee_new}/{len(gitee_items)} 篇新文章 (总拉取 {len(gitee_items)} 条)")
+        print(f"  [Scheduler] Gitee: {gitee_new}/{len(final_items)} 篇入库 "
+              f"(官方 {len(official)} 直通 + 社区 {len(gated)} 过门, 拦截 {len(community) - len(gated)})")
     except Exception as e:
         print(f"  [Scheduler] Gitee 爬取失败: {e}")
 
