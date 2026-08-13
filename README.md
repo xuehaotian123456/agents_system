@@ -62,7 +62,7 @@ python eval/e2e_demo.py
 - 三路去重 → 可信度加权 → BGE-Reranker 精排 → top_k=3
 
 ### 知识图谱多跳推理
-- 11,942 实体 / 11,234 共现边（jieba.posseg 抽取 + 共现矩阵 + IDF 过滤）
+- 11,814 实体 / 11,810 共现边（jieba.posseg 抽取 + 共现矩阵 + IDF 过滤）
 - `multi_hop_expand`: BFS 1-3 跳实体扩散，返回完整推理链
 - `find_path(A, B)`: 实体间最短关联路径
 
@@ -79,10 +79,10 @@ python eval/e2e_demo.py
 | LLM-as-Judge | Answerability (0-1) | 50 条查询 |
 | 负样本测试 | 诚实拒答率 | 15 条 (5 类陷阱) |
 
-**当前结果** (同 k 口径, 干净向量库实测): GraphRAG 比纯向量 RAG 总体 Recall@5 **+1%**（77%→78%），实体关联类 **+6%**（86%→92%）；负样本诚实拒答率 **80%**，幻觉陷阱 100% 拦截。
+**当前结果** (同 k 口径, 干净向量库实测): GraphRAG 比纯向量 RAG 总体 Recall@5 **+1.3%**（77%→78.3%），实体关联类 **+5.9%**（85.8%→91.7%），时效查询 **+7.3%**；负样本诚实拒答率 **80%**，幻觉陷阱 100% 拦截。
 
-> **诚实说明**: 小语料下三路融合对关键词召回提升有限，GraphRAG 的真实价值在于实体关联类查询、KG 多跳推理链（Agent 工具）与语义相关性评估（LLM-as-Judge）。早期版本的更高提升数字是"重复入库污染基线"的假象，已修复并重测——详见 commit 历史与 CLAUDE.md。
-> ⚠️ 评测数据依赖全量语料（227 篇文章）。clone 后先运行 `curl -X POST http://localhost:8010/tools/force_update -d '{}'` 拉取数据，再跑评测复现。
+> **诚实说明**: 小语料下三路融合对关键词召回提升有限（BGE-Reranker 主导最终排序），GraphRAG 的真实价值在于实体关联查询、KG 多跳推理链（Agent 工具）与语义相关性评估（LLM-as-Judge）。早期版本的更高提升数字是"重复入库污染基线"的假象（MD5 GBK 编码 + 子串匹配串档），已修复并重测——详见 commit 历史与 CLAUDE.md。
+> ⚠️ 评测数据依赖全量语料（220 篇文章）。clone 后先运行 `curl -X POST http://localhost:8010/tools/force_update -d '{}'` 拉取数据，再跑评测复现。
 
 ---
 
@@ -93,7 +93,7 @@ python eval/e2e_demo.py
 | 数据 | 位置 | 策略 |
 |:---|:---|:---|
 | 种子文章 (15 篇) | `pipeline/data/seed_articles/` | ✅ 进 git，clone 后 30 秒可 demo |
-| 全量文章 (~227 篇) | `pipeline/data/articles/` | ❌ gitignore，`force_update` 生成 |
+| 全量文章 (~220 篇) | `pipeline/data/articles/` | ❌ gitignore，`force_update` 生成 |
 | ChromaDB 向量库 | `pipeline/data/chroma_db/` | ❌ gitignore，`init_demo.py` 重建 |
 | 知识图谱状态 | `pipeline/data/kg_state.json` | ❌ gitignore，7 秒可重建 |
 | 爬取状态 | `pipeline/data/crawl_state.json` | ❌ gitignore，运行时状态 |

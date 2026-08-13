@@ -162,21 +162,21 @@ python eval/negative_test.py
 python eval/e2e_demo.py
 ```
 
-### 当前结果 (50 条查询, 4331 chunks, 11943 KG 实体, 干净库实测)
+### 当前结果 (50 条查询, 4206 chunks, 11814 KG 实体, 干净库实测)
 
-> 口径: 纯向量 = 仅 ChromaDB top-5；GraphRAG = 三路 RRF 融合 + Reranker top-5。**两边同 k 对比**。
-> 数据源: 干净向量库 (4,331 embeddings 1:1, 评测前后 count 一致, 已修复重复入库根因)。
+> 口径: 纯向量 = 仅 ChromaDB top-5；GraphRAG = 三路 RRF 融合 + 查询自适应权重 + Reranker top-5。**两边同 k 对比**。
+> 数据源: 干净向量库 (4,206 embeddings 1:1, 评测前后 count 一致; 内容级去重 227→220 篇, 英文停用词清洗 KG)。
 
 | 指标 | 纯向量 RAG | GraphRAG | 提升 |
 |:---|:---|:---|:---|
-| Recall@5 | 77% | 78% | **+1%** |
-| 实体关联类 | 86% | 92% | +6% |
-| 时效查询类 | 84% | 92% | +7% |
+| Recall@5 | 77% | 78.3% | **+1.3%** |
+| 实体关联类 | 85.8% | 91.7% | +5.9% |
+| 时效查询类 | 84.4% | 91.7% | +7.3% |
 | 多跳推理类 | 75% | 79% | +4% |
-| 报错溯源类 | 94% | 94% | 持平 |
-| 事实查找类 | 64% | 59% | -5% |
+| 报错溯源类 | 94.2% | 94.2% | 持平 |
+| 事实查找类 | 64.2% | 59.2% | -5% |
 
-**诚实结论**: 在 4.3k chunks 规模上，三路融合对关键词 Recall@5 的提升有限（+1%），优势集中在实体关联类（+6%）。这符合预期——小语料下向量检索已能命中关键词，GraphRAG 的真实价值在语义相关性（LLM-as-Judge 评估）和 KG 多跳推理链（作为 Agent 工具提供推理路径），而非关键词召回。
+**诚实结论**: 在 4.2k chunks 规模上，三路融合对关键词 Recall@5 的提升有限（+1.3%），优势集中在实体关联（+5.9%）与时效查询（+7.3%）。这符合预期——小语料下向量检索已能命中关键词，且 BGE-Reranker 主导最终排序；GraphRAG 的真实价值在语义相关性（LLM-as-Judge 评估）和 KG 多跳推理链（作为 Agent 工具提供推理路径），而非关键词召回。曾尝试分数级融合调 λ，实测提升 <0.5% 且有测试集过拟合风险，已撤回。
 
 ### 评测局限性 (面试时需说明)
 
@@ -186,9 +186,9 @@ python eval/e2e_demo.py
 - 负样本测试验证了诚实拒答能力（80% 拒答率, 幻觉陷阱 100% 拦截）
 - 全量评测数据需运行 force_update 拉取后复现（种子数据仅保证 demo 可跑）
 
-### 重大教训: MD5 缓存编码 bug (面试故事素材)
+### 重大教训: 数据污染追查 (面试故事素材)
 
-早期评测数字 (+13%~+19%) 曾被"重复入库"污染：md5.txt 写入用 Windows 默认 GBK、读取用 UTF-8，中文文件名导致缓存静默失效，每次 load_articles 全量重复 add_documents。重复文档压低纯向量基线 top-5 质量，制造了虚假提升。修复编码后重跑，得到上表真实数字。**这个排查故事比任何漂亮数字都更能证明你的工程能力。**
+早期评测数字 (+13%~+19%) 曾被两类数据污染：① md5.txt 写入用 Windows 默认 GBK、读取用 UTF-8，中文文件名导致缓存静默失效，每次 load_articles 全量重复 add_documents（ChromaDB 膨胀 15 倍根因）；② `_recover_from_store` 的 metadata 过滤用子串匹配，'juejin_Cursor.md' 会串档匹配 'sched_juejin_Cursor.md' 等文件。重复文档压低纯向量基线 top-5 质量，制造了虚假提升。修复后重跑得到上表真实数字。**这个排查故事比任何漂亮数字都更能证明你的工程能力。**
 
 ---
 
@@ -196,10 +196,10 @@ python eval/e2e_demo.py
 
 | 指标 | 数值 |
 |:---|:---|
-| 文章数 | 227 篇 |
-| Chunks | 4,331 |
-| KG 实体 | 11,942 |
-| ChromaDB | 4,331 embeddings (1:1) |
+| 文章数 | 220 篇 (内容去重后) |
+| Chunks | 4,206 |
+| KG 实体 | 11,814 (英文停用词清洗后) |
+| ChromaDB | 4,206 embeddings (1:1) |
 | URL 去重 | 251 条 |
 | 数据源 | Gitee (MindSpore + Paddle) + 掘金 + 博客园 + HN + OSChina |
 
@@ -209,7 +209,7 @@ python eval/e2e_demo.py
 
 **这个项目的亮点**：
 
-1. **GraphRAG 三路融合 + 多跳推理**：Vector + BM25 + KG 三路召回，RRF (Reciprocal Rank Fusion) 分数级融合（alpha 加权）+ 可信度加权 + BGE-Reranker 精排。KG 支持 BFS 多跳实体扩散（2-3 hops）与实体最短路径查找。评测（同 k 口径）验证 Recall@5 +19%。
+1. **GraphRAG 三路融合 + 多跳推理**：Vector + BM25 + KG 三路召回，RRF (Reciprocal Rank Fusion) 分数级融合（查询自适应权重）+ 可信度加权 + BGE-Reranker 精排。KG 支持 BFS 多跳实体扩散（2-3 hops）与实体最短路径查找。评测（同 k 口径, 干净库）验证实体关联类 Recall +5.9%。
 
 2. **双引擎分层架构**：LangGraph StateGraph 处理 Pipeline，自研 CC-Harness AgentLoop 处理对话。各用最合适的范式。
 
@@ -223,7 +223,7 @@ python eval/e2e_demo.py
 
 ### 规模
 
-- Pipeline: ~3500 行 Python，4 节点 + 14 工具，6 源爬虫，11,942 KG 实体
+- Pipeline: ~3500 行 Python，4 节点 + 14 工具，6 源爬虫，11,814 KG 实体
 - Interaction: ~7500 行 Python，45 模块，零 LangChain
 - 评测: 50 条查询 + 15 条负样本 + LLM-as-Judge
 

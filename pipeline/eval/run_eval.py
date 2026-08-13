@@ -322,7 +322,7 @@ def run_evaluation():
         },
         "by_category": {
             cat: {
-                "name": cat_name,
+                "name": categories.get(cat, cat),   # 修复: 之前闭包残留导致全部显示最后一类名
                 "count": len(data["vec"]),
                 "vec_recall@5": round(sum(r["recall@k"] for r in data["vec"]) / max(len(data["vec"]), 1), 3),
                 "graph_recall@5": round(sum(r["recall@k"] for r in data["graph"]) / max(len(data["graph"]), 1), 3),

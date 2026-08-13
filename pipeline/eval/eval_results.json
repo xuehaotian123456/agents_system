@@ -1,6 +1,6 @@
 {
   "total_queries": 50,
-  "total_chunks": 4478,
+  "total_chunks": 4206,
   "evaluation_note": "expected_entities关键词匹配是弱标注proxy，非人工相关性别定。建议引入LLM-as-judge补充。",
   "overall": {
     "vec_recall@5": 0.77,
@@ -8,7 +8,7 @@
     "vec_hit_rate": 1.0,
     "graph_hit_rate": 1.0,
     "vec_mrr": 0.936,
-    "graph_mrr": 0.937,
+    "graph_mrr": 0.941,
     "improvement_recall": 0.013,
     "improvement_hit_rate": 0.0,
     "degradation_success_rate": 1.0

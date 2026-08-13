@@ -18,6 +18,23 @@ _STOPWORDS = {
     "主要", "所有", "部分", "方面", "产品", "适合",
     "点击", "查看", "链接", "评论", "阅读", "分享",
     "技术", "开发", "应用", "系统", "提供", "支持", "实现", "采用",
+    # ── 英文功能词 (KG 垃圾实体主来源: 'in' 出现 424 次污染共现矩阵) ──
+    "the", "a", "an", "of", "in", "on", "at", "to", "for", "and", "or",
+    "but", "is", "are", "was", "were", "be", "been", "being", "it", "its",
+    "this", "that", "these", "those", "with", "without", "from", "by", "as",
+    "if", "then", "else", "when", "while", "not", "no", "yes", "so", "such",
+    "than", "into", "onto", "over", "under", "about", "after", "before",
+    "we", "you", "he", "she", "they", "them", "their", "our", "your", "his",
+    "her", "my", "me", "us", "i", "do", "does", "did", "done", "doing",
+    "can", "could", "will", "would", "should", "shall", "may", "might",
+    "must", "have", "has", "had", "having", "get", "got", "make", "made",
+    "use", "used", "using", "also", "only", "just", "very", "too", "more",
+    "most", "some", "any", "all", "each", "every", "both", "few", "many",
+    "much", "other", "another", "same", "different", "one", "two", "three",
+    "first", "last", "new", "old", "good", "bad", "well", "now", "here",
+    "there", "where", "what", "which", "who", "whom", "whose", "why", "how",
+    "up", "down", "out", "off", "through", "between", "among", "during",
+    "per", "via", "etc", "e.g", "i.e", "vs", "com", "www", "http", "https",
 }
 
 _ALLOWED_POS = {'n', 'nr', 'ns', 'nt', 'nz', 'eng', 'x', 'j', 'l'}

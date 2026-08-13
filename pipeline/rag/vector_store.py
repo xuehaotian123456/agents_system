@@ -113,19 +113,31 @@ class VectorStore:
         self._init_hybrid()
 
     def _recover_from_store(self, fpath: str):
-        """从已有向量库恢复文档块（用于混合检索）"""
+        """从已有向量库恢复文档块（用于混合检索）
+
+        ★ 历史 bug: metadata 的 source 存的是完整路径, 而旧代码用
+          where={"source": basename} 过滤永远匹配不到 → 退化为
+          `basename in source` 子串匹配 → 'juejin_Cursor.md' 误匹配
+          'auto_juejin_Cursor.md' / 'sched_juejin_Cursor.md' 等文件,
+          跨文件串档导致 all_chunks 膨胀 (4478 vs 4331)。
+        修复: 主路径用完整路径精确匹配, 兜底用路径分隔符安全的 endswith。
+        """
+        fname = os.path.basename(fpath)
         try:
-            fname = os.path.basename(fpath)
-            results = self.store.get(where={"source": fname}, include=["documents", "metadatas"])
+            # 主路径: source 元数据 = 完整路径, 精确匹配
+            results = self.store.get(where={"source": fpath}, include=["documents", "metadatas"])
             if not results or not results.get("documents"):
-                results = self.store.get(include=["documents", "metadatas"])
-                if results and results.get("documents"):
-                    filtered_docs, filtered_meta = [], []
-                    for doc, meta in zip(results["documents"], results["metadatas"]):
-                        if fname in meta.get("source", ""):
+                # 兼容旧数据: 兜底扫描, 但用 endswith 精确匹配避免子串串档
+                all_results = self.store.get(include=["documents", "metadatas"])
+                filtered_docs, filtered_meta = [], []
+                if all_results and all_results.get("documents"):
+                    sep = os.sep
+                    for doc, meta in zip(all_results["documents"], all_results["metadatas"]):
+                        src = meta.get("source", "")
+                        if src == fpath or src.endswith(sep + fname) or src == fname:
                             filtered_docs.append(doc)
                             filtered_meta.append(meta)
-                    results = {"documents": filtered_docs, "metadatas": filtered_meta}
+                results = {"documents": filtered_docs, "metadatas": filtered_meta}
 
             if results and results.get("documents"):
                 for doc, meta in zip(results["documents"], results["metadatas"]):

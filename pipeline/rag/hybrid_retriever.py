@@ -53,9 +53,41 @@ class HybridRetriever:
         except Exception:
             logger.warning("Reranker 不可用，将跳过重排序")
 
+    # 查询类型 → 三路权重 (vector, bm25, graph)
+    # 依据: 干净库实测显示图路在实体关联/报错类有效, 事实类拖后腿
+    _QUERY_WEIGHT_PROFILES = {
+        "entity_association": (0.8, 0.8, 1.4),   # 实体关联: 图路 boost
+        "error_tracing":      (0.7, 1.0, 1.3),   # 报错溯源: BM25(报错码精确匹配) + 图路 boost
+        "compare":            (0.9, 0.7, 1.3),   # 对比: 图路跨领域关联
+        "fact_lookup":        (1.1, 0.7, 0.5),   # 事实查找: 向量主导, 压低图路噪音
+    }
+    # 未命中分类时的默认权重在 search() 内用 alpha 计算
+
+    @staticmethod
+    def _classify_query(query: str) -> str:
+        """关键词规则分类 (与 Planner 规则兜底同源, 零成本零延迟)"""
+        q = query.lower()
+        # 报错溯源
+        if any(kw in q for kw in ["报错", "错误", "异常", "error", "traceback",
+                                  "解决", "怎么办", "怎么处理", "failed", "失败"]):
+            return "error_tracing"
+        # 对比分析
+        if any(kw in q for kw in ["对比", "区别", "比较", "差异", " vs ", "哪个好",
+                                  "优缺点", "不同"]):
+            return "compare"
+        # 实体关联
+        if any(kw in q for kw in ["关联", "相关", "关系", "依赖", "涉及",
+                                  "配合", "调用", "链路", "之间"]):
+            return "entity_association"
+        return "fact_lookup"
+
     def search(self, query: str, k: Optional[int] = None) -> List[Document]:
         """
-        三路混合检索 (RRF 融合)。
+        三路混合检索 (RRF 融合 + 查询自适应权重)。
+
+        不同查询类型使用不同三路权重:
+          - 实体关联/报错溯源/对比 → 图路 boost (KG 多跳扩散优势场景)
+          - 事实查找 → 向量主导 (语义相似度优势场景)
 
         Args:
             query: 用户查询
@@ -65,6 +97,12 @@ class HybridRetriever:
             融合重排后的 top-k Document 列表
         """
         final_k = k if k is not None else self.top_k_rerank
+
+        # ── 查询自适应权重 ──
+        q_type = self._classify_query(query)
+        w_vec, w_bm25, w_graph = self._QUERY_WEIGHT_PROFILES.get(
+            q_type, (self.alpha, 1.0 - self.alpha, 1.0))
+        logger.info(f"[HybridRetriever] 查询类型={q_type}, 权重 vec={w_vec} bm25={w_bm25} graph={w_graph}")
 
         # ── 第一路: 向量检索 ──
         vec_docs = self.vector_store.similarity_search(query, k=self.top_k_retrieve)
@@ -104,9 +142,9 @@ class HybridRetriever:
                     doc_by_key[key] = d
                 rrf_scores[key] = rrf_scores.get(key, 0.0) + weight / (RRF_K + rank + 1)
 
-        _add_route(vec_docs, self.alpha)              # 向量路
-        _add_route(bm25_docs, 1.0 - self.alpha)       # BM25 路
-        _add_route(graph_docs, 1.0)                   # 图路
+        _add_route(vec_docs, w_vec)                   # 向量路 (查询自适应)
+        _add_route(bm25_docs, w_bm25)                 # BM25 路 (查询自适应)
+        _add_route(graph_docs, w_graph)               # 图路 (查询自适应)
 
         merged = [doc_by_key[k] for k in rrf_scores]
         for d in merged:
@@ -120,6 +158,9 @@ class HybridRetriever:
                 doc.metadata.get("rrf_score", 0) * weight, 6)
 
         # ── Reranker 精排 ──
+        # 注: 曾尝试分数级融合 (reranker + λ×RRF)，实测总体提升 <0.5% 且
+        # 实体关联类反而下降 — 在 4.2k chunks 规模上 Reranker 已主导排序，
+        # 继续调 λ 有测试集过拟合风险，故撤回保持简单可解释的管线。
         if self.reranker and len(merged) > final_k:
             pairs = [[query, d.page_content] for d in merged]
             scores = self.reranker.predict(pairs)
