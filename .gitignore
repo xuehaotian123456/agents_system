@@ -65,3 +65,4 @@ temp/
 pipeline/data/duplicates/
 PROBLEM_LOG.md
 RESUME_PROJECT.md
+pipeline/eval/llm_judge_results.json

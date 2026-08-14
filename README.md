@@ -81,7 +81,7 @@ python eval/e2e_demo.py
 
 **当前结果** (同 k 口径, 11仓库扩语料后干净库实测): GraphRAG 比纯向量 RAG 总体 Recall@5 **+2.3%**（76.3%→78.7%，图路臂有 ±0.5pp 运行间波动），多跳推理类 **+8.3%**（75%→83.3%），对比分析类 +5.5%（由负转正）；增益方向随语料规模稳定为正；负样本诚实拒答率 **90%**（27/30），幻觉陷阱 8/8 拦截。
 
-> **诚实说明**: 小语料下三路融合对关键词召回提升有限（BGE-Reranker 主导最终排序），GraphRAG 的真实价值在于实体关联查询、KG 多跳推理链（Agent 工具）与语义相关性评估（LLM-as-Judge）。早期版本的更高提升数字是"重复入库污染基线"的假象（MD5 GBK 编码 + 子串匹配串档），已修复并重测——详见 commit 历史与 CLAUDE.md。
+> **诚实说明**: 小语料下三路融合对关键词召回提升有限（BGE-Reranker 主导最终排序），GraphRAG 的真实价值在于多跳推理类查询（+8.3%）、KG 多跳推理链（Agent 工具）与社区全局检索。LLM-as-Judge 是评测方法之一（语义口径），其结果当前**未发布**——早期评测器存在截断 bug 且语料覆盖不足，修复后待重跑。早期关键词数字也曾被"重复入库污染基线"的假象干扰（MD5 GBK 编码 + 子串匹配串档），已修复并重测——详见 commit 历史与 CLAUDE.md。
 > ⚠️ 评测数据依赖全量语料（363 篇文章）。clone 后先运行 `curl -X POST http://localhost:8010/tools/force_update -d '{}'` 拉取数据，再跑评测复现。
 
 ---
@@ -119,8 +119,16 @@ cd pipeline
 python eval/e2e_demo.py          # 端到端演示 (面试跑这个)
 python eval/run_eval.py          # 纯向量 vs GraphRAG 对比
 python eval/negative_test.py     # 负样本诚实拒答测试
-python eval/llm_judge_eval.py    # LLM-as-Judge 评测
+python eval/llm_judge_eval.py    # LLM-as-Judge 评测 (结果本地生成, 不入库)
 python eval/generate_report.py   # 生成完整评测报告
+```
+
+**全量评测数字复现** (clone 后数据为空, 需先拉全量语料, 约 30 分钟):
+
+```bash
+python scripts/reproduce_eval.py
+# 流程: force_update 全量爬取 (10-20min, 受 API 节流)
+#   → 向量库+KG 重建 (5min) → run_eval (10min) → negative_test (12min)
 ```
 
 ---
