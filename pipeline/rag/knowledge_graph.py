@@ -551,6 +551,45 @@ class KnowledgeGraph:
                     f"(top: {[(c, n) for c, n in cid_counts.most_common(5)]})")
         return labels
 
+    def _subcluster(self, entities: list, top_n: int = 3,
+                    min_sub_size: int = 30) -> dict[str, int]:
+        """
+        大社区二次聚类: 在诱导子图上用更紧的 top-N 稀疏化再跑标签传播。
+        解决大杂烩社区摘要吞掉子主题的问题 (社区0/1 的 900+ 实体被
+        一条摘要概括, 全局检索漏掉 MindSpore/算子等子主题)。
+        """
+        entity_set = set(entities)
+        # 诱导子图 + 更紧的 per-entity top-3
+        sub_edges: dict[str, list] = {}
+        for e in entities:
+            kept = [(nb, w) for nb, w in self.co_occurrence.get(e, {}).items()
+                    if nb in entity_set]
+            kept.sort(key=lambda x: -x[1])
+            sub_edges[e] = kept[:top_n]
+
+        # 标签传播
+        labels = {e: i for i, e in enumerate(entities)}
+        for _ in range(10):
+            changed = 0
+            for e in entities:
+                counts: dict[int, float] = {}
+                for nb, w in sub_edges.get(e, []):
+                    counts[labels[nb]] = counts.get(labels[nb], 0.0) + w
+                if counts:
+                    new_label = max(counts, key=counts.get)
+                    if labels[e] != new_label:
+                        labels[e] = new_label
+                        changed += 1
+            if changed == 0:
+                break
+
+        # 子社区重编号
+        from collections import Counter as _Counter
+        cid_counts = _Counter(labels.values())
+        ordered = sorted(cid_counts, key=lambda c: -cid_counts[c])
+        remap = {old: new for new, old in enumerate(ordered)}
+        return {e: remap[c] for e, c in labels.items()}
+
     def build_community_summaries(self, chunks: list[str] | None = None,
                                   min_size: int = 5, max_communities: int = 60) -> dict:
         """
@@ -572,6 +611,24 @@ class KnowledgeGraph:
         comm_entities: dict[int, list] = _dd(list)
         for e, c in self.communities.items():
             comm_entities[c].append(e)
+
+        # ── 大社区二次聚类 (评测暴露: 900+ 实体的大杂烩社区摘要吞掉子主题) ──
+        split_threshold = 300
+        big_comms = [(c, ents) for c, ents in comm_entities.items()
+                     if len(ents) > split_threshold]
+        for c, ents in big_comms:
+            sub_labels = self._subcluster(ents, top_n=3, min_sub_size=30)
+            if len(set(sub_labels.values())) > 1:
+                # 大社区拆分为子社区 (新 id 用负数偏移避免冲突)
+                offset = max(self.communities.values()) + 1
+                for e, sub in sub_labels.items():
+                    self.communities[e] = offset + sub
+                logger.info(f"[KG社区] 社区{c} ({len(ents)}实体) 拆分为 "
+                            f"{len(set(sub_labels.values()))} 个子社区")
+                # 重建分组 (仅对该社区)
+                del comm_entities[c]
+                for e, sub in sub_labels.items():
+                    comm_entities[offset + sub].append(e)
 
         # 过滤 + 排序 (大社区优先)
         valid = [(c, ents) for c, ents in comm_entities.items() if len(ents) >= min_size]
