@@ -67,3 +67,4 @@ PROBLEM_LOG.md
 RESUME_PROJECT.md
 pipeline/eval/llm_judge_results.json
 pipeline/data/langgraph_checkpoints.sqlite
+.commit_msg.txt
