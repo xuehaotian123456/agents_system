@@ -1,13 +1,35 @@
 """LangGraph 四节点图组装 + Checkpointer"""
 import json
+import os
+from pathlib import Path
 from langgraph.graph import StateGraph, END
-from langgraph.checkpoint.memory import MemorySaver
 from agent.state import AgentState, initial_state
 from agent.nodes import planner_node, retriever_node, reflector_node, summarizer_node
 from utils.logger_handler import logger
 
-# 全局 checkpointer 实例（支持会话隔离 + 中断恢复）
-_memory_saver = MemorySaver()
+# ── Checkpointer (断点续传) ──
+# ★ 2026-08-14: MemorySaver(内存态, 重启即失) → SqliteSaver(跨重启持久化)。
+# 断点状态落盘 pipeline/data/langgraph_checkpoints.sqlite,
+# thread_id 隔离 + 服务重启后可从上次节点继续执行。
+CHECKPOINT_DB = Path(__file__).parent.parent / "data" / "langgraph_checkpoints.sqlite"
+
+_checkpointer = None
+
+def _get_checkpointer():
+    """懒加载 checkpointer: 优先 SqliteSaver(跨重启), 不可用降级 MemorySaver"""
+    global _checkpointer
+    if _checkpointer is not None:
+        return _checkpointer
+    try:
+        from langgraph.checkpoint.sqlite import SqliteSaver
+        CHECKPOINT_DB.parent.mkdir(parents=True, exist_ok=True)
+        _checkpointer = SqliteSaver.from_conn_string(str(CHECKPOINT_DB))
+        logger.info(f"[Graph] SqliteSaver checkpointer 就绪 (跨重启持久化): {CHECKPOINT_DB}")
+    except Exception as e:
+        from langgraph.checkpoint.memory import MemorySaver
+        _checkpointer = MemorySaver()
+        logger.warning(f"[Graph] SqliteSaver 不可用({e}), 降级 MemorySaver(仅进程内)")
+    return _checkpointer
 
 def _should_search(state: AgentState) -> str:
     plan = state.get("plan", {}) or {}
@@ -31,7 +53,7 @@ def _after_reflect(state: AgentState) -> str:
     return "retriever"
 
 def build_graph(checkpointer=None):
-    """构建图（可注入外部 checkpointer，默认 MemorySaver）"""
+    """构建图（可注入外部 checkpointer，默认 SqliteSaver 跨重启持久化）"""
     builder = StateGraph(AgentState)
 
     builder.add_node("planner", planner_node)
@@ -61,8 +83,8 @@ def build_graph(checkpointer=None):
 
     builder.add_edge("summarizer", END)
 
-    # ★ 注入 Checkpointer: 支持线程隔离 + 中断恢复
-    return builder.compile(checkpointer=checkpointer or _memory_saver)
+    # ★ 注入 Checkpointer: thread_id 隔离 + 跨重启断点恢复
+    return builder.compile(checkpointer=checkpointer or _get_checkpointer())
 
 # 全局图实例（启动时编译，所有请求共用）
 graph = build_graph()
