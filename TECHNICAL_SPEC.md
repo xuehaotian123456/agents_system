@@ -93,7 +93,7 @@ Token 预算 (qwen-plus 32k): System 800 + Tools 1000 + History 20000 + Answer 1
 ### 2.3 决策链追踪器 (`interaction/harness/tracer.py`)
 
 12 种事件类型，输出:
-- `to_markdown()` — 面试级人类可读报告
+- `to_markdown()` — 人类可读的决策链报告
 - `to_chain()` — 结构化决策链
 - `to_json()` — 持久化 / LangFuse
 
@@ -275,7 +275,7 @@ cd interaction && uvicorn server.app:app --host 0.0.0.0 --port 8020
 
 ```bash
 cd pipeline
-python eval/e2e_demo.py          # 端到端演示 (面试跑这个)
+python eval/e2e_demo.py          # 端到端演示
 python eval/run_eval.py          # 对比评测
 python eval/negative_test.py     # 负样本测试
 python eval/llm_judge_eval.py    # LLM-as-Judge

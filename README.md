@@ -117,7 +117,7 @@ curl -X POST http://localhost:8010/tools/force_update -d '{}'
 
 ```bash
 cd pipeline
-python eval/e2e_demo.py          # 端到端演示 (面试跑这个)
+python eval/e2e_demo.py          # 端到端演示
 python eval/run_eval.py          # 纯向量 vs GraphRAG 对比
 python eval/negative_test.py     # 负样本诚实拒答测试
 python eval/llm_judge_eval.py    # LLM-as-Judge 评测 (结果本地生成, 不入库)
@@ -143,5 +143,5 @@ python scripts/reproduce_eval.py
 
 ## 技术文档
 
-- [CLAUDE.md](CLAUDE.md) — 开发速览（架构、环境、面试话术）
+- [CLAUDE.md](CLAUDE.md) — 开发速览（架构、环境、技术要点）
 - [TECHNICAL_SPEC.md](TECHNICAL_SPEC.md) — 技术规格书（组件详解、评测方法）
