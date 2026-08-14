@@ -1,4 +1,5 @@
 langgraph>=1.2,<2
+langgraph-checkpoint-sqlite>=2.0
 langchain>=1.3
 langchain-core
 langchain-community

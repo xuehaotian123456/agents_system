@@ -81,38 +81,21 @@ class HybridRetriever:
             return "entity_association"
         return "fact_lookup"
 
-    def search(self, query: str, k: Optional[int] = None) -> List[Document]:
-        """
-        三路混合检索 (RRF 融合 + 查询自适应权重)。
+    # ==================== 三路独立检索 (Fan-out 单元) ====================
+    # 供 LangGraph 并行节点调用: 每路独立计算, 互不依赖
 
-        不同查询类型使用不同三路权重:
-          - 实体关联/报错溯源/对比 → 图路 boost (KG 多跳扩散优势场景)
-          - 事实查找 → 向量主导 (语义相似度优势场景)
-
-        Args:
-            query: 用户查询
-            k: 最终返回数量 (默认 top_k_rerank)
-
-        Returns:
-            融合重排后的 top-k Document 列表
-        """
-        final_k = k if k is not None else self.top_k_rerank
-
-        # ── 查询自适应权重 ──
-        q_type = self._classify_query(query)
-        w_vec, w_bm25, w_graph = self._QUERY_WEIGHT_PROFILES.get(
-            q_type, (self.alpha, 1.0 - self.alpha, 1.0))
-        logger.info(f"[HybridRetriever] 查询类型={q_type}, 权重 vec={w_vec} bm25={w_bm25} graph={w_graph}")
-
-        # ── 第一路: 向量检索 ──
-        vec_docs = self.vector_store.similarity_search(query, k=self.top_k_retrieve)
+    def retrieve_vector(self, query: str, k: Optional[int] = None) -> List[Document]:
+        """向量路: ChromaDB 语义相似度"""
+        vec_docs = self.vector_store.similarity_search(query, k=k or self.top_k_retrieve)
         for d in vec_docs:
             d.metadata["retrieval_source"] = "vector"
+        return vec_docs
 
-        # ── 第二路: BM25 关键词 ──
+    def retrieve_bm25(self, query: str, k: Optional[int] = None) -> List[Document]:
+        """BM25 路: jieba 分词词频匹配"""
         qtokens = list(jieba.cut(query))
         bm25_scores = self.bm25.get_scores(qtokens)
-        bm25_top = sorted(enumerate(bm25_scores), key=lambda x: x[1], reverse=True)[:self.top_k_retrieve]
+        bm25_top = sorted(enumerate(bm25_scores), key=lambda x: x[1], reverse=True)[:k or self.top_k_retrieve]
         bm25_docs = []
         for i, score in bm25_top:
             if i < len(self.docs):
@@ -120,17 +103,42 @@ class HybridRetriever:
                 doc.metadata["retrieval_source"] = "bm25"
                 doc.metadata["bm25_score"] = float(score)
                 bm25_docs.append(doc)
+        return bm25_docs
 
-        # ── 第三路: 图检索（Graph-RAG 核心）──
+    def retrieve_graph(self, query: str, k: Optional[int] = None) -> List[Document]:
+        """图路: KG 多跳扩散 → 关联 chunk"""
         graph_docs = []
         if self.graph_retriever and self.graph_retriever.is_available:
-            graph_docs = self.graph_retriever.search(query)
+            graph_docs = self.graph_retriever.search(query)[:k or self.top_k_rerank]
             logger.info(f"[HybridRetriever] 图检索: {len(graph_docs)} 个文档块")
+        return graph_docs
+
+    def fuse_and_rerank(self, query: str,
+                        vec_docs: List[Document],
+                        bm25_docs: List[Document],
+                        graph_docs: List[Document],
+                        final_k: Optional[int] = None) -> List[Document]:
+        """
+        Fan-in 融合: RRF 分数融合 + 可信度加权 + BGE-Reranker 精排。
+        与 search() 的融合逻辑完全一致 (评测口径不变)。
+
+        Args:
+            query: 用户查询
+            vec_docs/bm25_docs/graph_docs: 三路各自的召回结果
+            final_k: 最终返回数量
+
+        Returns:
+            融合重排后的 top-k Document 列表
+        """
+        final_k = final_k or self.top_k_rerank
+
+        # ── 查询自适应权重 ──
+        q_type = self._classify_query(query)
+        w_vec, w_bm25, w_graph = self._QUERY_WEIGHT_PROFILES.get(
+            q_type, (self.alpha, 1.0 - self.alpha, 1.0))
+        logger.info(f"[HybridRetriever] 查询类型={q_type}, 权重 vec={w_vec} bm25={w_bm25} graph={w_graph}")
 
         # ── RRF (Reciprocal Rank Fusion) 分数融合 ──
-        # score(d) = Σ 1/(60 + rank_i(d))
-        # alpha 加权: 向量路 × alpha, BM25 路 × (1-alpha), 图路固定权重 1.0
-        # 融合后取 top-k 候选进 Reranker
         RRF_K = 60
         rrf_scores: dict[str, float] = {}
         doc_by_key: dict[str, Document] = {}
@@ -142,9 +150,9 @@ class HybridRetriever:
                     doc_by_key[key] = d
                 rrf_scores[key] = rrf_scores.get(key, 0.0) + weight / (RRF_K + rank + 1)
 
-        _add_route(vec_docs, w_vec)                   # 向量路 (查询自适应)
-        _add_route(bm25_docs, w_bm25)                 # BM25 路 (查询自适应)
-        _add_route(graph_docs, w_graph)               # 图路 (查询自适应)
+        _add_route(vec_docs, w_vec)
+        _add_route(bm25_docs, w_bm25)
+        _add_route(graph_docs, w_graph)
 
         merged = [doc_by_key[k] for k in rrf_scores]
         for d in merged:
@@ -158,13 +166,9 @@ class HybridRetriever:
                 doc.metadata.get("rrf_score", 0) * weight, 6)
 
         # ── Reranker 精排 ──
-        # 注: 曾尝试分数级融合 (reranker + λ×RRF)，实测总体提升 <0.5% 且
-        # 实体关联类反而下降 — 在 4.2k chunks 规模上 Reranker 已主导排序，
-        # 继续调 λ 有测试集过拟合风险，故撤回保持简单可解释的管线。
         if self.reranker and len(merged) > final_k:
             pairs = [[query, d.page_content] for d in merged]
             scores = self.reranker.predict(pairs)
-            # Reranker 分数 × 可信度因子
             for doc, score in zip(merged, scores):
                 credibility = doc.metadata.get("credibility", 0.5)
                 doc.metadata["reranker_score"] = float(score * (0.7 + 0.3 * credibility))
@@ -179,7 +183,6 @@ class HybridRetriever:
             )
             return result
 
-        # 无 Reranker 时按可信度加权 RRF 排序
         merged.sort(key=lambda d: d.metadata.get("credibility_weighted", 0), reverse=True)
         result = merged[:final_k]
         logger.info(
@@ -187,3 +190,19 @@ class HybridRetriever:
             f"graph={len(graph_docs)} → merged={len(result)}"
         )
         return result
+
+    def search(self, query: str, k: Optional[int] = None) -> List[Document]:
+        """
+        三路混合检索 (顺序版: 依次调三路 + 融合, 与并行节点版结果一致)。
+
+        Args:
+            query: 用户查询
+            k: 最终返回数量 (默认 top_k_rerank)
+
+        Returns:
+            融合重排后的 top-k Document 列表
+        """
+        vec_docs = self.retrieve_vector(query)
+        bm25_docs = self.retrieve_bm25(query)
+        graph_docs = self.retrieve_graph(query)
+        return self.fuse_and_rerank(query, vec_docs, bm25_docs, graph_docs, final_k=k)

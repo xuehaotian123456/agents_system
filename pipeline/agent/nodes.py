@@ -8,11 +8,19 @@ from utils.logger_handler import logger
 
 # ========== Planner ==========
 
-PLANNER_PROMPT = """你是一个技术助手规划器。精选 2-3 个最相关的工具，不要堆砌。
+PLANNER_PROMPT = """你是一个技术助手规划器。先做意图识别，再按意图规划工具 (精选 2-3 个，不要堆砌)。
 
 用户问题: {query}
 
 可用工具: {tools}
+
+意图分类 (intent_category 必须从以下选一):
+- knowledge_qa 知识问答 (技术概念/用法/原理 → rag_search + code_example)
+- error_tracing 报错溯源 (报错/异常排查 → kg_lookup + rag_search)
+- tech_compare 技术对比 (对比/区别 → compare_tech + kg_lookup)
+- trend_query 趋势时效 (热榜/最新 → trending_list 或 trend_report)
+- spec_qa 规范问答 (社区规范/流程文档 → rag_search)
+- other 其他
 
 选工具规则:
 - 知识/编程问题 → rag_search + code_example
@@ -24,7 +32,8 @@ PLANNER_PROMPT = """你是一个技术助手规划器。精选 2-3 个最相关�
 
 请以 JSON 格式输出:
 {{
-    "intent": "用户意图",
+    "intent": "用户意图简述",
+    "intent_category": "knowledge_qa/error_tracing/tech_compare/trend_query/spec_qa/other",
     "reasoning": "为什么选这些工具",
     "requires_search": true/false,
     "suggested_tools": ["工具1", "工具2"],
@@ -41,22 +50,27 @@ def _rule_based_plan(query: str) -> dict:
     q = query.lower()
     # 对比类
     if any(kw in q for kw in ["对比", "vs", "区别", "比较", "哪个好", "优缺点"]):
-        return {"intent": query, "requires_search": True,
+        return {"intent": query, "intent_category": "tech_compare",
+                "requires_search": True,
                 "suggested_tools": ["compare_tech", "rag_search"], "target_entity": ""}
     # 热榜/趋势类
     if any(kw in q for kw in ["热榜", "热门", "趋势", "最新", "最近", "今天"]):
-        return {"intent": query, "requires_search": True,
+        return {"intent": query, "intent_category": "trend_query",
+                "requires_search": True,
                 "suggested_tools": ["trending_list"], "target_entity": ""}
     # 实体关联/报错类 → 优先 KG
     if any(kw in q for kw in ["关联", "相关", "关系", "依赖", "报错", "错误", "异常"]):
-        return {"intent": query, "requires_search": True,
+        return {"intent": query, "intent_category": "error_tracing",
+                "requires_search": True,
                 "suggested_tools": ["kg_lookup", "rag_search"], "target_entity": ""}
     # 邮件/配置类
     if any(kw in q for kw in ["邮件", "发送", "推送", "订阅", "摘要"]):
-        return {"intent": query, "requires_search": True,
+        return {"intent": query, "intent_category": "other",
+                "requires_search": True,
                 "suggested_tools": ["send_digest_email"], "target_entity": ""}
     # 默认: RAG 检索
-    return {"intent": query, "requires_search": True,
+    return {"intent": query, "intent_category": "knowledge_qa",
+            "requires_search": True,
             "suggested_tools": ["rag_search"], "target_entity": ""}
 
 def planner_node(state: AgentState) -> AgentState:
@@ -244,6 +258,131 @@ def retriever_node(state: AgentState) -> AgentState:
             "[KG 推理链] (GraphRAG 多跳扩散):\n" + kg_chain_text)
 
     state["context"] = "\n\n---\n".join(context_parts) if context_parts else "无可用信息"
+    state["retrieval_rounds"] += 1
+    return state
+
+# ========== 并行检索 (Fan-out/Fan-in) ==========
+# ★ 2026-08-14: 三路检索拆为 LangGraph 并行节点, planner 扇出三条边
+# 并发执行 (向量/BM25/图谱), merge 节点扇入融合。
+# 状态存可序列化 dict (SqliteSaver checkpoint 兼容), 融合时重建 Document。
+
+# 向量库线程安全单例: 并行节点 (fan-out) 并发初始化 ChromaDB 会竞态
+# (实测: tenant 连接失败 / RustBindingsAPI 异常 / 目录锁冲突),
+# 必须加锁串行化首次初始化。
+import threading as _threading
+_vs_instance = None
+_vs_lock = _threading.Lock()
+
+def _get_vs():
+    """向量库线程安全单例 (与 rag_search 工具共享)"""
+    global _vs_instance
+    with _vs_lock:
+        if _vs_instance is None:
+            from agent.tools.rag_tools import _get_rag
+            _vs_instance = _get_rag()
+        return _vs_instance
+
+def _docs_to_state(docs) -> list[dict]:
+    return [{"content": d.page_content,
+             "source": d.metadata.get("source", ""),
+             "credibility": d.metadata.get("credibility", 0.5),
+             "retrieval_source": d.metadata.get("retrieval_source", ""),
+             "score": float(d.metadata.get("bm25_score", d.metadata.get("graph_score", 0.0)))}
+            for d in docs]
+
+def _state_to_docs(items: list[dict]) -> list:
+    from langchain_core.documents import Document
+    docs = []
+    for it in items:
+        meta = {"source": it.get("source", ""),
+                "credibility": it.get("credibility", 0.5),
+                "retrieval_source": it.get("retrieval_source", "")}
+        if it.get("retrieval_source") == "bm25":
+            meta["bm25_score"] = it.get("score", 0.0)
+        if it.get("retrieval_source") == "graph":
+            meta["graph_score"] = it.get("score", 0.0)
+        docs.append(Document(page_content=it["content"], metadata=meta))
+    return docs
+
+def retriever_vec_node(state: AgentState) -> dict:
+    """
+    并行路 1: 向量检索 (ChromaDB 语义相似度)。
+    ★ 只返回自己的状态键: LangGraph 并行节点不得写重叠键
+    (并发写同一键会 InvalidUpdateError, 即使值相同)。
+    """
+    try:
+        vs = _get_vs()
+        if vs.hybrid_retriever:
+            docs = vs.hybrid_retriever.retrieve_vector(state["query"])
+        else:
+            docs = vs.store.similarity_search(state["query"], k=10)
+        return {"vec_docs": _docs_to_state(docs)}
+    except Exception as e:
+        logger.warning(f"[并行向量路] 失败: {e}")
+        return {"vec_docs": []}
+
+def retriever_bm25_node(state: AgentState) -> dict:
+    """并行路 2: BM25 词频检索 (只写 bm25_docs)"""
+    try:
+        vs = _get_vs()
+        docs = vs.hybrid_retriever.retrieve_bm25(state["query"]) if vs.hybrid_retriever else []
+        return {"bm25_docs": _docs_to_state(docs)}
+    except Exception as e:
+        logger.warning(f"[并行BM25路] 失败: {e}")
+        return {"bm25_docs": []}
+
+def retriever_graph_node(state: AgentState) -> dict:
+    """并行路 3: 图检索 KG 多跳扩散 (只写 graph_docs)"""
+    try:
+        vs = _get_vs()
+        docs = vs.hybrid_retriever.retrieve_graph(state["query"]) if vs.hybrid_retriever else []
+        return {"graph_docs": _docs_to_state(docs)}
+    except Exception as e:
+        logger.warning(f"[并行图路] 失败: {e}")
+        return {"graph_docs": []}
+
+def merge_retrieval_node(state: AgentState) -> AgentState:
+    """
+    Fan-in 融合: 三路结果 RRF 融合 + 可信度加权 + Reranker 精排。
+    融合逻辑与 HybridRetriever.fuse_and_rerank 完全一致 (评测口径不变)。
+    """
+    try:
+        vs = _get_vs()
+        hr = vs.hybrid_retriever
+        vec_docs = _state_to_docs(state.get("vec_docs", []))
+        bm25_docs = _state_to_docs(state.get("bm25_docs", []))
+        graph_docs = _state_to_docs(state.get("graph_docs", []))
+        fused = hr.fuse_and_rerank(state["query"], vec_docs, bm25_docs, graph_docs, final_k=5)
+    except Exception as e:
+        logger.warning(f"[Fan-in融合] 失败: {e}")
+        fused = []
+
+    if fused:
+        context_parts = []
+        for i, d in enumerate(fused):
+            src = d.metadata.get("retrieval_source", "?")
+            context_parts.append(f"[并行检索{src} 第{i+1}篇]\n{d.page_content[:600]}")
+        # KG 多跳推理链注入
+        try:
+            from rag.knowledge_graph import get_kg
+            kg = get_kg()
+            if kg.is_built:
+                mh = kg.multi_hop_expand(state["query"], max_hops=2, top_per_hop=3)
+                if mh and mh.get("hops"):
+                    context_parts.append(
+                        "[KG 推理链] (GraphRAG 多跳扩散):\n" + mh["chain_text"])
+        except Exception:
+            pass
+        state["context"] = "\n\n---\n".join(context_parts)
+        state["tool_calls"].append({"tool": "parallel_retrieval",
+                                    "result": f"三路并行检索: vec={len(state.get('vec_docs',[]))} "
+                                              f"bm25={len(state.get('bm25_docs',[]))} "
+                                              f"graph={len(state.get('graph_docs',[]))} → 融合 top{len(fused)}"})
+    else:
+        # 三路全空 → 诚实降级
+        state["degradation_triggered"] = True
+        state["context"] = ("当前所有检索通道均暂不可用。请诚实告知用户这一情况，"
+                            "建议稍后重试或换个方式提问。不要编造信息。")
     state["retrieval_rounds"] += 1
     return state
 

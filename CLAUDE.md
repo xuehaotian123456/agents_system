@@ -130,14 +130,21 @@ query="MindSpore FusedAdamW"
   → global_search 工具: query 实体 → 定位社区 → 返回主题摘要
 ```
 
-### Agent 四节点 Pipeline
+### Agent 图流水线 (含并行 Fan-out/Fan-in)
 
 ```
-PLANNER ─→ RETRIEVER ─→ REFLECTOR ─→ SUMMARIZER → END
-   │           │              │              │
-   │     KG多跳扩散      置信度判定     透传GRAPH标记
-   │     工具≤3个       <0.5重试       可信度标注
-   └── LLM失败→规则兜底──→ 全失败→降级直达──→ 诚实拒答
+PLANNER (意图识别+任务规划)
+   │ 条件边
+   ├──→ 三路并行检索 (Fan-out):
+   │      retriever_vec  ∥ retriever_bm25  ∥ retriever_graph
+   │            └──────────┬──────────┘
+   │                merge_retrieval (Fan-in: RRF 融合 + Reranker)
+   │                       ↓
+   ├──→ retriever (工具编排: 热榜/对比/爬取)
+   │                       ↓
+   └──────────────→ REFLECTOR (置信度判定, <0.5 重试回 planner)
+                        ↓
+                   SUMMARIZER → END (透传GRAPH标记 + 诚实拒答)
 ```
 
 ### 数据质量治理 (两级质量门)
@@ -225,7 +232,7 @@ python eval/e2e_demo.py
 
 **这个项目的亮点**：
 
-1. **GraphRAG 三路融合 + 多跳推理 + 社区全局检索 + Agentic 循环**：Vector + BM25 + KG 三路召回，RRF 分数级融合（查询自适应权重）+ 可信度加权 + BGE-Reranker 精排。rag_search 内置 **Agentic 检索循环**（查询改写 + HyDE 假设答案 + 充分性反思 + 不足自动重试，决策留痕）。KG 支持 BFS 多跳实体扩散（2-3 hops）、实体最短路径查找、**标签传播社区检测（kNN 稀疏化防坍缩，11,529 社区）+ LLM 社区摘要（45 个）+ 全局检索工具**——对齐微软 GraphRAG 社区机制。评测（同 k 口径, 干净库）验证多跳推理类 Recall +8.3%，增益随语料规模单调上升（+1.3%→+2.5%→+2.8%）。
+1. **GraphRAG 三路融合 + 并行 Fan-out/Fan-in + 社区全局检索 + Agentic 循环**：LangGraph 图中三路检索 (Vector/BM25/KG) 以并行节点扇出执行、融合节点扇入 (RRF 分数级融合 + 查询自适应权重 + BGE-Reranker 精排)；Planner 先做六类意图识别再任务规划。rag_search 内置 **Agentic 检索循环**（查询改写 + HyDE 假设答案 + 充分性反思 + 不足自动重试，决策留痕）。KG 支持 BFS 多跳实体扩散（2-3 hops）、实体最短路径查找、**标签传播社区检测（kNN 稀疏化防坍缩，11,529 社区）+ LLM 社区摘要（45 个）+ 全局检索工具**——对齐微软 GraphRAG 社区机制。评测（同 k 口径, 干净库）验证多跳推理类 Recall +8.3%，增益随语料规模单调上升（+1.3%→+2.5%→+2.8%）。
 
 2. **双引擎分层架构**：LangGraph StateGraph 处理 Pipeline，自研 CC-Harness AgentLoop 处理对话。各用最合适的范式。
 

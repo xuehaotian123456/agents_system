@@ -318,6 +318,44 @@ def test_agentic_dedup_merge():
     assert docs[0].metadata["reranker_score"] == 0.9, "保留高分版本"
 
 
+# ==================== 并行图结构 (Fan-out/Fan-in) ====================
+
+def test_graph_fanout_structure():
+    """LangGraph 并行结构: 三路扇出节点存在 + 扇入融合 + 条件路由"""
+    from agent.graph import build_graph
+    g = build_graph()
+
+    nodes = list(g.get_graph().nodes.keys())
+    # 核心节点齐全
+    for n in ["planner", "fanout", "retriever_vec", "retriever_bm25",
+              "retriever_graph", "merge_retrieval", "reflector", "summarizer"]:
+        assert n in nodes, f"缺少节点 {n}"
+
+    edges = list(g.get_graph().edges)
+    # Fan-out: fanout 扇出三条边
+    fanout_edges = [e for e in edges if e[0] == "fanout"]
+    assert len(fanout_edges) == 3, f"fanout 应有 3 条出边, 实际 {len(fanout_edges)}"
+    # Fan-in: 三路汇入 merge
+    fanin_edges = [e for e in edges if e[1] == "merge_retrieval"]
+    assert len(fanin_edges) == 3, f"merge 应有 3 条入边, 实际 {len(fanin_edges)}"
+
+
+def test_rule_based_plan_intent():
+    """意图识别 (规则兜底): 六类意图分类"""
+    from agent.nodes import _rule_based_plan
+    cases = {
+        "对比": "tech_compare",
+        "热榜": "trend_query",
+        "报错": "error_tracing",
+        "邮件": "other",
+        "优化器": "knowledge_qa",
+    }
+    for kw, expected in cases.items():
+        plan = _rule_based_plan(kw)
+        assert plan["intent_category"] == expected, \
+            f"'{kw}' 应分类为 {expected}, 实际 {plan['intent_category']}"
+
+
 # ==================== 负样本诚实性 ====================
 
 def test_honesty_detector():
