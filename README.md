@@ -79,7 +79,7 @@ python eval/e2e_demo.py
 | LLM-as-Judge | Answerability (0-1) | 50 条查询 |
 | 负样本测试 | 诚实拒答率 | 15 条 (5 类陷阱) |
 
-**当前结果** (同 k 口径, 11仓库扩语料后干净库实测): GraphRAG 比纯向量 RAG 总体 Recall@5 **+2.8%**（76.3%→79.2%），多跳推理类 **+8.3%**（75%→83.3%），对比分析类 +5.5%（由负转正）；增益随语料单调上升 (+1.3%→+2.5%→+2.8%)；负样本诚实拒答率 **90%**（27/30），幻觉陷阱 8/8 拦截。
+**当前结果** (同 k 口径, 11仓库扩语料后干净库实测): GraphRAG 比纯向量 RAG 总体 Recall@5 **+2.3%**（76.3%→78.7%，图路臂有 ±0.5pp 运行间波动），多跳推理类 **+8.3%**（75%→83.3%），对比分析类 +5.5%（由负转正）；增益方向随语料规模稳定为正；负样本诚实拒答率 **90%**（27/30），幻觉陷阱 8/8 拦截。
 
 > **诚实说明**: 小语料下三路融合对关键词召回提升有限（BGE-Reranker 主导最终排序），GraphRAG 的真实价值在于实体关联查询、KG 多跳推理链（Agent 工具）与语义相关性评估（LLM-as-Judge）。早期版本的更高提升数字是"重复入库污染基线"的假象（MD5 GBK 编码 + 子串匹配串档），已修复并重测——详见 commit 历史与 CLAUDE.md。
 > ⚠️ 评测数据依赖全量语料（363 篇文章）。clone 后先运行 `curl -X POST http://localhost:8010/tools/force_update -d '{}'` 拉取数据，再跑评测复现。
@@ -92,7 +92,7 @@ python eval/e2e_demo.py
 
 | 数据 | 位置 | 策略 |
 |:---|:---|:---|
-| 种子文章 (15 篇) | `pipeline/data/seed_articles/` | ✅ 进 git，clone 后 30 秒可 demo |
+| 种子文章 (15 篇) | `pipeline/data/seed_articles/` | ✅ 进 git，clone 后 30 秒可 demo（注意：仅演示用，跑不出全量评测口径） |
 | 全量文章 (~363 篇) | `pipeline/data/articles/` | ❌ gitignore，`force_update` 生成 |
 | ChromaDB 向量库 | `pipeline/data/chroma_db/` | ❌ gitignore，`init_demo.py` 重建 |
 | 知识图谱状态 | `pipeline/data/kg_state.json` | ❌ gitignore，7 秒可重建 |
@@ -127,10 +127,10 @@ python eval/generate_report.py   # 生成完整评测报告
 
 ## 项目规模
 
-- **~12,000 行 Python**，70+ 文件
-- Interaction 层: ~7,500 行，45 模块，零 LangChain Agent 依赖
-- Pipeline 层: ~3,500 行，四节点 + 15 工具 + 6 源爬虫
-- 评测: 50 查询 + 15 负样本 + LLM-as-Judge
+- **~23,000 行 Python**，100 个 .py 文件
+- Interaction 层: ~10,000 行（harness 核心引擎），零 LangChain Agent 依赖
+- Pipeline 层: 四节点 + 21 A2A 工具 + 11 仓库爬虫
+- 评测: 50 查询 + 30 负样本 + LLM-as-Judge
 
 ## 技术文档
 
