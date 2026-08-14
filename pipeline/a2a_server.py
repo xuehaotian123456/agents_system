@@ -27,27 +27,48 @@ app = FastAPI(title="DevPilot A2A Agent", version="1.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 # ==================== 工具元数据 ====================
+# ★ 架构修正 (2026-08-14): A2A_TOOLS 不再手写, 从 ALL_TOOLS 自动生成。
+# 旧设计: 手写 JSON 与 agent/tools/__init__.py 的 ALL_TOOLS 双维护,
+# 加一个工具要同步两处, 已实际发生漂移 (两清单集合不一致)。
+# 现在: ALL_TOOLS 是单一事实源, 运维工具 (邮件/调度) 手动追加。
 
-A2A_TOOLS = [
-    # ── 原有工具 (9个) ──
-    {"name": "rag_search", "description": "从已爬取的技术文章中搜索知识。入参 query", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}}}},
-    {"name": "trending_list", "description": "获取掘金/博客园/GitHub/HackerNews/OSChina 实时技术热榜。入参 source (juejin/cnblogs/github/hackernews/oschina/all)", "inputSchema": {"type": "object", "properties": {"source": {"type": "string", "default": "juejin"}}}},
-    {"name": "kg_lookup", "description": "查询知识图谱中技术关键词的关联实体。支持多跳扩散推理链。入参 entity_name。查询关联/报错/依赖类问题时自动返回 2-hop 推理链路", "inputSchema": {"type": "object", "properties": {"entity_name": {"type": "string"}}}},
-    {"name": "global_search", "description": "全局检索: 基于社区摘要索引回答整体性问题。入参 query。返回相关社区主题摘要与代表实体，适合宏观问题", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}}}},
-    {"name": "fetch_article", "description": "爬取并保存指定URL的技术文章。入参 url", "inputSchema": {"type": "object", "properties": {"url": {"type": "string"}}}},
-    {"name": "search_web", "description": "搜索网络上的技术内容。入参 query", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}}}},
-    {"name": "code_example", "description": "从知识库中搜索代码示例。入参 keyword", "inputSchema": {"type": "object", "properties": {"keyword": {"type": "string"}}}},
-    {"name": "compare_tech", "description": "对比两个技术/框架。入参 tech_a, tech_b", "inputSchema": {"type": "object", "properties": {"tech_a": {"type": "string"}, "tech_b": {"type": "string"}}}},
-    {"name": "daily_digest", "description": "生成今日技术摘要报告。无入参，返回 Markdown 格式摘要", "inputSchema": {"type": "object", "properties": {}}},
-    {"name": "trend_report", "description": "生成技术热词趋势分析报告。无入参", "inputSchema": {"type": "object", "properties": {}}},
-    # ── 新增: 邮件 & 调度控制 (6个) ──
-    {"name": "send_digest_email", "description": "生成并发送每日技术摘要邮件。入参 to_email（收件人邮箱）。若SMTP未配置会返回need_smtp=true，Harness应引导用户先提供邮箱", "inputSchema": {"type": "object", "properties": {"to_email": {"type": "string"}}}},
-    {"name": "get_smtp_help", "description": "根据邮箱地址返回SMTP服务器信息和授权码获取链接。入参 email。Harness 调用此工具获取授权码页面URL展示给用户。", "inputSchema": {"type": "object", "properties": {"email": {"type": "string"}}}},
-    {"name": "configure_smtp", "description": "配置SMTP邮件发送。只需提供 email（发件邮箱）和 password（授权码），系统会自动识别SMTP服务器地址和端口。", "inputSchema": {"type": "object", "properties": {"email": {"type": "string"}, "password": {"type": "string"}, "host": {"type": "string", "description": "可选，不填则自动检测"}, "port": {"type": "integer", "description": "可选，不填则自动检测"}}}},
-    {"name": "configure_daily_digest", "description": "配置每日定时摘要邮件。入参 email（收件人）、time（HH:MM格式，如08:00）、enabled（true/false）。修改后立即生效。", "inputSchema": {"type": "object", "properties": {"email": {"type": "string"}, "time": {"type": "string", "default": "08:00"}, "enabled": {"type": "boolean", "default": True}}}},
-    {"name": "get_pipeline_status", "description": "获取 Pipeline 运行状态：最近爬取时间、文章总数、调度器状态、每日摘要配置、SMTP 配置状态。", "inputSchema": {"type": "object", "properties": {}}},
-    {"name": "force_update", "description": "强制执行一次全量增量爬取（多源 → 去重 → 入库 → 更新向量库 → 更新 KG）。", "inputSchema": {"type": "object", "properties": {}}},
-]
+def _tool_to_a2a(tool) -> dict:
+    """LangChain @tool → A2A 工具定义 (name/description/inputSchema)"""
+    schema = {"type": "object", "properties": {}}
+    try:
+        if tool.args_schema and hasattr(tool.args_schema, "model_json_schema"):
+            js = tool.args_schema.model_json_schema()
+            schema = {"type": "object",
+                      "properties": js.get("properties", {}),
+                      "required": js.get("required", [])}
+    except Exception:
+        pass
+    return {
+        "name": tool.name,
+        "description": tool.description or "",
+        "inputSchema": schema,
+    }
+
+
+def _build_a2a_tools() -> list[dict]:
+    """ALL_TOOLS (单一事实源) + 运维工具 → A2A 工具清单"""
+    from agent.tools import ALL_TOOLS
+    tools = [_tool_to_a2a(t) for t in ALL_TOOLS]
+
+    # ── 运维工具 (不属于 ALL_TOOLS, 手动维护) ──
+    ops_tools = [
+        {"name": "send_digest_email", "description": "生成并发送每日技术摘要邮件。入参 to_email（收件人邮箱）。若SMTP未配置会返回need_smtp=true", "inputSchema": {"type": "object", "properties": {"to_email": {"type": "string"}}}},
+        {"name": "get_smtp_help", "description": "根据邮箱地址返回SMTP服务器信息和授权码获取链接。入参 email", "inputSchema": {"type": "object", "properties": {"email": {"type": "string"}}}},
+        {"name": "configure_smtp", "description": "配置SMTP邮件发送。入参 email 和 password（授权码），自动识别SMTP服务器", "inputSchema": {"type": "object", "properties": {"email": {"type": "string"}, "password": {"type": "string"}, "host": {"type": "string", "description": "可选"}, "port": {"type": "integer", "description": "可选"}}}},
+        {"name": "configure_daily_digest", "description": "配置每日定时摘要邮件。入参 email（收件人）、time（HH:MM）、enabled（true/false）", "inputSchema": {"type": "object", "properties": {"email": {"type": "string"}, "time": {"type": "string", "default": "08:00"}, "enabled": {"type": "boolean", "default": True}}}},
+        {"name": "get_pipeline_status", "description": "获取 Pipeline 运行状态：最近爬取时间、文章总数、调度器状态、SMTP 配置", "inputSchema": {"type": "object", "properties": {}}},
+        {"name": "force_update", "description": "强制执行一次全量增量爬取（多源 → 去重 → 入库 → 更新向量库 → 更新 KG）", "inputSchema": {"type": "object", "properties": {}}},
+    ]
+    tools.extend(ops_tools)
+    return tools
+
+
+A2A_TOOLS = _build_a2a_tools()
 
 
 # ==================== A2A 端点 ====================

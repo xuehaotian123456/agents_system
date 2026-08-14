@@ -1,17 +1,17 @@
 """
-CC-Harness Agent - RAG 检索工具
-================================
-将 RAG 能力封装为一个 Tool，而非顶层工作流节点。
+CC-Harness Agent - RAG 检索工具 (DEPRECATED)
+============================================
+⚠️ 架构修正 (2026-08-14): 本工具已从服务主链路退役。
 
-这是 CC 路线与 LangGraph 路线最核心的架构差异：
-  LangGraph:  RAG 是 Graph 中的多个节点（检索、评分、改写、生成）
-              → RAG 流程是框架级别的，与 Agent 耦合
-  CC路线:     RAG 是 Tool 注册表中的一个普通工具
-              → Agent 按需调用，RAG 工具内部封装完整 Agentic RAG 循环
-              → Agent 可以同时使用 RAG、Web Search、数据库查询等工具
+旧设计问题: interaction 层用朴素分段重建 pipeline 语料的第二份
+embedding (影子库), 且本地 rag_search 同名抢占 A2A 注册,
+导致 pipeline 的完整检索栈 (RRF 融合 + KG + Reranker +
+Agentic 循环) 从未在 interaction 层生效 — 数据双源 + 质量割裂。
 
-RAG 工具内部同样运行一个简化的 Agentic RAG 循环：
-  检索 → 文档评分 → (不相关? → 改写查询 → 重新检索) → 返回结果
+现行架构: 检索唯一来源 = Pipeline A2A rag_search
+(pipeline/rag/agentic_retriever.py 内含 Agentic 循环)。
+
+本文件仅保留用于独立 demo (cli.py / benchmarks) 的轻量检索演示。
 """
 
 from __future__ import annotations
@@ -121,14 +121,6 @@ class RAGTool(BaseTool):
             embedding_function=emb_fn,  # ★ 关键：传入自定义 embedding，阻止下载 ONNX 模型
         )
 
-        # 初始化 LLM（用于文档评分和查询改写）
-        self._llm_client = AsyncOpenAI(
-            base_url=embedding_base_url,
-            api_key=embedding_api_key,
-            http_client=httpx.AsyncClient(timeout=httpx.Timeout(120.0)),
-        )
-        self._llm_model = os.getenv("LLM_MODEL", "qwen3.5-flash")
-
     # ==================== 公开接口 ====================
 
     async def execute(self, **kwargs: Any) -> ToolResult:
@@ -216,59 +208,6 @@ class RAGTool(BaseTool):
 
         docs = await asyncio.to_thread(_search)
         return docs
-
-    async def _grade_documents(self, query: str, docs: list[str]) -> list[str]:
-        """
-        LLM 评分文档相关性
-
-        让 LLM 判断每篇文档是否与查询相关，只保留相关的文档。
-        这是 Agentic RAG 的关键步骤：不是所有检索结果都有用。
-        """
-        relevant = []
-
-        for i, doc in enumerate(docs):
-            prompt = (
-                f"判断以下文档是否与用户问题相关。\n"
-                f"用户问题：{query}\n"
-                f"文档内容：{doc[:800]}\n"
-                f"只输出 RELEVANT 或 IRRELEVANT："
-            )
-
-            resp = await self._llm_client.chat.completions.create(
-                model=self._llm_model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0,
-                max_tokens=10,
-            )
-
-            verdict = resp.choices[0].message.content.strip().upper() if resp.choices[0].message.content else ""
-
-            if "RELEVANT" in verdict:
-                relevant.append(doc)
-
-        return relevant
-
-    async def _rewrite_query(self, original_query: str, reason: str) -> str:
-        """
-        LLM 改写查询
-
-        当原始查询检索结果不理想时，让 LLM 优化查询语句。
-        改写策略：更具体的关键词、去掉冗余词、换个角度表述。
-        """
-        prompt = (
-            f"原始查询未获得有效结果（原因：{reason}），请优化以下查询语句，"
-            f"使其更适合向量检索。输出优化后的查询语句，不要输出其他内容。\n"
-            f"原始查询：{original_query}"
-        )
-
-        resp = await self._llm_client.chat.completions.create(
-            model=self._llm_model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3,
-            max_tokens=200,
-        )
-
-        return resp.choices[0].message.content.strip() if resp.choices[0].message.content else original_query
 
     def _format_results(self, docs: list[str]) -> str:
         """格式化检索结果为 LLM 友好的文本"""

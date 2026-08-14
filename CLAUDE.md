@@ -8,7 +8,7 @@
 
 **GraphRAG 增强的 Agent 双引擎系统**：LangGraph Pipeline（爬取→入库→GraphRAG 检索）+ 自研 CC-Harness AgentLoop（动态决策→多跳推理→决策链可视化），A2A 协议互通。
 
-核心亮点：**知识图谱多跳推理 + LLM-as-Judge 评测 + Agent 决策链可追溯**。
+核心亮点：**知识图谱多跳推理 + Agentic 检索循环 + 社区全局检索 + LLM-as-Judge 评测 + Agent 决策链可追溯**。
 
 ---
 

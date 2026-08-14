@@ -45,6 +45,16 @@
 
 ---
 
+## 1.5 分层边界与设计取舍 (架构审查 2026-08-14)
+
+| 能力 | 归属 | 理由 |
+|:---|:---|:---|
+| 检索基础设施 (Vector/BM25/KG/RRF/Reranker) | Pipeline | 数据管道产物, 同步批量 |
+| Agentic 检索编排 (改写+HyDE+反思循环) | Pipeline (检索即服务) | 编排需贴近检索基础设施, 避免每轮 A2A 往返; interaction 的 AgentLoop 做对话级决策, 两层决策粒度不同 |
+| 工具清单单一事实源 | agent/tools/__init__.py ALL_TOOLS | A2A_TOOLS 自动生成, 消除双维护漂移 |
+| 知识库数据 | 唯一来源 = pipeline data/articles | interaction 不再维护影子库 (旧设计数据双源+同名抢占已修复) |
+| LLM 栈 | 双层各一套 (可辩护的重复) | pipeline 同步批量用 LangChain 栈; interaction 异步对话用 openai SDK; 边界明确不互相 import |
+
 ## 二、核心技术组件
 
 ### 2.1 AgentLoop 引擎 (`interaction/harness/agent_loop.py`)

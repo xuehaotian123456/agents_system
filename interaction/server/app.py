@@ -39,7 +39,7 @@ from harness import (
     AgentLoop, Session, LLMAdapter, PromptEngine, AgentConfig,
     AgentTracer, create_tracer, create_llm_adapter,
 )
-from tools import ToolRegistry, RAGTool
+from tools import ToolRegistry
 
 load_dotenv()
 
@@ -194,53 +194,12 @@ async def lifespan(app: FastAPI):
     print(f"   LLM: {state.llm.model} ({state.llm.provider.value})")
 
     # 初始化工具注册表
+    # ★ 架构修正 (2026-08-14): 不再注册本地 RAGTool 影子库。
+    # 旧设计在 interaction 层用朴素分段重建 pipeline 语料的第二份
+    # embedding, 且本地 rag_search 同名抢占 A2A 的完整检索栈
+    # (RRF 融合 + KG + Reranker + Agentic 循环) — 数据双源 + 质量割裂。
+    # 现在: 检索唯一来源 = Pipeline A2A rag_search (下方自动发现注册)。
     state.tool_registry = ToolRegistry()
-    rag_tool = RAGTool(collection_name="cc_harness_server", persist_dir="./chroma_db", k=3)
-    state.tool_registry.register(rag_tool)
-
-    # 从 Pipeline 文章目录加载真实文章到本地 RAG
-    pipeline_articles_dir = Path(__file__).parent.parent.parent / "pipeline" / "data" / "articles"
-    rag_doc_count = 0
-    if pipeline_articles_dir.exists():
-        article_files = sorted(pipeline_articles_dir.glob("*.md"))
-        # 分块加载：每块 ≤ 800 字符（embedding API 限 2048 tokens）
-        chunks = []
-        for fpath in article_files:
-            try:
-                text = fpath.read_text(encoding="utf-8")
-                if len(text) < 100:
-                    continue
-                # 简单分块：按段落拆，每块最多 800 字符
-                paras = text.split("\n\n")
-                current = ""
-                for p in paras:
-                    p = p.strip()
-                    if not p:
-                        continue
-                    if len(current) + len(p) < 800:
-                        current += p + "\n\n"
-                    else:
-                        if current.strip():
-                            chunks.append(current.strip())
-                        current = p + "\n\n"
-                if current.strip():
-                    chunks.append(current.strip())
-            except Exception:
-                continue
-
-        # 批量导入（RAGTool 内部会自动 embedding 并存入 ChromaDB）
-        batch_size = 20
-        for i in range(0, len(chunks), batch_size):
-            batch = chunks[i:i+batch_size]
-            rag_tool.add_documents(batch)
-            rag_doc_count += len(batch)
-
-        print(f"   RAG: {rag_doc_count} chunks 就绪 (来自 {len(article_files)} 篇 Pipeline 文章)")
-    else:
-        # Fallback
-        test_docs = ["Agentic RAG 基于智能体实现动态检索"]
-        rag_tool.add_documents(test_docs)
-        print(f"   RAG: {len(test_docs)} 篇测试文档就绪 (Pipeline 文章目录未找到)")
 
     # 初始化 Prompt Engine
     state.prompt_engine = PromptEngine(state.tool_registry)
