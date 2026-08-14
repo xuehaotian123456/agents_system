@@ -24,6 +24,8 @@ hybrid:
   top_k_retrieve: 10
   top_k_rerank: 3
   alpha: 0.5
+  # Agentic RAG 检索循环 (改写 + HyDE + 充分性反思 + 不足重试)
+  enable_agentic_rag: true
 
 # 数据配置
 data:

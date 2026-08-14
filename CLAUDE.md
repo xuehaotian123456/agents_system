@@ -39,6 +39,7 @@ E:\agent-system\
 │   ├── rag/                  # GraphRAG 三路混合检索
 │   │   ├── vector_store.py   # ChromaDB + chunking + force_rebuild
 │   │   ├── hybrid_retriever.py    # 三路融合 (Vector+BM25+Graph)
+    │   │   ├── agentic_retriever.py  # Agentic 循环 (改写+HyDE+反思+重试)
 │   │   ├── knowledge_graph.py     # KG: 多跳扩散 + 路径查找 + 社区检测/摘要
 │   │   └── graph_retriever.py     # KG→Document 包装器
 │   ├── eval/                 # ★ 评测体系
@@ -220,7 +221,7 @@ python eval/e2e_demo.py
 
 **这个项目的亮点**：
 
-1. **GraphRAG 三路融合 + 多跳推理 + 社区全局检索**：Vector + BM25 + KG 三路召回，RRF 分数级融合（查询自适应权重）+ 可信度加权 + BGE-Reranker 精排。KG 支持 BFS 多跳实体扩散（2-3 hops）、实体最短路径查找、**标签传播社区检测（kNN 稀疏化防坍缩，11,529 社区）+ LLM 社区摘要（45 个）+ 全局检索工具**——对齐微软 GraphRAG 社区机制。评测（同 k 口径, 干净库）验证多跳推理类 Recall +8.3%，增益随语料规模单调上升（+1.3%→+2.5%→+2.8%）。
+1. **GraphRAG 三路融合 + 多跳推理 + 社区全局检索 + Agentic 循环**：Vector + BM25 + KG 三路召回，RRF 分数级融合（查询自适应权重）+ 可信度加权 + BGE-Reranker 精排。rag_search 内置 **Agentic 检索循环**（查询改写 + HyDE 假设答案 + 充分性反思 + 不足自动重试，决策留痕）。KG 支持 BFS 多跳实体扩散（2-3 hops）、实体最短路径查找、**标签传播社区检测（kNN 稀疏化防坍缩，11,529 社区）+ LLM 社区摘要（45 个）+ 全局检索工具**——对齐微软 GraphRAG 社区机制。评测（同 k 口径, 干净库）验证多跳推理类 Recall +8.3%，增益随语料规模单调上升（+1.3%→+2.5%→+2.8%）。
 
 2. **双引擎分层架构**：LangGraph StateGraph 处理 Pipeline，自研 CC-Harness AgentLoop 处理对话。各用最合适的范式。
 

@@ -219,11 +219,21 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
     results = {
         "vec": [],
         "graph": [],
+        "agentic": [],
         "vec_answerable": [],
         "graph_answerable": [],
+        "agentic_answerable": [],
         "per_query": [],
         "win_tie_loss": {"graph_wins": 0, "vec_wins": 0, "ties": 0},
     }
+
+    # Agentic RAG 检索器 (第三臂: 改写+HyDE+反思循环)
+    agentic_retriever = None
+    try:
+        from rag.agentic_retriever import AgenticRetriever
+        agentic_retriever = AgenticRetriever(vs_graph, top_k=5)
+    except Exception:
+        pass
 
     for qi, q in enumerate(queries):
         question = q.get("question", "")
@@ -238,12 +248,24 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
         graph_texts = [d.page_content for d in graph_docs]
         vec_texts = [d.page_content for d in vec_docs]
 
+        # Agentic 臂 (检索循环, 失败降级为 graph 结果)
+        agentic_texts = graph_texts
+        agentic_trace = []
+        if agentic_retriever is not None:
+            try:
+                agentic_docs, agentic_trace = agentic_retriever.search(question)
+                agentic_texts = [d.page_content for d in agentic_docs[:8]]
+            except Exception:
+                agentic_texts = graph_texts
+
         # LLM 打分
         graph_judge = judge_answerability(question, graph_texts)
         vec_judge = judge_answerability(question, vec_texts)
+        agentic_judge = judge_answerability(question, agentic_texts)
 
         graph_score = sum(graph_judge["scores"][:5]) / max(len(graph_judge["scores"][:5]), 1) / 3.0
         vec_score = sum(vec_judge["scores"][:5]) / max(len(vec_judge["scores"][:5]), 1) / 3.0
+        agentic_score = sum(agentic_judge["scores"][:5]) / max(len(agentic_judge["scores"][:5]), 1) / 3.0
 
         # 集合级可答性 (文档集合整体能否支撑回答 — RAG 评测标准口径)
         def _is_answerable(j: dict) -> bool:
@@ -251,8 +273,9 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
             return v in ("fully_answerable", "partially_answerable")
         graph_ans = _is_answerable(graph_judge)
         vec_ans = _is_answerable(vec_judge)
+        agentic_ans = _is_answerable(agentic_judge)
 
-        # Win/Tie/Loss
+        # Win/Tie/Loss (GraphRAG vs 纯向量)
         if graph_score > vec_score + 0.05:
             results["win_tie_loss"]["graph_wins"] += 1
             wl = "graph_win"
@@ -265,8 +288,10 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
 
         results["vec"].append(vec_score)
         results["graph"].append(graph_score)
+        results["agentic"].append(agentic_score)
         results["vec_answerable"].append(1 if vec_ans else 0)
         results["graph_answerable"].append(1 if graph_ans else 0)
+        results["agentic_answerable"].append(1 if agentic_ans else 0)
         results["per_query"].append({
             "id": qid,
             "question": question[:80],
@@ -274,15 +299,21 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
             "difficulty": difficulty,
             "vec_score": round(vec_score, 3),
             "graph_score": round(graph_score, 3),
+            "agentic_score": round(agentic_score, 3),
             "vec_answerable": vec_ans,
             "graph_answerable": graph_ans,
+            "agentic_answerable": agentic_ans,
+            "agentic_retried": any(t.get("action") == "retry" for t in agentic_trace),
             "graph_reasoning": graph_judge.get("reasoning", ""),
             "wl": wl,
         })
 
         if not silent:
             status = "G↑" if wl == "graph_win" else ("V↑" if wl == "vec_win" else "==")
-            print(f"  [{qi+1:>2}/{len(queries)}] {status} {qid} | vec={vec_score:.2f} graph={graph_score:.2f} | {graph_judge.get('reasoning', '')[:40]}")
+            a_status = "R2" if any(t.get("action") == "retry" for t in agentic_trace) else "R1"
+            print(f"  [{qi+1:>2}/{len(queries)}] {status} {qid} | vec={vec_score:.2f} "
+                  f"graph={graph_score:.2f} agentic={agentic_score:.2f}({a_status}) | "
+                  f"{graph_judge.get('reasoning', '')[:30]}")
 
     elapsed = time.time() - t0
 
@@ -294,18 +325,25 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
     w = results["win_tie_loss"]
 
     if not silent:
+        avg_agentic = sum(results["agentic"]) / max(len(results["agentic"]), 1)
         print(f"\n{'='*60}")
-        print(f"  评测结果")
+        print(f"  评测结果 (三臂: 纯向量 / GraphRAG / Agentic RAG)")
         print(f"{'='*60}")
         print(f"  逐文档均分 (严格口径):")
         print(f"    纯向量 RAG Answerability:  {avg_vec:.2%}")
         print(f"    GraphRAG Answerability:    {avg_graph:.2%}")
-        print(f"    提升:                      {improvement:+.1%}")
+        print(f"    Agentic RAG Answerability: {avg_agentic:.2%}")
+        print(f"    GraphRAG vs 向量:          {improvement:+.1%}")
+        print(f"    Agentic vs GraphRAG:       {avg_agentic - avg_graph:+.1%}")
         ans_vec_rate = sum(results["vec_answerable"]) / max(len(results["vec_answerable"]), 1)
         ans_graph_rate = sum(results["graph_answerable"]) / max(len(results["graph_answerable"]), 1)
-        print(f"  集合级可答率 (RAG 标准口径, 5篇文档整体能否支撑回答):")
+        ans_agentic_rate = sum(results["agentic_answerable"]) / max(len(results["agentic_answerable"]), 1)
+        print(f"  集合级可答率 (RAG 标准口径, 文档集合整体能否支撑回答):")
         print(f"    纯向量:  {ans_vec_rate:.1%} ({sum(results['vec_answerable'])}/{len(results['vec_answerable'])})")
         print(f"    GraphRAG: {ans_graph_rate:.1%} ({sum(results['graph_answerable'])}/{len(results['graph_answerable'])})")
+        print(f"    Agentic:  {ans_agentic_rate:.1%} ({sum(results['agentic_answerable'])}/{len(results['agentic_answerable'])})")
+        n_retried = sum(1 for r in results["per_query"] if r.get("agentic_retried"))
+        print(f"  Agentic 触发二轮检索: {n_retried}/{total} 查询")
         print(f"  GraphRAG 胜: {w['graph_wins']}/{total} ({w['graph_wins']/total:.0%})")
         print(f"  纯向量 胜:   {w['vec_wins']}/{total} ({w['vec_wins']/total:.0%})")
         print(f"  平局:        {w['ties']}/{total} ({w['ties']/total:.0%})")
@@ -317,15 +355,17 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
     by_difficulty = {}
     for r in results["per_query"]:
         cat = r["category"]
-        by_category.setdefault(cat, {"vec": [], "graph": [], "count": 0})
+        by_category.setdefault(cat, {"vec": [], "graph": [], "agentic": [], "count": 0})
         by_category[cat]["vec"].append(r["vec_score"])
         by_category[cat]["graph"].append(r["graph_score"])
+        by_category[cat]["agentic"].append(r.get("agentic_score", r["graph_score"]))
         by_category[cat]["count"] += 1
 
         diff = r["difficulty"]
-        by_difficulty.setdefault(diff, {"vec": [], "graph": [], "count": 0})
+        by_difficulty.setdefault(diff, {"vec": [], "graph": [], "agentic": [], "count": 0})
         by_difficulty[diff]["vec"].append(r["vec_score"])
         by_difficulty[diff]["graph"].append(r["graph_score"])
+        by_difficulty[diff]["agentic"].append(r.get("agentic_score", r["graph_score"]))
         by_difficulty[diff]["count"] += 1
 
     category_summary = {}
@@ -334,6 +374,7 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
             "count": data["count"],
             "vec_answerability": round(sum(data["vec"]) / max(len(data["vec"]), 1), 3),
             "graph_answerability": round(sum(data["graph"]) / max(len(data["graph"]), 1), 3),
+            "agentic_answerability": round(sum(data["agentic"]) / max(len(data["agentic"]), 1), 3),
             "improvement": round(
                 sum(data["graph"]) / max(len(data["graph"]), 1) -
                 sum(data["vec"]) / max(len(data["vec"]), 1), 3
@@ -346,6 +387,7 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
             "count": data["count"],
             "vec_answerability": round(sum(data["vec"]) / max(len(data["vec"]), 1), 3),
             "graph_answerability": round(sum(data["graph"]) / max(len(data["graph"]), 1), 3),
+            "agentic_answerability": round(sum(data["agentic"]) / max(len(data["agentic"]), 1), 3),
             "improvement": round(
                 sum(data["graph"]) / max(len(data["graph"]), 1) -
                 sum(data["vec"]) / max(len(data["vec"]), 1), 3
@@ -357,11 +399,15 @@ def run_llm_judge_eval(queries_path: str = "", max_queries: int = 0, silent: boo
         "overall": {
             "vec_answerability": round(avg_vec, 3),
             "graph_answerability": round(avg_graph, 3),
+            "agentic_answerability": round(
+                sum(results["agentic"]) / max(len(results["agentic"]), 1), 3),
             "improvement": round(improvement, 3),
             "vec_set_answerable_rate": round(
                 sum(results["vec_answerable"]) / max(len(results["vec_answerable"]), 1), 3),
             "graph_set_answerable_rate": round(
                 sum(results["graph_answerable"]) / max(len(results["graph_answerable"]), 1), 3),
+            "agentic_set_answerable_rate": round(
+                sum(results["agentic_answerable"]) / max(len(results["agentic_answerable"]), 1), 3),
         },
         "win_tie_loss": w,
         "by_category": category_summary,

@@ -211,6 +211,113 @@ def test_community_detection_and_global_search():
     assert "note" in result or "communities" in result
 
 
+# ==================== Agentic RAG 检索循环 ====================
+
+class _FakeVS:
+    """离线假向量库: 按查询词返回脚本化文档, 零 ChromaDB/零 LLM 依赖"""
+
+    def __init__(self):
+        from langchain_core.documents import Document
+        self.Document = Document
+        self.calls = []
+
+    def search(self, q, top_k=5):
+        self.calls.append(q)
+        return [self.Document(page_content=f"{q} 的相关文档{i}",
+                              metadata={"reranker_score": 1.0 - i * 0.1})
+                for i in range(min(top_k, 3))]
+
+    @property
+    def store(self):
+        return self
+
+
+def _make_retriever(vs, scripted_responses=None, max_rounds=2):
+    """构造 AgenticRetriever, 注入脚本化 LLM (离线)"""
+    from rag.agentic_retriever import AgenticRetriever
+    ar = AgenticRetriever(vs, top_k=5, max_rounds=max_rounds)
+
+    if scripted_responses is None:
+        scripted_responses = []
+    responses = iter(scripted_responses)
+
+    def fake_llm(prompt):
+        try:
+            return next(responses)
+        except StopIteration:
+            return None
+    ar._llm = fake_llm
+    return ar
+
+
+def test_agentic_rewrite_hyde_and_retry():
+    """完整循环: 改写+HyDE → 多查询检索 → 反思不足 → 二轮重试"""
+    vs = _FakeVS()
+    # 脚本化 LLM: 第1次=改写+HyDE, 第2次=反思(不足+改写查询)
+    ar = _make_retriever(vs, scripted_responses=[
+        '{"rewrites": ["变体A", "变体B"], "hypothetical_answer": "假设答案片段"}',
+        '{"sufficient": false, "reason": "信息不足", "rewritten_query": "更精准的查询"}',
+    ])
+
+    docs, trace = ar.search("原始查询")
+
+    # 多查询检索: 原始 + 2 变体 + HyDE = 4 个查询
+    assert len(vs.calls) == 5, f"应检索 5 次 (4 查询 + 1 重试), 实际 {len(vs.calls)}"
+    assert "变体A" in vs.calls and "假设答案片段" in vs.calls
+    # 去重合并 (每个查询返回 3 篇, 内容不同则合并后 15 篇上限)
+    assert len(docs) > 3, "合并结果应多于单查询"
+    # 决策留痕
+    actions = [(t["round"], t["action"]) for t in trace]
+    assert (1, "rewrite") in actions
+    assert (1, "hyde") in actions
+    assert (1, "reflect") in actions
+    assert (2, "retry") in actions
+
+
+def test_agentic_sufficient_short_circuit():
+    """反思判定充分 → 不触发二轮"""
+    vs = _FakeVS()
+    ar = _make_retriever(vs, scripted_responses=[
+        '{"rewrites": [], "hypothetical_answer": ""}',
+        '{"sufficient": true, "reason": "信息完整", "rewritten_query": ""}',
+    ])
+    docs, trace = ar.search("q")
+    assert len(vs.calls) == 1, "充分时不触发重试检索"
+    assert not any(t["action"] == "retry" for t in trace)
+
+
+def test_agentic_llm_failure_fallback():
+    """LLM 不可用 → 故障开放: 单次检索, 不崩溃"""
+    vs = _FakeVS()
+    ar = _make_retriever(vs, scripted_responses=[])  # LLM 永远失败
+    docs, trace = ar.search("q")
+    assert len(vs.calls) == 1, "LLM 失败时仅原始查询检索"
+    assert len(docs) == 3
+    # 反思默认 sufficient=True (故障开放)
+    assert any(t["action"] == "reflect" and "True" in t["detail"] for t in trace)
+
+
+def test_agentic_dedup_merge():
+    """多查询结果去重 (相同内容只保留 reranker 分更高的一次)"""
+    from langchain_core.documents import Document
+
+    class _DupVS(_FakeVS):
+        def search(self, q, top_k=5):
+            self.calls.append(q)
+            # 所有查询返回同一篇文档 (不同 reranker 分)
+            return [Document(page_content="同一篇文档内容",
+                             metadata={"reranker_score": 0.9 if "变体" in q else 0.5})]
+
+    vs = _DupVS()
+    ar = _make_retriever(vs, scripted_responses=[
+        '{"rewrites": ["变体A"], "hypothetical_answer": ""}',
+        '{"sufficient": true, "reason": "", "rewritten_query": ""}',
+    ])
+    docs, _ = ar.search("原始")
+    assert len(docs) == 1, "相同内容应去重为 1 篇"
+    assert docs[0].metadata["reranker_score"] == 0.9, "保留高分版本"
+
+
 # ==================== 负样本诚实性 ====================
 
 def test_honesty_detector():

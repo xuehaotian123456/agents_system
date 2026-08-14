@@ -37,11 +37,34 @@ def rag_search(query: str) -> str:
         except Exception:
             pass
 
-        # 用扩展后的 query 检索
-        docs = vs.search(expanded_query, top_k=5)
-        if not docs:
-            # 回退到原始 query
-            docs = vs.search(query, top_k=5)
+        # 检索: Agentic 循环 (改写+HyDE+反思) 或 单次检索
+        docs = None
+        agentic_enabled = False
+        try:
+            from utils.config_handler import get_hybrid_config
+            agentic_enabled = get_hybrid_config().get("enable_agentic_rag", True)
+        except Exception:
+            pass
+
+        if agentic_enabled:
+            try:
+                from rag.agentic_retriever import AgenticRetriever
+                ar = AgenticRetriever(vs, top_k=5)
+                docs, trace = ar.search(expanded_query)
+                # 决策留痕 (Agentic 能力可见)
+                if trace:
+                    last = trace[-1]
+                    logger.info(f"[rag_search] Agentic 检索: {len(docs)} 篇 "
+                                f"(最后动作: {last['action']} round{last['round']})")
+            except Exception as e:
+                logger.warning(f"[rag_search] Agentic 检索失败, 降级单次检索: {e}")
+                docs = None
+
+        if docs is None:
+            docs = vs.search(expanded_query, top_k=5)
+            if not docs:
+                # 回退到原始 query
+                docs = vs.search(query, top_k=5)
         if not docs:
             return "未找到相关文章。"
 
